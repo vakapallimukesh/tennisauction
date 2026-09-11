@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #060b17;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
+  background-attachment: fixed;
+  color: #f1f5f9;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.8);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 1);
+}
+
+/* Glass card */
+.glass-panel {
+  background: rgba(10, 18, 38, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Glowing card borders */
+.team-card-green {
+  border: 1.5px solid #22c55e;
+  box-shadow: 0 0 18px rgba(34, 197, 94, 0.25), inset 0 0 15px rgba(34, 197, 94, 0.06);
+}
+
+.team-card-blue {
+  border: 1.5px solid #0ea5e9;
+  box-shadow: 0 0 18px rgba(14, 165, 233, 0.25), inset 0 0 15px rgba(14, 165, 233, 0.06);
+}
+
+.team-card-purple {
+  border: 1.5px solid #a855f7;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.25), inset 0 0 15px rgba(168, 85, 247, 0.06);
+}
+
+.team-card-orange {
+  border: 1.5px solid #f97316;
+  box-shadow: 0 0 18px rgba(249, 115, 22, 0.25), inset 0 0 15px rgba(249, 115, 22, 0.06);
+}
+
+/* Live card glowing pulse */
+.live-glow-border {
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.2);
+}
+
+/* Handwritten signature effect */
+.handwriting-text {
+  font-family: 'Caveat', cursive;
+  text-shadow: 0 0 10px rgba(163, 230, 53, 0.5);
+  transform: rotate(-8deg);
+}
+
+/* Keyframe animations */
+@keyframes tennisSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-tennis-spin {
+  animation: tennisSpin 20s linear infinite;
+}

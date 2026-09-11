@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="blueGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#0ea5e9" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="eagleBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <filter id="glowB">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <circle cx="100" cy="100" r="90" fill="url(#blueGlow)"/>
+
+  <!-- Electric sparks & Tennis ball -->
+  <circle cx="165" cy="115" r="14" fill="#38bdf8" filter="url(#glowB)"/>
+  <path d="M 153 115 A 12 12 0 0 1 177 115" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7"/>
+
+  <!-- Fierce Eagle Head Profile -->
+  <g filter="url(#glowB)" fill="none" stroke="url(#eagleBlue)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Head Outline -->
+    <path d="M 50 140 C 45 100 65 50 115 42 C 145 38 165 55 160 85 C 158 98 145 108 135 110 L 155 115 C 130 140 100 135 85 155 Z" fill="#07233f" fill-opacity="0.85"/>
+    
+    <!-- Sharp Beak -->
+    <path d="M 135 90 C 160 92 175 102 165 125 C 152 120 145 112 135 110 Z" fill="#38bdf8" stroke="#ffffff" stroke-width="2"/>
+    
+    <!-- Eye and Brow -->
+    <path d="M 100 78 L 125 76" stroke="#ffffff" stroke-width="3.5"/>
+    <polygon points="106,80 120,80 114,88" fill="#e0f2fe"/>
+    <circle cx="113" cy="83" r="2.5" fill="#0c4a6e"/>
+
+    <!-- Feathers -->
+    <path d="M 65 95 L 85 102"/>
+    <path d="M 55 115 L 80 120"/>
+    <path d="M 75 75 L 95 82"/>
+    <path d="M 90 55 L 110 65"/>
+    <path d="M 70 135 L 92 138"/>
+
+    <!-- Lightning bolts -->
+    <polyline points="30,45 42,65 35,70 50,92" stroke="#bae6fd" stroke-width="2"/>
+    <polyline points="155,35 145,50 152,55 140,75" stroke="#bae6fd" stroke-width="2"/>
+  </g>
+</svg>

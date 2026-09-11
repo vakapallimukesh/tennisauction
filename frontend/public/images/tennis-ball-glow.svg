@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <radialGradient id="ballShine" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="30%" stop-color="#bef264"/>
+      <stop offset="70%" stop-color="#84cc16"/>
+      <stop offset="100%" stop-color="#4d7c0f"/>
+    </radialGradient>
+    <radialGradient id="outerGreenGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#22c55e" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#15803d" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="ballGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Speed trails / energy burst -->
+  <path d="M 10 95 Q 40 75 70 80" stroke="#4ade80" stroke-width="3" fill="none" opacity="0.4" stroke-linecap="round"/>
+  <path d="M 20 110 Q 55 90 90 95" stroke="#22c55e" stroke-width="2.5" fill="none" opacity="0.3" stroke-linecap="round"/>
+  <circle cx="60" cy="60" r="54" fill="url(#outerGreenGlow)"/>
+
+  <!-- Main Tennis Ball -->
+  <circle cx="60" cy="60" r="44" fill="url(#ballShine)" filter="url(#ballGlow)"/>
+
+  <!-- Tennis Ball Seams -->
+  <path d="M 32 30 C 45 42 45 78 32 90" stroke="#ffffff" stroke-width="3.5" fill="none" opacity="0.9" stroke-linecap="round"/>
+  <path d="M 88 30 C 75 42 75 78 88 90" stroke="#ffffff" stroke-width="3.5" fill="none" opacity="0.9" stroke-linecap="round"/>
+</svg>

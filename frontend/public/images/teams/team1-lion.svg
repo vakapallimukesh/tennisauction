@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="greenGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#22c55e" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#15803d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lionGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#86efac"/>
+      <stop offset="50%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#166534"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Aura Background -->
+  <circle cx="100" cy="100" r="90" fill="url(#greenGlow)"/>
+  
+  <!-- Tennis balls floating around -->
+  <circle cx="35" cy="115" r="14" fill="#a3e635" filter="url(#glow)"/>
+  <path d="M 23 115 A 12 12 0 0 1 47 115" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.6"/>
+  
+  <circle cx="165" cy="115" r="14" fill="#a3e635" filter="url(#glow)"/>
+  <path d="M 153 115 A 12 12 0 0 1 177 115" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.6"/>
+
+  <!-- Stylized Roaring Lion Head -->
+  <g filter="url(#glow)" fill="none" stroke="url(#lionGreen)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Mane Outer Spikes -->
+    <path d="M 100 25 L 115 45 L 138 32 L 142 55 L 165 52 L 155 75 L 175 85 L 158 102 L 172 120 L 148 128 L 155 150 L 132 148 L 125 170 L 100 162 L 75 170 L 68 148 L 45 150 L 52 128 L 28 120 L 42 102 L 25 85 L 45 75 L 35 52 L 58 55 L 62 32 L 85 45 Z" fill="#0b2915" fill-opacity="0.8"/>
+    
+    <!-- Facial Features -->
+    <path d="M 70 85 L 90 92 L 75 102 Z" fill="#4ade80"/>
+    <path d="M 130 85 L 110 92 L 125 102 Z" fill="#4ade80"/>
+    
+    <!-- Eyes -->
+    <circle cx="82" cy="92" r="3.5" fill="#ffffff"/>
+    <circle cx="118" cy="92" r="3.5" fill="#ffffff"/>
+    
+    <!-- Snout & Nose -->
+    <path d="M 94 105 L 106 105 L 100 114 Z" fill="#22c55e"/>
+    <path d="M 100 114 L 100 125"/>
+    <path d="M 90 122 Q 100 126 110 122"/>
+
+    <!-- Open Roaring Mouth & Fangs -->
+    <path d="M 85 126 Q 100 148 115 126" fill="#041f0c"/>
+    <!-- Top Fangs -->
+    <polygon points="90,126 94,134 96,127" fill="#ffffff"/>
+    <polygon points="110,126 106,134 104,127" fill="#ffffff"/>
+    <!-- Bottom Fangs -->
+    <polygon points="93,142 96,136 98,142" fill="#ffffff"/>
+    <polygon points="107,142 104,136 102,142" fill="#ffffff"/>
+
+    <!-- Whisker accents -->
+    <path d="M 75 118 L 55 115"/>
+    <path d="M 74 124 L 52 125"/>
+    <path d="M 125 118 L 145 115"/>
+    <path d="M 126 124 L 148 125"/>
+  </g>
+</svg>

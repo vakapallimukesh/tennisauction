@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="orangeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fb923c" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#f97316" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#7c2d12" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="flameGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="50%" stop-color="#f97316"/>
+      <stop offset="85%" stop-color="#facc15"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <filter id="glowO">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <circle cx="100" cy="100" r="90" fill="url(#orangeGlow)"/>
+
+  <!-- Tennis ball floating right with fire ember -->
+  <circle cx="165" cy="115" r="14" fill="#fb923c" filter="url(#glowO)"/>
+  <path d="M 153 115 A 12 12 0 0 1 177 115" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.7"/>
+
+  <!-- Outer Ring Shield -->
+  <circle cx="100" cy="100" r="46" fill="#431407" stroke="#ea580c" stroke-width="3" filter="url(#glowO)"/>
+
+  <!-- Multi-layered Fire Flame -->
+  <g filter="url(#glowO)">
+    <!-- Outer Flame -->
+    <path d="M 100 50 C 110 70 130 85 130 110 C 130 132 115 148 100 148 C 85 148 70 132 70 110 C 70 90 85 75 90 62 C 92 78 100 82 100 50 Z" fill="url(#flameGrad)"/>
+
+    <!-- Inner Core Flame -->
+    <path d="M 100 85 C 108 98 118 108 118 122 C 118 136 108 144 100 144 C 92 144 82 136 82 122 C 82 110 90 100 95 92 C 96 102 100 105 100 85 Z" fill="#fef08a"/>
+
+    <!-- Ember Particles -->
+    <circle cx="125" cy="75" r="2.5" fill="#fef08a"/>
+    <circle cx="75" cy="80" r="2" fill="#fef08a"/>
+    <circle cx="100" cy="40" r="2" fill="#ffffff"/>
+  </g>
+</svg>
