@@ -22,8 +22,10 @@ export function AuctionProvider({ children }) {
   const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   // Authentication State
-  const [adminUser, setAdminUser] = useState(() => authStorage.getUser());
-  const isAuthenticated = !!adminUser;
+  const [currentUser, setCurrentUser] = useState(() => authStorage.getUser());
+  const isAuthenticated = !!currentUser;
+  const isAdmin = currentUser?.role === 'admin';
+  const userTeamId = currentUser?.team_id || null;
 
   // Modals & Navigation
   const [viewTeamId, setViewTeamId] = useState(1);
@@ -83,9 +85,9 @@ export function AuctionProvider({ children }) {
   // Auth verify on mount
   useEffect(() => {
     api.verifyAuth().then(user => {
-      if (user) setAdminUser(user);
+      if (user) setCurrentUser(user);
       else {
-        setAdminUser(null);
+        setCurrentUser(null);
       }
     });
   }, []);
@@ -175,6 +177,7 @@ export function AuctionProvider({ children }) {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('auction_state', onAuctionState);
+    socket.on('auction_state_updated', onAuctionState);
     socket.on('digital_display_updated', onAuctionState);
     socket.on('timer_updated', onTimerUpdated);
     socket.on('bid_placed', onBidPlaced);
@@ -193,6 +196,7 @@ export function AuctionProvider({ children }) {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('auction_state', onAuctionState);
+      socket.off('auction_state_updated', onAuctionState);
       socket.off('digital_display_updated', onAuctionState);
       socket.off('timer_updated', onTimerUpdated);
       socket.off('bid_placed', onBidPlaced);
@@ -206,17 +210,30 @@ export function AuctionProvider({ children }) {
   // Auth Functions
   const login = async (username, password) => {
     const res = await api.login({ username, password });
-    setAdminUser(res.admin);
+    const userPayload = res.user || res.admin;
+    setCurrentUser(userPayload);
     return res;
   };
 
   const logout = () => {
     api.logout();
-    setAdminUser(null);
+    setCurrentUser(null);
   };
 
   // Actions
   const placeBid = async ({ team_id, amount, increment }) => {
+    const socket = getSocket();
+    if (socket && socket.connected) {
+      return new Promise((resolve, reject) => {
+        socket.emit('submit_bid', { team_id, amount, increment }, (response) => {
+          if (response && response.success) {
+            resolve(response.data);
+          } else {
+            reject(new Error(response?.message || 'Bid failed'));
+          }
+        });
+      });
+    }
     return await api.placeBid({ team_id, amount, increment });
   };
 
@@ -258,7 +275,10 @@ export function AuctionProvider({ children }) {
     loading,
     error,
     isSocketConnected,
-    adminUser,
+    currentUser,
+    adminUser: currentUser,
+    isAdmin,
+    userTeamId,
     isAuthenticated,
     login,
     logout,

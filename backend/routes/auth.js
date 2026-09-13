@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { getPool, isUsingMySQL, getMemoryStore } = require('../config/db');
-const { authenticateAdmin, JWT_SECRET } = require('../middleware/auth');
+const { authenticateJWT, JWT_SECRET } = require('../middleware/auth');
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
@@ -17,51 +17,53 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    let admin = null;
+    let user = null;
 
     if (isUsingMySQL()) {
       const pool = getPool();
-      const [rows] = await pool.query('SELECT * FROM admins WHERE username = ? LIMIT 1', [username]);
+      const [rows] = await pool.query('SELECT * FROM users WHERE username = ? LIMIT 1', [username.toLowerCase().trim()]);
       if (rows && rows.length > 0) {
-        admin = rows[0];
+        user = rows[0];
       }
     } else {
       const store = getMemoryStore();
-      admin = (store.admins || []).find(a => a.username.toLowerCase() === username.toLowerCase());
+      user = (store.users || []).find(u => u.username.toLowerCase() === username.toLowerCase().trim());
     }
 
-    // Default fallback if username is admin
-    if (!admin && username.toLowerCase() === 'admin') {
-      const defaultHash = bcrypt.hashSync('tennis2026', 10);
-      admin = {
-        id: 1,
-        username: 'admin',
-        password_hash: defaultHash,
-        full_name: 'Lead Auctioneer',
-        role: 'super_admin'
-      };
-    }
-
-    if (!admin) {
+    if (!user) {
       return res.status(401).json({
         success: false,
         message: 'Invalid username or password.'
       });
     }
 
-    const isMatch = await bcrypt.compare(password, admin.password_hash);
-    if (!isMatch && password !== 'tennis2026') {
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+    if (!isMatch) {
       return res.status(401).json({
         success: false,
         message: 'Invalid username or password.'
       });
+    }
+
+    // Attach team info if user is a team account
+    let teamInfo = null;
+    if (user.team_id) {
+      if (isUsingMySQL()) {
+        const pool = getPool();
+        const [teams] = await pool.query('SELECT * FROM teams WHERE id = ?', [user.team_id]);
+        if (teams.length > 0) teamInfo = teams[0];
+      } else {
+        const store = getMemoryStore();
+        teamInfo = store.teams.find(t => t.id === user.team_id) || null;
+      }
     }
 
     const payload = {
-      id: admin.id,
-      username: admin.username,
-      full_name: admin.full_name,
-      role: admin.role
+      id: user.id,
+      username: user.username,
+      full_name: user.full_name,
+      role: user.role,
+      team_id: user.team_id
     };
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
@@ -70,7 +72,10 @@ router.post('/login', async (req, res) => {
       success: true,
       message: 'Authentication successful',
       token,
-      admin: payload
+      user: {
+        ...payload,
+        team: teamInfo
+      }
     });
   } catch (err) {
     console.error('Auth login error:', err);
@@ -79,11 +84,30 @@ router.post('/login', async (req, res) => {
 });
 
 // GET /api/auth/me
-router.get('/me', authenticateAdmin, (req, res) => {
-  res.json({
-    success: true,
-    admin: req.admin
-  });
+router.get('/me', authenticateJWT, async (req, res) => {
+  try {
+    let teamInfo = null;
+    if (req.user.team_id) {
+      if (isUsingMySQL()) {
+        const pool = getPool();
+        const [teams] = await pool.query('SELECT * FROM teams WHERE id = ?', [req.user.team_id]);
+        if (teams.length > 0) teamInfo = teams[0];
+      } else {
+        const store = getMemoryStore();
+        teamInfo = store.teams.find(t => t.id === req.user.team_id) || null;
+      }
+    }
+
+    res.json({
+      success: true,
+      user: {
+        ...req.user,
+        team: teamInfo
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 module.exports = router;

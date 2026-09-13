@@ -6,27 +6,10 @@
 CREATE DATABASE IF NOT EXISTS `tennis_auction` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `tennis_auction`;
 
--- Disable foreign key checks during creation
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------------------------------------
--- 1. Table: admins (Authentication & Role Management)
--- ----------------------------------------------------------
-DROP TABLE IF EXISTS `admins`;
-CREATE TABLE `admins` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `username` VARCHAR(60) NOT NULL UNIQUE,
-  `password_hash` VARCHAR(255) NOT NULL,
-  `full_name` VARCHAR(100) NOT NULL,
-  `email` VARCHAR(120) NULL,
-  `role` ENUM('super_admin', 'auctioneer', 'staff') NOT NULL DEFAULT 'auctioneer',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX `idx_admins_username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------------------------------------
--- 2. Table: teams (Franchises)
+-- 1. Table: teams
 -- ----------------------------------------------------------
 DROP TABLE IF EXISTS `teams`;
 CREATE TABLE `teams` (
@@ -44,8 +27,22 @@ CREATE TABLE `teams` (
   `glow_color` VARCHAR(50) NOT NULL,
   `bg_gradient` VARCHAR(100) NOT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX `idx_teams_number` (`team_number`)
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------
+-- 2. Table: users (Admin & 4 Teams)
+-- ----------------------------------------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `username` VARCHAR(60) NOT NULL UNIQUE,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `full_name` VARCHAR(100) NOT NULL,
+  `role` ENUM('admin', 'team') NOT NULL DEFAULT 'team',
+  `team_id` INT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------
@@ -71,9 +68,7 @@ CREATE TABLE `players` (
   `status` ENUM('upcoming', 'live', 'sold', 'unsold') NOT NULL DEFAULT 'upcoming',
   `display_order` INT NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX `idx_players_status` (`status`),
-  INDEX `idx_players_ranking` (`world_ranking`)
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------
@@ -110,13 +105,11 @@ CREATE TABLE `bids` (
   `bid_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE,
-  INDEX `idx_bids_player` (`player_id`),
-  INDEX `idx_bids_time` (`bid_time`)
+  FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------
--- 6. Table: team_players (Sold player records)
+-- 6. Table: team_players (Drafted players per team)
 -- ----------------------------------------------------------
 DROP TABLE IF EXISTS `team_players`;
 CREATE TABLE `team_players` (
@@ -126,24 +119,21 @@ CREATE TABLE `team_players` (
   `purchase_price` DECIMAL(12,2) NOT NULL,
   `purchased_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE,
-  INDEX `idx_team_players_team` (`team_id`)
+  FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------
--- 7. Table: auction_events (Audit Trail & Live Screen Events)
+-- 7. Table: auction_events (Audit log)
 -- ----------------------------------------------------------
 DROP TABLE IF EXISTS `auction_events`;
 CREATE TABLE `auction_events` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `event_type` VARCHAR(60) NOT NULL,
-  `auction_id` INT NULL,
+  `event_type` VARCHAR(50) NOT NULL,
   `player_id` INT NULL,
   `team_id` INT NULL,
-  `payload` JSON NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX `idx_events_type` (`event_type`),
-  INDEX `idx_events_created` (`created_at`)
+  `amount` DECIMAL(12,2) NULL,
+  `details` TEXT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------

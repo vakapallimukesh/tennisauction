@@ -1,24 +1,23 @@
 const mysql = require('mysql2/promise');
-const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
+const dotenv = require('dotenv');
 dotenv.config();
 
-const DEFAULT_ADMIN_PASSWORD_HASH = bcrypt.hashSync('tennis2026', 10);
+// Pre-hash default passwords for immediate fallback use
+const adminHash = bcrypt.hashSync('admin123', 10);
+const team1Hash = bcrypt.hashSync('team1@auction', 10);
+const team2Hash = bcrypt.hashSync('team2@auction', 10);
+const team3Hash = bcrypt.hashSync('team3@auction', 10);
+const team4Hash = bcrypt.hashSync('team4@auction', 10);
 
-// Memory store initialized with exact data matching reference image
 const initialSeed = {
-  admins: [
-    {
-      id: 1,
-      username: 'admin',
-      password_hash: DEFAULT_ADMIN_PASSWORD_HASH,
-      full_name: 'Senior Auctioneer',
-      email: 'admin@tennisleague.com',
-      role: 'super_admin',
-      created_at: new Date()
-    }
+  users: [
+    { id: 1, username: 'admin', password_hash: adminHash, full_name: 'Tournament Director', role: 'admin', team_id: null },
+    { id: 2, username: 'team1', password_hash: team1Hash, full_name: 'The Racquet Warriors Captain', role: 'team', team_id: 1 },
+    { id: 3, username: 'team2', password_hash: team2Hash, full_name: 'Ace Storm Manager', role: 'team', team_id: 2 },
+    { id: 4, username: 'team3', password_hash: team3Hash, full_name: 'Thunder Bolts Owner', role: 'team', team_id: 3 },
+    { id: 5, username: 'team4', password_hash: team4Hash, full_name: 'Fire Servers Head Coach', role: 'team', team_id: 4 }
   ],
-  auction_events: [],
   sponsors: [
     { id: 1, category: 'POWERED BY', name: 'SportWave', logo_icon: 'sportwave', website: 'https://sportwave.example.com' },
     { id: 2, category: 'CO-SPONSOR', name: 'ApexHealth', logo_icon: 'apexhealth', website: 'https://apexhealth.example.com' },
@@ -263,7 +262,7 @@ const initialSeed = {
     {
       id: 10,
       player_number: 'PLAYER #02',
-      name: 'Sana Kapoor',
+      name: 'Sana Kapoor (Sr.)',
       age: 22,
       country: 'India',
       country_flag: '🇮🇳',
@@ -434,24 +433,22 @@ const initialSeed = {
     status: 'live',
     current_player_id: 1,
     current_bid: 42000.00,
-    highest_bidder_team_id: 1,
+    highest_bidder_team_id: 2,
     bid_increment: 2000.00,
     timer_seconds: 15,
     timer_remaining: 15,
     timer_running: true
   },
   bids: [
-    { id: 1, auction_id: 1, player_id: 1, team_id: 2, amount: 34000.00, bid_time: new Date(Date.now() - 40000) },
-    { id: 2, auction_id: 1, player_id: 1, team_id: 3, amount: 36000.00, bid_time: new Date(Date.now() - 30000) },
-    { id: 3, auction_id: 1, player_id: 1, team_id: 2, amount: 38000.00, bid_time: new Date(Date.now() - 20000) },
-    { id: 4, auction_id: 1, player_id: 1, team_id: 4, amount: 40000.00, bid_time: new Date(Date.now() - 10000) },
-    { id: 5, auction_id: 1, player_id: 1, team_id: 1, amount: 42000.00, bid_time: new Date() }
-  ]
+    { id: 1, auction_id: 1, player_id: 1, team_id: 1, amount: 36000.00, bid_time: new Date(Date.now() - 40000) },
+    { id: 2, auction_id: 1, player_id: 1, team_id: 3, amount: 38000.00, bid_time: new Date(Date.now() - 30000) },
+    { id: 3, auction_id: 1, player_id: 1, team_id: 4, amount: 40000.00, bid_time: new Date(Date.now() - 20000) },
+    { id: 4, auction_id: 1, player_id: 1, team_id: 2, amount: 42000.00, bid_time: new Date() }
+  ],
+  auction_events: []
 };
 
-// Deep copy for runtime state
 let memoryStore = JSON.parse(JSON.stringify(initialSeed));
-
 let pool = null;
 let isUsingMySQL = false;
 
@@ -469,17 +466,16 @@ async function initDB() {
         connectionLimit: 10,
         queueLimit: 0
       });
-      // Test connection
       const conn = await pool.getConnection();
       console.log('✅ Connected to MySQL Database:', DB_NAME);
       conn.release();
       isUsingMySQL = true;
     } catch (err) {
-      console.warn('⚠️  Could not connect to MySQL server (' + err.message + '). Using robust in-memory database store.');
+      console.warn('⚠️ Could not connect to MySQL server (' + err.message + '). Using in-memory fallback store.');
       isUsingMySQL = false;
     }
   } else {
-    console.log('ℹ️  No MySQL environment variables defined. Using fast, persistent in-memory database store.');
+    console.log('ℹ️ No MySQL environment variables defined. Using fast, resilient in-memory database store.');
     isUsingMySQL = false;
   }
 }

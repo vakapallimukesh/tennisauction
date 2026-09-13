@@ -5,9 +5,11 @@ let socket = null;
 export function getSocket() {
   if (!socket) {
     // If running in development with Vite proxy, connecting to '/' auto-proxies '/socket.io'
+    const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+    const protocol = typeof window !== 'undefined' ? window.location.protocol : 'http:';
     const backendUrl = import.meta.env.VITE_BACKEND_URL || (
       typeof window !== 'undefined' && window.location.port === '5173'
-        ? 'http://localhost:5001'
+        ? `${protocol}//${host}:5001`
         : window.location.origin
     );
 

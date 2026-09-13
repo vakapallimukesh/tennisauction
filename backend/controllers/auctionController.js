@@ -49,6 +49,22 @@ exports.placeBid = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Selected franchise does not exist.' });
     }
 
+    // Verify token permissions (team can only bid for themselves; admin can bid for any team)
+    if (req.user && req.user.role !== 'admin' && req.user.team_id !== team.id) {
+      return res.status(403).json({
+        success: false,
+        message: `Access denied. You are logged in as ${req.user.username} and cannot place bids for ${team.name}.`
+      });
+    }
+
+    // Check Self-Bidding Rule
+    if (auction.highest_bidder_team_id === team.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Your team is already the highest bidder! You cannot bid against yourself.'
+      });
+    }
+
     // Check squad size limit (e.g. 5)
     const teamPlayers = store.team_players.filter(tp => tp.team_id === team.id);
     if (teamPlayers.length >= team.max_players) {

@@ -41,7 +41,7 @@ export const api = {
     const json = await res.json();
     if (!res.ok) throw new Error(json.message || 'Login failed');
     if (json.token) authStorage.setToken(json.token);
-    if (json.admin) authStorage.setUser(json.admin);
+    if (json.user || json.admin) authStorage.setUser(json.user || json.admin);
     return json;
   },
 
@@ -58,7 +58,7 @@ export const api = {
         return null;
       }
       const json = await res.json();
-      return json.admin;
+      return json.user || json.admin;
     } catch {
       return null;
     }
