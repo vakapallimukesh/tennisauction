@@ -1,36 +1,36 @@
 import React, { useState, useMemo } from 'react';
 import { useAuction } from '../../context/AuctionContext';
-import { 
-  Trophy, 
-  Clock, 
-  TrendingUp, 
-  Users, 
-  DollarSign, 
-  AlertTriangle, 
-  CheckCircle2, 
-  XCircle, 
-  LogOut, 
-  Shield, 
-  Sparkles, 
-  Flame, 
-  Zap, 
+import {
+  Trophy,
+  Clock,
+  TrendingUp,
+  Users,
+  DollarSign,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  LogOut,
+  Shield,
+  Sparkles,
+  Flame,
+  Zap,
   ArrowUpRight,
   Radio
 } from 'lucide-react';
 
 export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
-  const { 
-    auction, 
-    currentPlayer, 
-    teams, 
-    recentBids, 
-    timeLeft, 
-    timerRunning, 
-    placeBid, 
-    currentUser, 
-    isAdmin, 
-    logout, 
-    isSocketConnected 
+  const {
+    auction,
+    currentPlayer,
+    teams,
+    recentBids,
+    timeLeft,
+    timerRunning,
+    placeBid,
+    currentUser,
+    isAdmin,
+    logout,
+    isSocketConnected
   } = useAuction();
 
   const [biddingLoading, setBiddingLoading] = useState(false);
@@ -45,8 +45,8 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
     return (teams || []).find(t => t.id === effectiveTeamId) || {
       id: effectiveTeamId,
       name: `Team ${effectiveTeamId}`,
-      total_purse: 200000,
-      purse_remaining: 200000,
+      total_purse: 100000,
+      purse_remaining: 100000,
       players_bought: 0,
       max_players: 5,
       roster: [],
@@ -71,7 +71,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
 
   // Squad and purse constraints
   const squadFull = (myTeam.players_bought || 0) >= (myTeam.max_players || 5);
-  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : 200000;
+  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : 100000;
   const nextMinBid = currentBid + bidIncrement;
 
   // Handle Bid Execution
@@ -124,20 +124,20 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
 
   return (
     <div className="min-h-screen bg-[#060b19] text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950 font-sans">
-      
+
       {/* Top Header Bar */}
       <header className="sticky top-0 z-40 px-4 sm:px-6 py-3.5 bg-slate-950/80 backdrop-blur-xl border-b border-white/10 flex items-center justify-between">
         {/* Left: Team Branding */}
         <div className="flex items-center gap-3">
           {myTeam.logo_url ? (
-            <img 
-              src={myTeam.logo_url} 
-              alt={myTeam.name} 
+            <img
+              src={myTeam.logo_url}
+              alt={myTeam.name}
               className="w-10 h-10 rounded-xl object-cover border-2 shadow-lg"
               style={{ borderColor: myTeam.primary_color || '#22c55e' }}
             />
           ) : (
-            <div 
+            <div
               className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-slate-950 text-sm shadow-md"
               style={{ backgroundColor: myTeam.primary_color || '#22c55e' }}
             >
@@ -149,12 +149,12 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
               <h1 className="text-base sm:text-lg font-black font-display tracking-wide uppercase text-white">
                 {myTeam.name}
               </h1>
-              <span 
+              <span
                 className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full border"
-                style={{ 
-                  backgroundColor: `${myTeam.primary_color || '#22c55e'}20`, 
+                style={{
+                  backgroundColor: `${myTeam.primary_color || '#22c55e'}20`,
                   borderColor: myTeam.primary_color || '#22c55e',
-                  color: myTeam.primary_color || '#22c55e' 
+                  color: myTeam.primary_color || '#22c55e'
                 }}
               >
                 TEAM {effectiveTeamId}
@@ -188,21 +188,19 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
           <div className="flex items-center bg-white/5 p-1 rounded-xl border border-white/10 text-xs font-bold">
             <button
               onClick={() => setActiveTab('auction')}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
-                activeTab === 'auction' 
-                  ? 'bg-emerald-500 text-slate-950 font-black shadow-md' 
+              className={`px-3 py-1.5 rounded-lg transition-all ${activeTab === 'auction'
+                  ? 'bg-emerald-500 text-slate-950 font-black shadow-md'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               Auction Block
             </button>
             <button
               onClick={() => setActiveTab('squad')}
-              className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                activeTab === 'squad' 
-                  ? 'bg-emerald-500 text-slate-950 font-black shadow-md' 
+              className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${activeTab === 'squad'
+                  ? 'bg-emerald-500 text-slate-950 font-black shadow-md'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               <span>My Squad</span>
               <span className="px-1.5 py-0.2 rounded-full bg-white/20 text-[10px]">
@@ -253,7 +251,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
 
             {/* LEFT: Live Auction Card (7 cols) */}
             <div className="lg:col-span-7 space-y-4">
-              
+
               {/* STATUS BANNER */}
               <div className="rounded-2xl overflow-hidden border border-white/15 backdrop-blur-xl shadow-xl">
                 {isHighestBidder ? (
@@ -293,9 +291,9 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                   <div className="p-5 bg-slate-950/60 flex flex-col sm:flex-row gap-5 items-center sm:items-start">
                     {/* Player Image */}
                     <div className="relative w-36 h-44 sm:w-40 sm:h-52 rounded-2xl overflow-hidden border-2 border-white/20 flex-shrink-0 bg-slate-900 shadow-2xl">
-                      <img 
-                        src={currentPlayer.image_url || '/images/default-player.jpg'} 
-                        alt={currentPlayer.name} 
+                      <img
+                        src={currentPlayer.image_url || '/images/default-player.jpg'}
+                        alt={currentPlayer.name}
                         className="w-full h-full object-cover object-top"
                       />
                       <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-[10px] font-black text-amber-400 font-mono">
@@ -356,11 +354,10 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                           <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">
                             Countdown Timer
                           </span>
-                          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl border font-mono font-black text-base ${
-                            timeLeft <= 5 
-                              ? 'bg-rose-500/20 border-rose-500 text-rose-400 animate-pulse' 
+                          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl border font-mono font-black text-base ${timeLeft <= 5
+                              ? 'bg-rose-500/20 border-rose-500 text-rose-400 animate-pulse'
                               : 'bg-white/10 border-white/20 text-white'
-                          }`}>
+                            }`}>
                             <Clock className="w-4 h-4" />
                             <span>00:{String(timeLeft).padStart(2, '0')}</span>
                           </div>
@@ -398,15 +395,14 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                   type="button"
                   disabled={biddingLoading || isHighestBidder || squadFull || nextMinBid > remainingPurse || !isAuctionLive}
                   onClick={() => handleBid(null, null)}
-                  className={`w-full py-4 px-6 rounded-2xl font-black font-display text-lg tracking-wide uppercase transition-all duration-200 flex items-center justify-center gap-3 shadow-xl ${
-                    isHighestBidder
+                  className={`w-full py-4 px-6 rounded-2xl font-black font-display text-lg tracking-wide uppercase transition-all duration-200 flex items-center justify-center gap-3 shadow-xl ${isHighestBidder
                       ? 'bg-slate-800 text-slate-500 border border-white/10 cursor-not-allowed opacity-60'
                       : squadFull
-                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                      : nextMinBid > remainingPurse
-                      ? 'bg-rose-950/60 text-rose-300 border border-rose-500/40 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.01] active:scale-[0.99]'
-                  }`}
+                        ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                        : nextMinBid > remainingPurse
+                          ? 'bg-rose-950/60 text-rose-300 border border-rose-500/40 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.01] active:scale-[0.99]'
+                    }`}
                 >
                   {biddingLoading ? (
                     <div className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
@@ -477,7 +473,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
 
             {/* RIGHT: Live Feed & Team Overview (5 cols) */}
             <div className="lg:col-span-5 space-y-4">
-              
+
               {/* Team Purse Breakdown Widget */}
               <div className="p-5 rounded-2xl bg-slate-950/60 border border-white/10 backdrop-blur-xl space-y-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -488,15 +484,15 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                   <div className="flex justify-between text-xs">
                     <span className="text-slate-400">Purse Utilization</span>
                     <span className="font-mono font-bold text-slate-200">
-                      ₹{(myTeam.total_spent || 0).toLocaleString('en-IN')} / ₹{(myTeam.total_purse || 200000).toLocaleString('en-IN')}
+                      ₹{(myTeam.total_spent || 0).toLocaleString('en-IN')} / ₹{(myTeam.total_purse || 100000).toLocaleString('en-IN')}
                     </span>
                   </div>
                   {/* Progress bar */}
                   <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-                    <div 
+                    <div
                       className="h-full rounded-full transition-all duration-500"
-                      style={{ 
-                        width: `${Math.min(100, ((myTeam.total_spent || 0) / (myTeam.total_purse || 200000)) * 100)}%`,
+                      style={{
+                        width: `${Math.min(100, ((myTeam.total_spent || 0) / (myTeam.total_purse || 100000)) * 100)}%`,
                         backgroundColor: myTeam.primary_color || '#22c55e'
                       }}
                     />
@@ -512,11 +508,10 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                       return (
                         <div
                           key={slot}
-                          className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-black font-mono border ${
-                            isFilled
+                          className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-black font-mono border ${isFilled
                               ? 'bg-emerald-500 text-slate-950 border-emerald-400'
                               : 'bg-slate-800 text-slate-500 border-white/10'
-                          }`}
+                            }`}
                         >
                           {slot}
                         </div>
@@ -549,18 +544,17 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                       return (
                         <div
                           key={bid.id || idx}
-                          className={`p-2.5 rounded-xl border transition-all flex items-center justify-between ${
-                            idx === 0 
-                              ? 'bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/20' 
-                              : isMine 
-                              ? 'bg-white/5 border-white/20' 
-                              : 'bg-slate-900/40 border-white/5'
-                          }`}
+                          className={`p-2.5 rounded-xl border transition-all flex items-center justify-between ${idx === 0
+                              ? 'bg-emerald-500/10 border-emerald-500/40 ring-1 ring-emerald-500/20'
+                              : isMine
+                                ? 'bg-white/5 border-white/20'
+                                : 'bg-slate-900/40 border-white/5'
+                            }`}
                         >
                           <div className="flex items-center gap-2">
-                            <span 
-                              className="w-2.5 h-2.5 rounded-full" 
-                              style={{ backgroundColor: bid.primary_color || '#38bdf8' }} 
+                            <span
+                              className="w-2.5 h-2.5 rounded-full"
+                              style={{ backgroundColor: bid.primary_color || '#38bdf8' }}
                             />
                             <div>
                               <div className="flex items-center gap-1.5">
@@ -632,9 +626,9 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {myTeam.roster.map((p, idx) => (
                     <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-4">
-                      <img 
-                        src={p.image_url || '/images/default-player.jpg'} 
-                        alt={p.player_name} 
+                      <img
+                        src={p.image_url || '/images/default-player.jpg'}
+                        alt={p.player_name}
                         className="w-16 h-20 rounded-lg object-cover bg-slate-900 border border-white/10"
                       />
                       <div className="flex-1">

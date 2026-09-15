@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Pre-hash default passwords for immediate fallback use
-const adminHash = bcrypt.hashSync('admin123', 10);
+const adminHash = bcrypt.hashSync('tennis2026', 10);
 const team1Hash = bcrypt.hashSync('team1@auction', 10);
 const team2Hash = bcrypt.hashSync('team2@auction', 10);
 const team3Hash = bcrypt.hashSync('team3@auction', 10);
@@ -31,8 +31,8 @@ const initialSeed = {
       name: 'The Racquet Warriors',
       tagline: 'Speed, Spin & Power',
       owner: 'Rohan Iyer',
-      total_purse: 200000.00,
-      purse_remaining: 125000.00,
+      total_purse: 100000.00,
+      purse_remaining: 100000.00,
       max_players: 5,
       logo_url: '/images/teams/team1-lion.svg',
       primary_color: '#22c55e',
@@ -46,8 +46,8 @@ const initialSeed = {
       name: 'Ace Storm',
       tagline: 'Precision In Every Serve',
       owner: 'Vikramaditya Roy',
-      total_purse: 200000.00,
-      purse_remaining: 108000.00,
+      total_purse: 100000.00,
+      purse_remaining: 100000.00,
       max_players: 5,
       logo_url: '/images/teams/team2-eagle.svg',
       primary_color: '#0ea5e9',
@@ -61,8 +61,8 @@ const initialSeed = {
       name: 'Thunder Bolts',
       tagline: 'Striking Like Lightning',
       owner: 'Maya Sengupta',
-      total_purse: 200000.00,
-      purse_remaining: 142000.00,
+      total_purse: 100000.00,
+      purse_remaining: 100000.00,
       max_players: 5,
       logo_url: '/images/teams/team3-crown.svg',
       primary_color: '#a855f7',
@@ -76,8 +76,8 @@ const initialSeed = {
       name: 'Fire Servers',
       tagline: 'Feel the Burning Heat',
       owner: 'Kabir Malhotra',
-      total_purse: 200000.00,
-      purse_remaining: 96000.00,
+      total_purse: 100000.00,
+      purse_remaining: 100000.00,
       max_players: 5,
       logo_url: '/images/teams/team4-flame.svg',
       primary_color: '#f97316',
@@ -239,7 +239,7 @@ const initialSeed = {
       status: 'upcoming',
       display_order: 8
     },
-    // Seed Sold Players
+    // Remaining Players (all clean and upcoming)
     {
       id: 9,
       player_number: 'PLAYER #01',
@@ -256,7 +256,7 @@ const initialSeed = {
       win_percentage: 75,
       base_price: 15000.00,
       image_url: '/images/players/rohan-iyer.jpg',
-      status: 'sold',
+      status: 'upcoming',
       display_order: 9
     },
     {
@@ -275,7 +275,7 @@ const initialSeed = {
       win_percentage: 70,
       base_price: 10000.00,
       image_url: '/images/players/sana-kapoor.jpg',
-      status: 'sold',
+      status: 'upcoming',
       display_order: 10
     },
     {
@@ -294,7 +294,7 @@ const initialSeed = {
       win_percentage: 68,
       base_price: 12000.00,
       image_url: '/images/players/arjun-mehta.jpg',
-      status: 'sold',
+      status: 'upcoming',
       display_order: 11
     },
     {
@@ -313,7 +313,7 @@ const initialSeed = {
       win_percentage: 68,
       base_price: 11000.00,
       image_url: '/images/players/devansh-verma.jpg',
-      status: 'sold',
+      status: 'upcoming',
       display_order: 12
     },
     {
@@ -332,7 +332,7 @@ const initialSeed = {
       win_percentage: 74,
       base_price: 16000.00,
       image_url: '/images/players/lucas-meyer.jpg',
-      status: 'sold',
+      status: 'upcoming',
       display_order: 13
     },
     {
@@ -351,7 +351,7 @@ const initialSeed = {
       win_percentage: 71,
       base_price: 9000.00,
       image_url: '/images/players/tanvi-joshi.jpg',
-      status: 'sold',
+      status: 'upcoming',
       display_order: 14
     },
     {
@@ -370,7 +370,7 @@ const initialSeed = {
       win_percentage: 77,
       base_price: 18000.00,
       image_url: '/images/players/liam-carter.jpg',
-      status: 'sold',
+      status: 'upcoming',
       display_order: 15
     },
     {
@@ -389,7 +389,7 @@ const initialSeed = {
       win_percentage: 68,
       base_price: 12000.00,
       image_url: '/images/players/elena-rostova.jpg',
-      status: 'sold',
+      status: 'upcoming',
       display_order: 16
     },
     {
@@ -408,43 +408,24 @@ const initialSeed = {
       win_percentage: 73,
       base_price: 15000.00,
       image_url: '/images/players/vikram-desai.jpg',
-      status: 'sold',
+      status: 'upcoming',
       display_order: 17
     }
   ],
-  team_players: [
-    // Team 1: 3 players bought, total 75,000 spent -> remaining 125,000
-    { id: 1, team_id: 1, player_id: 9, purchase_price: 28000.00, purchased_at: new Date() },
-    { id: 2, team_id: 1, player_id: 10, purchase_price: 25000.00, purchased_at: new Date() },
-    { id: 3, team_id: 1, player_id: 11, purchase_price: 22000.00, purchased_at: new Date() },
-    // Team 2: 2 players bought, total 92,000 spent -> remaining 108,000
-    { id: 4, team_id: 2, player_id: 12, purchase_price: 44000.00, purchased_at: new Date() },
-    { id: 5, team_id: 2, player_id: 13, purchase_price: 48000.00, purchased_at: new Date() },
-    // Team 3: 2 players bought, total 58,000 spent -> remaining 142,000
-    { id: 6, team_id: 3, player_id: 14, purchase_price: 26000.00, purchased_at: new Date() },
-    { id: 7, team_id: 3, player_id: 15, purchase_price: 32000.00, purchased_at: new Date() },
-    // Team 4: 2 players bought, total 104,000 spent -> remaining 96,000
-    { id: 8, team_id: 4, player_id: 16, purchase_price: 50000.00, purchased_at: new Date() },
-    { id: 9, team_id: 4, player_id: 17, purchase_price: 54000.00, purchased_at: new Date() }
-  ],
+  team_players: [],
   auction: {
     id: 1,
-    title: 'Grand Slam Tennis Player Auction 2026',
+    title: 'Grand Circuit Tennis Player Auction 2026',
     status: 'live',
     current_player_id: 1,
-    current_bid: 42000.00,
-    highest_bidder_team_id: 2,
+    current_bid: 10000.00,
+    highest_bidder_team_id: null,
     bid_increment: 2000.00,
     timer_seconds: 15,
     timer_remaining: 15,
-    timer_running: true
+    timer_running: false
   },
-  bids: [
-    { id: 1, auction_id: 1, player_id: 1, team_id: 1, amount: 36000.00, bid_time: new Date(Date.now() - 40000) },
-    { id: 2, auction_id: 1, player_id: 1, team_id: 3, amount: 38000.00, bid_time: new Date(Date.now() - 30000) },
-    { id: 3, auction_id: 1, player_id: 1, team_id: 4, amount: 40000.00, bid_time: new Date(Date.now() - 20000) },
-    { id: 4, auction_id: 1, player_id: 1, team_id: 2, amount: 42000.00, bid_time: new Date() }
-  ],
+  bids: [],
   auction_events: []
 };
 

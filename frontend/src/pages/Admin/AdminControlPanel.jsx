@@ -182,11 +182,10 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
     <div className="flex flex-col w-full p-gutter space-y-gutter">
       {/* Action Notice Floating Alert */}
       {actionNotice && (
-        <div className={`fixed top-24 right-8 z-50 px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 border font-label-md transition-all ${
-          actionNotice.type === 'error'
+        <div className={`fixed top-24 right-8 z-50 px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 border font-label-md transition-all ${actionNotice.type === 'error'
             ? 'bg-error-container text-on-error-container border-error/40'
             : 'bg-surface-container-highest text-tertiary border-tertiary/40'
-        }`}>
+          }`}>
           <span className="material-symbols-outlined text-[20px]">
             {actionNotice.type === 'error' ? 'error' : 'check_circle'}
           </span>
@@ -199,7 +198,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
         {/* Status Overview */}
         <div className="col-span-12 lg:col-span-8 bg-surface-container rounded-xl p-6 relative overflow-hidden flex flex-col justify-between border border-outline-variant/10">
           <div className="absolute -right-12 -top-12 w-64 h-64 bg-tertiary/5 rounded-full blur-3xl pointer-events-none" />
-          
+
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6 relative z-10">
             <div className="flex items-center gap-3">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-label-md bg-tertiary/10 text-tertiary tracking-widest uppercase border border-tertiary/20">
@@ -241,8 +240,8 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
             <div className="bg-surface-container-low p-4 rounded-lg border border-outline-variant/10">
               <span className="text-on-surface-variant text-label-md block mb-1">LEADING BIDDER</span>
               <span className="font-headline-sm text-on-surface flex items-center gap-1.5 truncate">
-                <span 
-                  className="w-2.5 h-2.5 rounded-full shrink-0" 
+                <span
+                  className="w-2.5 h-2.5 rounded-full shrink-0"
                   style={{ backgroundColor: highestTeam?.primary_color || '#3b82f6' }}
                 />
                 {highestTeam ? highestTeam.name : 'NO BIDS YET'}
@@ -269,7 +268,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
             </div>
 
             <div className="grid grid-cols-3 gap-2">
-              <button 
+              <button
                 onClick={handlePause}
                 className="px-3 py-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface text-label-md flex flex-col items-center justify-center gap-1 transition-all border border-outline-variant/10"
               >
@@ -277,7 +276,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
                 Pause
               </button>
 
-              <button 
+              <button
                 onClick={handleResume}
                 className="px-3 py-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface text-label-md flex flex-col items-center justify-center gap-1 transition-all border border-outline-variant/10"
               >
@@ -285,7 +284,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
                 Resume
               </button>
 
-              <button 
+              <button
                 onClick={handleResetTimer}
                 className="px-3 py-3 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface text-label-md flex flex-col items-center justify-center gap-1 transition-all border border-outline-variant/10"
               >
@@ -296,14 +295,14 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
           </div>
 
           <div className="grid grid-cols-2 gap-2 mt-4">
-            <button 
+            <button
               onClick={() => handleAdjustTimer(15)}
               className="px-4 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface text-label-md flex items-center justify-center gap-1 border border-outline-variant/10 transition-colors"
             >
               <span className="material-symbols-outlined text-[16px]">add</span> +15s Timer
             </button>
 
-            <button 
+            <button
               onClick={() => handleAdjustTimer(-15)}
               className="px-4 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface text-label-md flex items-center justify-center gap-1 border border-outline-variant/10 transition-colors"
             >
@@ -317,10 +316,10 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
       <div className="grid grid-cols-12 gap-gutter">
         {/* Active Player Card (Left 7 cols) */}
         <div className="col-span-12 lg:col-span-7 bg-surface-container rounded-xl p-6 relative overflow-hidden flex flex-col justify-between border border-outline-variant/10">
-          <div 
-            className="absolute inset-0 opacity-10 bg-cover bg-center pointer-events-none" 
-            style={{ 
-              backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuAupRDndSPDwuQiMGIzPkpWtzPpkOoYiGXih8mTIC9xWxftpkrJ7KMv_WXWiZbTBOHxfVHi22ti1jCIrbh384VSrhfYDb9d_3OmJDnoRT2Fdoge7dmhBBn3nCd6pVUtf6S0gRTSU4Y58mq1p-CdPBdt1DYczoUh0EM3EsIBBcdh-kiEQI9wbRjoDwVVOKFc_uEuV7LzAXWntzLWETKi6t1RgPRhdLtGguVFONSHMds8fy4Q4L5Odsua')` 
+          <div
+            className="absolute inset-0 opacity-10 bg-cover bg-center pointer-events-none"
+            style={{
+              backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuAupRDndSPDwuQiMGIzPkpWtzPpkOoYiGXih8mTIC9xWxftpkrJ7KMv_WXWiZbTBOHxfVHi22ti1jCIrbh384VSrhfYDb9d_3OmJDnoRT2Fdoge7dmhBBn3nCd6pVUtf6S0gRTSU4Y58mq1p-CdPBdt1DYczoUh0EM3EsIBBcdh-kiEQI9wbRjoDwVVOKFc_uEuV7LzAXWntzLWETKi6t1RgPRhdLtGguVFONSHMds8fy4Q4L5Odsua')`
             }}
           />
 
@@ -330,7 +329,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
               ACTIVE LOT ON BLOCK
             </span>
 
-            <button 
+            <button
               onClick={() => setIsSelectPlayerModalOpen(true)}
               className="px-3 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-tertiary text-label-md flex items-center gap-1 transition-all border border-tertiary/20 cursor-pointer"
             >
@@ -341,8 +340,8 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center relative z-10 mb-6">
             {/* Player Image */}
             <div className="md:col-span-5 relative rounded-xl overflow-hidden aspect-[4/5] bg-surface-container-low shadow-xl border border-outline-variant/20">
-              <img 
-                src={currentPlayer?.image_url || 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&auto=format&fit=crop&q=80'} 
+              <img
+                src={currentPlayer?.image_url || 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=600&auto=format&fit=crop&q=80'}
                 alt={currentPlayer?.name || 'Athlete'}
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -417,28 +416,28 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
 
           {/* Action Buttons for Current Lot */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 relative z-10 pt-4 border-t border-outline-variant/10">
-            <button 
+            <button
               onClick={handleMarkSold}
               className="px-4 py-3 rounded-lg bg-tertiary text-on-tertiary font-label-md uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-tertiary-fixed-dim transition-all shadow-lg cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px]">gavel</span> Mark SOLD
             </button>
 
-            <button 
+            <button
               onClick={handleMarkUnsold}
               className="px-4 py-3 rounded-lg bg-error text-on-error font-label-md uppercase tracking-wider flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-lg cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px]">close</span> Mark UNSOLD
             </button>
 
-            <button 
+            <button
               onClick={handleNextPlayer}
               className="px-4 py-3 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-md uppercase tracking-wider flex items-center justify-center gap-2 transition-all border border-outline-variant/20 cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px]">skip_next</span> Next Player
             </button>
 
-            <button 
+            <button
               onClick={handleEndAuction}
               className="px-4 py-3 rounded-lg bg-surface-container-low hover:bg-error-container text-error hover:text-on-error-container font-label-md uppercase tracking-wider flex items-center justify-center gap-2 transition-all border border-error/20 cursor-pointer"
             >
@@ -463,7 +462,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
             <div className="space-y-4">
               {teams.map((team) => {
                 const isLeading = highestTeam?.id === team.id;
-                const totalPurse = team.total_purse || 200000;
+                const totalPurse = team.total_purse || 100000;
                 const remaining = team.purse_remaining || 0;
                 const spent = Math.max(0, totalPurse - remaining);
                 const spentPercent = Math.min(100, Math.round((spent / totalPurse) * 100));
@@ -471,18 +470,17 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
                 const maxSquad = team.max_players || 5;
 
                 return (
-                  <div 
+                  <div
                     key={team.id}
-                    className={`bg-surface-container-low p-4 rounded-lg transition-all border ${
-                      isLeading 
-                        ? 'border-tertiary shadow-lg shadow-tertiary/10' 
+                    className={`bg-surface-container-low p-4 rounded-lg transition-all border ${isLeading
+                        ? 'border-tertiary shadow-lg shadow-tertiary/10'
                         : 'border-outline-variant/10 hover:border-outline-variant/30'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-headline-sm text-on-surface flex items-center gap-2">
-                        <span 
-                          className="w-3 h-3 rounded-full" 
+                        <span
+                          className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: team.primary_color || '#22c55e' }}
                         />
                         {team.name}
@@ -498,11 +496,11 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
                     </div>
 
                     <div className="w-full bg-surface-container-high h-2 rounded-full overflow-hidden mb-2">
-                      <div 
-                        className="h-full rounded-full transition-all duration-500" 
-                        style={{ 
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
                           width: `${spentPercent}%`,
-                          backgroundColor: team.primary_color || '#22c55e' 
+                          backgroundColor: team.primary_color || '#22c55e'
                         }}
                       />
                     </div>
@@ -555,8 +553,8 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
                           {bid.bid_time ? new Date(bid.bid_time).toLocaleTimeString() : 'Just now'}
                         </td>
                         <td className="py-3 px-4 font-bold text-on-surface flex items-center gap-1.5">
-                          <span 
-                            className="w-2 h-2 rounded-full" 
+                          <span
+                            className="w-2 h-2 rounded-full"
                             style={{ backgroundColor: bid.team_primary_color || '#38bdf8' }}
                           />
                           {bid.team_name || `Team #${bid.team_id}`}
@@ -602,7 +600,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
 
             <div>
               <label className="text-label-md text-on-surface-variant block mb-1">SELECT TEAM</label>
-              <select 
+              <select
                 value={manualTeamId}
                 onChange={(e) => setManualTeamId(e.target.value)}
                 className="w-full bg-surface-container-low text-on-surface p-3 rounded-lg outline-none border border-outline-variant/20 cursor-pointer font-body-md"
@@ -617,7 +615,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
 
             <div>
               <label className="text-label-md text-on-surface-variant block mb-1">BID AMOUNT (PTS)</label>
-              <input 
+              <input
                 type="text"
                 value={manualAmount}
                 onChange={(e) => setManualAmount(e.target.value)}
@@ -630,7 +628,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
             </div>
 
             <div className="pt-2">
-              <button 
+              <button
                 type="submit"
                 className="w-full py-3.5 rounded-lg bg-tertiary text-on-tertiary font-label-md uppercase tracking-wider hover:bg-tertiary-fixed-dim transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer"
               >
@@ -675,7 +673,7 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
           <div className="bg-surface-container-high border border-outline-variant/30 rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl">
             <div className="flex items-center justify-between pb-4 border-b border-outline-variant/20 mb-4">
               <h3 className="font-headline-sm text-on-surface">Select Athlete to Cue Live</h3>
-              <button 
+              <button
                 onClick={() => setIsSelectPlayerModalOpen(false)}
                 className="p-1 rounded-lg hover:bg-surface-container text-on-surface-variant"
               >
@@ -686,14 +684,14 @@ export default function AdminControlPanel({ onNavigateToPlayers, onOpenDisplay }
             <div className="flex-1 overflow-y-auto space-y-2 pr-2">
               {upcomingPlayers && upcomingPlayers.length > 0 ? (
                 upcomingPlayers.map((player) => (
-                  <div 
+                  <div
                     key={player.id}
                     className="p-3 rounded-xl bg-surface-container-low flex items-center justify-between border border-outline-variant/10 hover:border-tertiary/40 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <img 
-                        src={player.image_url} 
-                        alt={player.name} 
+                      <img
+                        src={player.image_url}
+                        alt={player.name}
                         className="w-10 h-10 rounded-lg object-cover"
                         onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=100&auto=format&fit=crop&q=80'; }}
                       />

@@ -80,16 +80,10 @@ function AppRouter() {
 
   if (route.view === 'team') {
     return (
-      <AppLayout 
-        activeNav="team-squads" 
-        onNavigate={navigateTo}
-        currentRole={`team${route.teamId}`}
-      >
-        <TeamDashboard 
-          teamId={route.teamId} 
-          onNavigate={navigateTo} 
-        />
-      </AppLayout>
+      <TeamDashboard 
+        teamId={route.teamId} 
+        onNavigate={navigateTo} 
+      />
     );
   }
 

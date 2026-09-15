@@ -152,7 +152,7 @@ export default function PlayerManagement({ onBackToControlPanel }) {
 
   return (
     <div className="min-h-screen w-full bg-[#060a16] text-white p-4 lg:p-8 font-sans">
-      
+
       {/* Top Header */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/10">
         <div className="flex items-center gap-4">
@@ -184,9 +184,8 @@ export default function PlayerManagement({ onBackToControlPanel }) {
 
       {/* Message Banner */}
       {message && (
-        <div className={`max-w-7xl mx-auto mt-4 p-3 rounded-xl flex items-center justify-between text-xs font-bold ${
-          message.type === 'success' ? 'bg-emerald-950/70 border border-emerald-500/50 text-emerald-300' : 'bg-rose-950/70 border border-rose-500/50 text-rose-300'
-        }`}>
+        <div className={`max-w-7xl mx-auto mt-4 p-3 rounded-xl flex items-center justify-between text-xs font-bold ${message.type === 'success' ? 'bg-emerald-950/70 border border-emerald-500/50 text-emerald-300' : 'bg-rose-950/70 border border-rose-500/50 text-rose-300'
+          }`}>
           <span>{message.text}</span>
           <button onClick={() => setMessage(null)} className="text-slate-400 hover:text-white">✕</button>
         </div>
@@ -200,11 +199,10 @@ export default function PlayerManagement({ onBackToControlPanel }) {
             <button
               key={status}
               onClick={() => setSelectedStatus(status)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase transition-all ${
-                selectedStatus === status
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold uppercase transition-all ${selectedStatus === status
                   ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
                   : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               {status}
             </button>
@@ -244,9 +242,9 @@ export default function PlayerManagement({ onBackToControlPanel }) {
                 filteredPlayers.map((player) => (
                   <tr key={player.id} className="hover:bg-white/[0.02] transition-colors">
                     <td className="p-3.5 flex items-center gap-3">
-                      <img 
-                        src={player.image_url} 
-                        alt="" 
+                      <img
+                        src={player.image_url}
+                        alt=""
                         className="w-10 h-12 object-cover rounded-lg border border-white/10"
                       />
                       <div>
@@ -276,12 +274,11 @@ export default function PlayerManagement({ onBackToControlPanel }) {
                     </td>
 
                     <td className="p-3.5">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${
-                        player.status === 'live' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 animate-pulse' :
-                        player.status === 'sold' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' :
-                        player.status === 'unsold' ? 'bg-rose-500/20 text-rose-400 border-rose-500/40' :
-                        'bg-sky-500/20 text-sky-400 border-sky-500/40'
-                      }`}>
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${player.status === 'live' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 animate-pulse' :
+                          player.status === 'sold' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' :
+                            player.status === 'unsold' ? 'bg-rose-500/20 text-rose-400 border-rose-500/40' :
+                              'bg-sky-500/20 text-sky-400 border-sky-500/40'
+                        }`}>
                         {player.status}
                       </span>
                     </td>

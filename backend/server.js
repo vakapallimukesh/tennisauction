@@ -25,7 +25,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 // Request logger
 app.use((req, res, next) => {
@@ -39,6 +40,18 @@ app.use('/api/players', playersRouter);
 app.use('/api/teams', teamsRouter);
 app.use('/api/auction', auctionRouter);
 app.use('/api/sponsors', sponsorsRouter);
+
+// Reset auction data (clear everything back to initial state)
+app.post('/api/auction/reset', (req, res) => {
+  const db = require('./config/db');
+  const store = db.resetMemoryStore();
+  const { broadcastAuctionState } = require('./socket/auctionSocket');
+  broadcastAuctionState();
+  res.json({
+    success: true,
+    message: 'All auction data reset to initial state. All bids, sold players, and team purchases cleared.'
+  });
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

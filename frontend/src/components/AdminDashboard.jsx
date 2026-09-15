@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
 import { useAuction } from '../context/AuctionContext';
 import { api } from '../services/api';
-import { 
-  X, 
-  Play, 
-  Pause, 
-  RotateCcw, 
-  Gavel, 
-  CheckCircle, 
-  XCircle, 
-  PlusCircle, 
-  Users, 
-  Trash2, 
+import {
+  X,
+  Play,
+  Pause,
+  RotateCcw,
+  Gavel,
+  CheckCircle,
+  XCircle,
+  PlusCircle,
+  Users,
+  Trash2,
   ShieldAlert,
   ArrowUpRight
 } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const { 
-    isAdminOpen, 
-    setIsAdminOpen, 
-    auction, 
-    currentPlayer, 
-    teams, 
+  const {
+    isAdminOpen,
+    setIsAdminOpen,
+    auction,
+    currentPlayer,
+    teams,
     upcomingPlayers,
-    controlAuction, 
-    markSold, 
-    markUnsold, 
-    selectLivePlayer, 
-    refreshAll 
+    controlAuction,
+    markSold,
+    markUnsold,
+    selectLivePlayer,
+    refreshAll
   } = useAuction();
 
   const [activeTab, setActiveTab] = useState('controls'); // 'controls' | 'addPlayer' | 'allPlayers'
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md animate-fade-in">
-      <div 
+      <div
         className="relative w-full max-w-4xl glass-panel rounded-2xl border border-slate-700/80 shadow-2xl p-5 sm:p-7 max-h-[92vh] flex flex-col overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
@@ -165,33 +165,30 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-2 my-4 border-b border-slate-800 pb-2">
           <button
             onClick={() => setActiveTab('controls')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'controls'
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'controls'
                 ? 'bg-emerald-500 text-slate-950 shadow-neon-green'
                 : 'bg-slate-800/60 text-slate-400 hover:text-white'
-            }`}
+              }`}
           >
             Live Auction Engine
           </button>
 
           <button
             onClick={() => setActiveTab('addPlayer')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'addPlayer'
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'addPlayer'
                 ? 'bg-emerald-500 text-slate-950 shadow-neon-green'
                 : 'bg-slate-800/60 text-slate-400 hover:text-white'
-            }`}
+              }`}
           >
             Add New Player
           </button>
 
           <button
             onClick={() => setActiveTab('queue')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'queue'
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'queue'
                 ? 'bg-emerald-500 text-slate-950 shadow-neon-green'
                 : 'bg-slate-800/60 text-slate-400 hover:text-white'
-            }`}
+              }`}
           >
             Draft Queue ({upcomingPlayers.length})
           </button>
