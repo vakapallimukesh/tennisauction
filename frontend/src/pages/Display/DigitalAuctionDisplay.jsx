@@ -390,17 +390,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                       </div>
                     </div>
 
-                    {/* DRAW LINE / DIVIDER BETWEEN GROUP A AND GROUP B */}
-                    <div className="relative py-1 my-0.5">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t-2 border-dashed border-slate-400"></div>
-                      </div>
-                      <div className="relative flex justify-center">
-                        <span className="bg-[#e2e8f0] px-2 text-[8px] font-black uppercase tracking-widest text-slate-500 rounded border border-slate-300">
-                          DIVIDER
-                        </span>
-                      </div>
-                    </div>
+                    {/* DRAW LINE BETWEEN GROUP A AND GROUP B */}
+                    <div className="my-2 border-t-2 border-dashed border-slate-400"></div>
 
                     {/* GROUP B SECTION */}
                     <div className="space-y-1.5">
