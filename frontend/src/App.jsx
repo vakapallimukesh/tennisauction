@@ -103,16 +103,11 @@ function AppRouter() {
 
   if (route.view === 'admin') {
     return (
-      <AppLayout 
-        activeNav="live-bidding" 
+      <AdminControlPanel 
         onNavigate={navigateTo}
-        currentRole="admin"
-      >
-        <AdminControlPanel 
-          onNavigateToPlayers={() => navigateTo('/admin/players')}
-          onOpenDisplay={() => window.open('/display', '_blank')}
-        />
-      </AppLayout>
+        onNavigateToPlayers={() => navigateTo('/admin/players')}
+        onOpenDisplay={() => window.open('/display', '_blank')}
+      />
     );
   }
 

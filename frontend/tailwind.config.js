@@ -8,6 +8,18 @@ export default {
   theme: {
     extend: {
       colors: {
+        brand: {
+          dark: '#0a0d14',
+          surface: '#111722',
+          card: '#161e2e',
+          border: '#232e42',
+          neon: '#00e676',
+          neonHover: '#00c864',
+          accent: '#38bdf8',
+          warning: '#f59e0b',
+          danger: '#ef4444',
+          purple: '#a855f7'
+        },
         "surface-tint": "#c8c6c8",
         "secondary-fixed": "#e4e1ea",
         "on-primary-container": "#7a797b",
