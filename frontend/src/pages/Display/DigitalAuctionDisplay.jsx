@@ -454,31 +454,25 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                     </div>
                   </div>
 
-                  {/* Team Footer Status */}
-                  <div className={`mt-4 pt-3 ${isLeading ? 'border-t border-emerald-300' : 'border-t border-slate-300'}`}>
-                    {isLeading ? (
+                  {/* Team Footer Status - only shown when leading bidder */}
+                  {isLeading && (
+                    <div className="mt-2 pt-2 border-t border-emerald-300 shrink-0">
                       <div className="flex flex-col items-center justify-center">
                         <div
-                          className="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-md"
+                          className="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-md"
                           style={{ animation: 'pulseBid 2s infinite ease-in-out' }}
                           title="Holding Current Bid"
                         >
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                             <path d="M5 10l7-7m0 0l7 7m-7-7v18" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </div>
-                        <span className="text-[10px] font-black uppercase text-slate-900 mt-1.5 tracking-wider">
+                        <span className="text-[9px] font-black uppercase text-slate-900 mt-1 tracking-wider">
                           HOLDING {formatLakhs(currentBid)}
                         </span>
                       </div>
-                    ) : (
-                      <div className="text-center">
-                        <span className="inline-block px-3 py-1 bg-slate-200 text-slate-700 rounded text-[11px] font-bold border border-slate-300">
-                          Idle / Observing
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </article>
             );
