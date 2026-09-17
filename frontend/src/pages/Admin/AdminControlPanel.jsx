@@ -14,10 +14,8 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
     unsoldPlayers,
     selectLivePlayer,
     placeBid,
-    undoLastBid,
     markSold,
     markUnsold,
-    nextPlayer,
     controlAuction,
     isSocketConnected,
     currentUser,
@@ -29,6 +27,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
   const [selectedIncrement, setSelectedIncrement] = useState(2000);
   const [customBidInput, setCustomBidInput] = useState('');
   const [isSelectPlayerModalOpen, setIsSelectPlayerModalOpen] = useState(false);
+  const [playerSearchQuery, setPlayerSearchQuery] = useState('');
   const [actionNotice, setActionNotice] = useState(null); // { type: 'success' | 'error', text }
   const [confirmDialog, setConfirmDialog] = useState(null); // { title, message, onConfirm, actionText, actionColor }
   const [isMuted, setIsMuted] = useState(false);
@@ -91,6 +90,20 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Total player pool count
   const totalPoolCount = (upcomingPlayers?.length || 0) + (soldPlayers?.length || 0) + (unsoldPlayers?.length || 0) + (currentPlayer ? 1 : 0) || 124;
+
+  // Filter eligible players for selection (exclude sold players)
+  const eligiblePlayers = (upcomingPlayers || []).filter(p => {
+    if (p.status === 'sold') return false;
+    if (!playerSearchQuery.trim()) return true;
+    const q = playerSearchQuery.toLowerCase().trim();
+    return (
+      (p.name && p.name.toLowerCase().includes(q)) ||
+      (p.country && p.country.toLowerCase().includes(q)) ||
+      (p.category && p.category.toLowerCase().includes(q)) ||
+      (p.world_ranking && String(p.world_ranking).includes(q)) ||
+      (p.player_number && String(p.player_number).toLowerCase().includes(q))
+    );
+  });
 
   // Format currency
   const formatCurrency = (val) => {
@@ -191,23 +204,17 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
     });
   };
 
-  const handleUndoBid = async () => {
+  // Select Player from Modal -> becomes CURRENT LOT
+  const handleSelectPlayer = async (player) => {
     try {
-      await undoLastBid();
-      showNotice('Last bid reverted & previous leader restored.');
-      playTone(440, 0.15);
-    } catch (err) {
-      showNotice(err.message || 'Failed to undo bid', 'error');
-    }
-  };
-
-  const handleNextPlayer = async () => {
-    try {
-      await nextPlayer();
-      showNotice('Advanced to the next athlete on the draft block.');
+      setIsSelectPlayerModalOpen(false);
+      setPlayerSearchQuery('');
+      setCustomBidInput('');
+      await selectLivePlayer(player.id);
+      showNotice(`${player.name} is now the CURRENT LOT on the auction block.`);
       playTone(700, 0.15);
     } catch (err) {
-      showNotice(err.message || 'Failed to advance athlete', 'error');
+      showNotice(err.message || 'Failed to select player', 'error');
     }
   };
 
@@ -272,12 +279,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
       } else if (e.key === ' ') {
         e.preventDefault();
         handleToggleTimer();
-      } else if (e.key === 'u' || e.key === 'U') {
-        e.preventDefault();
-        handleUndoBid();
       } else if (e.key === 'Escape') {
         setConfirmDialog(null);
         setIsSelectPlayerModalOpen(false);
+        setPlayerSearchQuery('');
       }
     };
 
@@ -581,9 +586,12 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                 <div className="grid grid-cols-12 gap-4 items-center">
                   {/* Player Photo & Badge Container */}
                   <div
-                    onClick={() => setIsSelectPlayerModalOpen(true)}
+                    onClick={() => {
+                      setIsSelectPlayerModalOpen(true);
+                      setPlayerSearchQuery('');
+                    }}
                     className="col-span-5 relative rounded-lg overflow-hidden border border-brand-border bg-slate-900 group aspect-[4/3] max-h-52 cursor-pointer"
-                    title="Click to Select/Cue New Athlete"
+                    title="Click to Select/Cue Athlete"
                   >
                     <img
                       alt={currentPlayer?.name || 'Athlete on Auction'}
@@ -674,8 +682,8 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                 </div>
               </div>
 
-              {/* Operator Gavel Action Control Strip */}
-              <div className="pt-4 border-t border-brand-border/80 mt-3 flex items-center justify-between gap-2" data-purpose="operator-gavel-actions">
+              {/* Operator Gavel Action Control Strip (UNDO BID removed, NEXT opens Player Selection) */}
+              <div className="pt-4 border-t border-brand-border/80 mt-3 flex items-center justify-between gap-3" data-purpose="operator-gavel-actions">
                 {/* Mark Sold Button */}
                 <button
                   onClick={handleMarkSold}
@@ -691,7 +699,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                 {/* Mark Unsold Button */}
                 <button
                   onClick={handleMarkUnsold}
-                  className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 font-bold py-2.5 px-3 rounded-lg text-xs uppercase tracking-wider flex items-center space-x-1.5 hover:text-red-300 active:scale-[0.98] transition cursor-pointer"
+                  className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 font-bold py-2.5 px-4 rounded-lg text-xs uppercase tracking-wider flex items-center space-x-1.5 hover:text-red-300 active:scale-[0.98] transition cursor-pointer"
                   title="Mark player unsold and move to pool"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -700,25 +708,16 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   <span>UNSOLD</span>
                 </button>
 
-                {/* Undo Last Bid */}
+                {/* Next Player Button -> Opens Player Selection Interface */}
                 <button
-                  onClick={handleUndoBid}
-                  className="bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 font-bold py-2.5 px-3 rounded-lg text-xs uppercase tracking-wider flex items-center space-x-1.5 transition cursor-pointer"
-                  title="Undo the last registered bid"
+                  onClick={() => {
+                    setIsSelectPlayerModalOpen(true);
+                    setPlayerSearchQuery('');
+                  }}
+                  className="bg-brand-card hover:bg-[#202b40] text-slate-200 border border-brand-border font-bold py-2.5 px-4 rounded-lg text-xs uppercase tracking-wider flex items-center space-x-1.5 transition cursor-pointer"
+                  title="Select next player from player pool"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M3 10h10a5 5 0 015 5v2M3 10l6 6m-6-6l6-6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-                  </svg>
-                  <span>UNDO BID</span>
-                </button>
-
-                {/* Next Player */}
-                <button
-                  onClick={handleNextPlayer}
-                  className="bg-brand-card hover:bg-[#202b40] text-slate-200 border border-brand-border font-bold py-2.5 px-3.5 rounded-lg text-xs uppercase tracking-wider flex items-center space-x-1 transition cursor-pointer"
-                  title="Cue next player from upcoming pool"
-                >
-                  <span>NEXT</span>
+                  <span>NEXT PLAYER</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M13 5l7 7-7 7M5 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
                   </svg>
@@ -1139,71 +1138,107 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
         </div>
       )}
 
-      {/* Select New Player Modal */}
+      {/* Select Next Player Modal Interface */}
       {isSelectPlayerModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-[#111722] border border-brand-border rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl">
-            <div className="flex items-center justify-between pb-4 border-b border-brand-border mb-4">
+          <div className="bg-[#111722] border border-brand-border rounded-2xl p-5 max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-brand-border mb-3">
               <div className="flex items-center space-x-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-brand-neon"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-brand-neon live-pulse"></span>
                 <h3 className="text-sm font-black uppercase tracking-wider text-white">
-                  Select Athlete to Cue Live on Block
+                  SELECT NEXT PLAYER
                 </h3>
+                <span className="text-[11px] font-mono text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">
+                  {eligiblePlayers.length} Available
+                </span>
               </div>
               <button
                 type="button"
-                onClick={() => setIsSelectPlayerModalOpen(false)}
-                className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white"
+                onClick={() => {
+                  setIsSelectPlayerModalOpen(false);
+                  setPlayerSearchQuery('');
+                }}
+                className="w-7 h-7 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer"
+                title="Close (Esc)"
               >
                 ✕
               </button>
             </div>
 
+            {/* Search Input Bar */}
+            <div className="relative mb-3">
+              <input
+                type="text"
+                value={playerSearchQuery}
+                onChange={(e) => setPlayerSearchQuery(e.target.value)}
+                placeholder="Search player by name, rank, country, category..."
+                className="w-full bg-[#0d121c] border border-brand-border focus:border-brand-neon rounded-lg py-2.5 pl-9 pr-8 text-xs font-medium text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-0 transition"
+                autoFocus
+              />
+              <svg className="w-4 h-4 text-slate-500 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+              </svg>
+              {playerSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setPlayerSearchQuery('')}
+                  className="absolute right-2.5 top-2.5 text-slate-400 hover:text-white text-xs p-0.5"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Player List */}
             <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
-              {upcomingPlayers && upcomingPlayers.length > 0 ? (
-                upcomingPlayers.map((player) => (
+              {eligiblePlayers.length > 0 ? (
+                eligiblePlayers.map((player) => (
                   <div
                     key={player.id}
-                    className="p-3 rounded-xl bg-[#161e2e] flex items-center justify-between border border-brand-border hover:border-brand-neon/60 transition-colors"
+                    className="p-3 rounded-xl bg-[#161e2e] flex items-center justify-between border border-brand-border hover:border-brand-neon/60 transition-all group"
                   >
                     <div className="flex items-center gap-3">
                       <img
                         src={player.image_url}
                         alt={player.name}
-                        className="w-11 h-11 rounded-lg object-cover border border-brand-border bg-slate-900"
+                        className="w-11 h-11 rounded-lg object-cover border border-brand-border bg-slate-900 group-hover:scale-105 transition"
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=100&auto=format&fit=crop&q=80';
                         }}
                       />
                       <div>
-                        <div className="font-bold text-white text-sm">{player.name}</div>
-                        <div className="text-[11px] text-slate-400 font-mono">
-                          {player.country_flag} {player.country} • Rank #{player.world_ranking || '-'} • Base: {formatCurrency(player.base_price)}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/80 px-1.5 py-0.2 rounded border border-emerald-500/30">
+                            #{player.world_ranking ? String(player.world_ranking).padStart(2, '0') : (player.player_number || '01')}
+                          </span>
+                          <span className="font-bold text-white text-sm group-hover:text-brand-neon transition">
+                            {player.name}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                          <span>{player.country_flag || '🌐'} {player.country || 'International'}</span>
+                          <span> · </span>
+                          <span className="text-slate-300">{player.category || 'Singles'}</span>
+                          <span> · </span>
+                          <span className="text-emerald-300 font-semibold">Base {formatCurrency(player.base_price)}</span>
                         </div>
                       </div>
                     </div>
 
                     <button
                       type="button"
-                      onClick={async () => {
-                        try {
-                          await selectLivePlayer(player.id);
-                          setIsSelectPlayerModalOpen(false);
-                          showNotice(`${player.name} cued as active lot.`);
-                        } catch (err) {
-                          showNotice(err.message, 'error');
-                        }
-                      }}
-                      className="px-3.5 py-1.5 rounded-lg bg-brand-neon text-slate-950 font-black hover:bg-brand-neonHover transition-colors text-xs uppercase tracking-wider shadow"
+                      onClick={() => handleSelectPlayer(player)}
+                      className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black transition-all text-xs uppercase tracking-wider shadow-md hover:scale-105 active:scale-95 cursor-pointer"
                     >
-                      Set Live
+                      SELECT
                     </button>
                   </div>
                 ))
               ) : (
-                <div className="p-8 text-center text-slate-400 text-sm">
-                  No upcoming athletes available in queue.
+                <div className="p-8 text-center text-slate-400 text-xs">
+                  {playerSearchQuery ? `No players found matching "${playerSearchQuery}"` : 'No available upcoming players in the pool.'}
                 </div>
               )}
             </div>
