@@ -390,10 +390,12 @@ exports.nextPlayer = async (req, res) => {
 
     const nextP = upcomingPlayers[0];
     nextP.status = 'live';
+    nextP.base_price = 10000.00;
 
     auction.current_player_id = nextP.id;
-    auction.current_bid = nextP.base_price;
+    auction.current_bid = 10000.00;
     auction.highest_bidder_team_id = null;
+    auction.bid_increment = 2000.00;
     auction.timer_remaining = auction.timer_seconds || 15;
     auction.status = 'live';
 
@@ -401,7 +403,7 @@ exports.nextPlayer = async (req, res) => {
 
     emitEvent('player_selected', {
       player: nextP,
-      current_bid: nextP.base_price
+      current_bid: 10000.00
     });
 
     broadcastAuctionState();
@@ -438,9 +440,11 @@ exports.setLivePlayer = async (req, res) => {
     }
 
     player.status = 'live';
+    player.base_price = 10000.00;
     auction.current_player_id = player.id;
-    auction.current_bid = player.base_price;
+    auction.current_bid = 10000.00;
     auction.highest_bidder_team_id = null;
+    auction.bid_increment = 2000.00;
     auction.timer_remaining = auction.timer_seconds || 15;
     auction.status = 'live';
 
@@ -448,7 +452,7 @@ exports.setLivePlayer = async (req, res) => {
 
     emitEvent('player_selected', {
       player,
-      current_bid: player.base_price
+      current_bid: 10000.00
     });
 
     broadcastAuctionState();

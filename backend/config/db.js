@@ -120,7 +120,7 @@ const initialSeed = {
       aces: 64,
       matches: 42,
       win_percentage: 66,
-      base_price: 8000.00,
+      base_price: 10000.00,
       image_url: '/images/players/rohan-iyer.jpg',
       status: 'upcoming',
       display_order: 2
@@ -139,7 +139,7 @@ const initialSeed = {
       aces: 115,
       matches: 60,
       win_percentage: 75,
-      base_price: 12000.00,
+      base_price: 10000.00,
       image_url: '/images/players/liam-carter.jpg',
       status: 'upcoming',
       display_order: 3
@@ -158,7 +158,7 @@ const initialSeed = {
       aces: 94,
       matches: 68,
       win_percentage: 76,
-      base_price: 15000.00,
+      base_price: 10000.00,
       image_url: '/images/players/sana-kapoor.jpg',
       status: 'upcoming',
       display_order: 4
@@ -177,7 +177,7 @@ const initialSeed = {
       aces: 72,
       matches: 54,
       win_percentage: 70,
-      base_price: 18000.00,
+      base_price: 10000.00,
       image_url: '/images/players/vikram-desai.jpg',
       status: 'upcoming',
       display_order: 5
@@ -196,7 +196,7 @@ const initialSeed = {
       aces: 130,
       matches: 72,
       win_percentage: 80,
-      base_price: 20000.00,
+      base_price: 10000.00,
       image_url: '/images/players/elena-rostova.jpg',
       status: 'upcoming',
       display_order: 6
@@ -215,7 +215,7 @@ const initialSeed = {
       aces: 88,
       matches: 59,
       win_percentage: 67,
-      base_price: 14000.00,
+      base_price: 10000.00,
       image_url: '/images/players/mateo-silva.jpg',
       status: 'upcoming',
       display_order: 7
@@ -234,7 +234,7 @@ const initialSeed = {
       aces: 104,
       matches: 65,
       win_percentage: 75,
-      base_price: 16000.00,
+      base_price: 10000.00,
       image_url: '/images/players/kenji-tanaka.jpg',
       status: 'upcoming',
       display_order: 8
@@ -254,7 +254,7 @@ const initialSeed = {
       aces: 45,
       matches: 12,
       win_percentage: 75,
-      base_price: 15000.00,
+      base_price: 10000.00,
       image_url: '/images/players/rohan-iyer.jpg',
       status: 'upcoming',
       display_order: 9
@@ -292,7 +292,7 @@ const initialSeed = {
       aces: 40,
       matches: 14,
       win_percentage: 68,
-      base_price: 12000.00,
+      base_price: 10000.00,
       image_url: '/images/players/arjun-mehta.jpg',
       status: 'upcoming',
       display_order: 11
@@ -311,7 +311,7 @@ const initialSeed = {
       aces: 60,
       matches: 44,
       win_percentage: 68,
-      base_price: 11000.00,
+      base_price: 10000.00,
       image_url: '/images/players/devansh-verma.jpg',
       status: 'upcoming',
       display_order: 12
@@ -330,7 +330,7 @@ const initialSeed = {
       aces: 96,
       matches: 62,
       win_percentage: 74,
-      base_price: 16000.00,
+      base_price: 10000.00,
       image_url: '/images/players/lucas-meyer.jpg',
       status: 'upcoming',
       display_order: 13
@@ -349,7 +349,7 @@ const initialSeed = {
       aces: 54,
       matches: 45,
       win_percentage: 71,
-      base_price: 9000.00,
+      base_price: 10000.00,
       image_url: '/images/players/tanvi-joshi.jpg',
       status: 'upcoming',
       display_order: 14
@@ -368,7 +368,7 @@ const initialSeed = {
       aces: 118,
       matches: 70,
       win_percentage: 77,
-      base_price: 18000.00,
+      base_price: 10000.00,
       image_url: '/images/players/liam-carter.jpg',
       status: 'upcoming',
       display_order: 15
@@ -387,7 +387,7 @@ const initialSeed = {
       aces: 62,
       matches: 48,
       win_percentage: 68,
-      base_price: 12000.00,
+      base_price: 10000.00,
       image_url: '/images/players/elena-rostova.jpg',
       status: 'upcoming',
       display_order: 16
@@ -406,7 +406,7 @@ const initialSeed = {
       aces: 85,
       matches: 56,
       win_percentage: 73,
-      base_price: 15000.00,
+      base_price: 10000.00,
       image_url: '/images/players/vikram-desai.jpg',
       status: 'upcoming',
       display_order: 17

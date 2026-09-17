@@ -464,18 +464,20 @@ function selectNextPlayer(playerId = null) {
   }
 
   target.status = 'live';
+  target.base_price = 10000.00;
   auction.current_player_id = target.id;
-  auction.current_bid = target.base_price;
+  auction.current_bid = 10000.00;
   auction.highest_bidder_team_id = null;
+  auction.bid_increment = 2000.00;
   auction.timer_remaining = auction.timer_seconds || 15;
   auction.status = 'live';
 
-  emitEvent('player_selected', { player: target });
+  emitEvent('player_selected', { player: target, current_bid: 10000.00 });
   emitEvent('timer_updated', {
     timer_remaining: auction.timer_remaining,
     timer_running: auction.timer_running,
     timer_seconds: auction.timer_seconds,
-    current_bid: auction.current_bid,
+    current_bid: 10000.00,
     highest_bidder_team_id: null
   });
 
