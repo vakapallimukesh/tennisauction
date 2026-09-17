@@ -313,7 +313,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                     <div className="flex-1 space-y-3 text-center sm:text-left w-full">
                       <div>
                         <div className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-black uppercase tracking-wider mb-1">
-                          {currentPlayer.category || 'MEN’S SINGLES'}
+                          {currentPlayer.category || 'Group A'}
                         </div>
                         <h2 className="text-2xl sm:text-3xl font-black font-display text-white tracking-tight uppercase">
                           {currentPlayer.name}
@@ -633,7 +633,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                       />
                       <div className="flex-1">
                         <span className="text-[10px] uppercase text-emerald-400 font-bold block">
-                          {p.category || 'Athlete'}
+                          {p.category || 'Group A'}
                         </span>
                         <h4 className="text-sm font-black text-white">{p.player_name}</h4>
                         <p className="text-xs text-slate-400 font-mono">Rank #{p.world_ranking || '-'}</p>

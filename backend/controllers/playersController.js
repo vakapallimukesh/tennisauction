@@ -79,7 +79,7 @@ exports.createPlayer = async (req, res) => {
       age: parseInt(req.body.age, 10) || 22,
       country: req.body.country || 'India',
       country_flag: req.body.country_flag || '🇮🇳',
-      category: req.body.category || 'Singles',
+      category: req.body.category || 'Group A',
       playing_hand: req.body.playing_hand || 'Right Hand',
       world_ranking: parseInt(req.body.world_ranking, 10) || 150,
       wins: parseInt(req.body.wins, 10) || 25,

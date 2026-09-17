@@ -625,7 +625,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                       <div className="flex items-center text-[11px] text-slate-300 mt-0.5 space-x-1">
                         <span>{currentPlayer?.country_flag || '🇮🇳'} {currentPlayer?.country || 'India'}</span>
                         <span>•</span>
-                        <span className="text-emerald-400">{currentPlayer?.category || 'Singles Pro'}</span>
+                        <span className="text-emerald-400">{currentPlayer?.category || 'Group A'}</span>
                       </div>
                     </div>
                   </div>
@@ -1240,7 +1240,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                         <div className="text-[11px] text-slate-400 font-mono mt-0.5">
                           <span>{player.country_flag || '🌐'} {player.country || 'International'}</span>
                           <span> · </span>
-                          <span className="text-slate-300">{player.category || 'Singles'}</span>
+                          <span className="text-slate-300">{player.category || 'Group A'}</span>
                           <span> · </span>
                           <span className="text-emerald-300 font-semibold">Base 10,000 PTS</span>
                         </div>

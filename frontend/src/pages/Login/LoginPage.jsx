@@ -10,7 +10,7 @@ const TERMINAL_ROLES = [
     badge: 'SEC_LEVEL: 01',
     description: 'Full override privileges, hammer control, player pool management, and audit log oversight.',
     username: 'admin',
-    defaultPass: 'admin123',
+    defaultPass: 'tennis2026',
     targetRoute: '/admin'
   },
   {
@@ -123,15 +123,15 @@ export default function LoginPage({ onNavigate }) {
   };
 
   return (
-    <div className="flex flex-col w-full min-h-screen relative overflow-hidden bg-surface text-on-surface">
+    <div className="flex flex-col w-full min-h-screen relative overflow-x-hidden overflow-y-auto bg-surface text-on-surface">
       {/* Stadium background overlay with atmosphere */}
       <div 
-        className="absolute inset-0 z-0 bg-cover bg-center" 
+        className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none" 
         style={{ 
           backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDdyfWy0s5HCThFlWEPVOlekv-VI0vHR7nSNV3aGZmDhwAiobwLjhlbvtDPZJ3sb_9ItqfCqxHpN-Qh3enXFEhFAn3u7xSysA-YCkjjSoVf4zbtDIB3sI6nfeJqyrc5lfJVrEozs82c0zWHFuDfjOZt4i9ZWXFlaeUW1cReLlZplTa2yMdzOEL7KYgcGorQaahhn84V6VutjHm1lZ7lS93Z-8UchMpCs8TilJD_NPNJZLFuIIF922w')` 
         }}
       />
-      <div className="absolute inset-0 z-0 bg-gradient-to-t from-surface via-surface/90 to-surface/40 backdrop-blur-sm" />
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-surface via-surface/90 to-surface/40 backdrop-blur-sm pointer-events-none" />
 
       {/* Main Content Area */}
       <div className="relative z-10 flex flex-col flex-1 max-w-7xl mx-auto w-full px-gutter py-12 justify-between">

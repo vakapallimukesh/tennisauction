@@ -96,7 +96,7 @@ export default function LiveAuction() {
 
             <div className="flex items-center gap-1.5">
               <CircleDot className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-              <span>{currentPlayer.category || 'Singles'}</span>
+              <span>{currentPlayer.category || 'Group A'}</span>
             </div>
 
             <div className="flex items-center gap-1.5">

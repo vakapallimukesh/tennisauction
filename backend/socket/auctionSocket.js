@@ -20,9 +20,10 @@ function getFullAuctionSnapshot() {
       const p = store.players.find(pl => pl.id === b.player_id);
       return {
         ...b,
+        name: p ? p.name : 'Unknown Player',
         player_name: p ? p.name : 'Unknown Player',
         player_number: p ? p.player_number : '',
-        category: p ? p.category : '',
+        category: p ? (p.category || 'Group A') : 'Group A',
         world_ranking: p ? p.world_ranking : 0,
         image_url: p ? p.image_url : null,
         matches: p ? p.matches : 0,

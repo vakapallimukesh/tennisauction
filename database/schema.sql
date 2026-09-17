@@ -56,7 +56,7 @@ CREATE TABLE `players` (
   `age` INT NOT NULL,
   `country` VARCHAR(60) NOT NULL,
   `country_flag` VARCHAR(20) NOT NULL,
-  `category` ENUM('Singles', 'Doubles', 'All-Rounder') NOT NULL DEFAULT 'Singles',
+  `category` ENUM('Group A', 'Group B', 'Doubles', 'All-Rounder') NOT NULL DEFAULT 'Group A',
   `playing_hand` ENUM('Right Hand', 'Left Hand', 'Ambidextrous') NOT NULL DEFAULT 'Right Hand',
   `world_ranking` INT NOT NULL,
   `wins` INT NOT NULL DEFAULT 0,

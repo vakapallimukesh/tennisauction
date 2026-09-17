@@ -43,7 +43,7 @@ export default function AdminDashboard() {
     age: 22,
     country: 'India',
     country_flag: '🇮🇳',
-    category: 'Singles',
+    category: 'Group A',
     playing_hand: 'Right Hand',
     world_ranking: 120,
     wins: 30,
@@ -107,7 +107,7 @@ export default function AdminDashboard() {
         age: 22,
         country: 'India',
         country_flag: '🇮🇳',
-        category: 'Singles',
+        category: 'Group A',
         playing_hand: 'Right Hand',
         world_ranking: 120,
         wins: 30,
@@ -392,7 +392,8 @@ export default function AdminDashboard() {
                   onChange={e => setFormData({ ...formData, category: e.target.value })}
                   className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
                 >
-                  <option value="Singles">Singles</option>
+                  <option value="Group A">Group A</option>
+                  <option value="Group B">Group B</option>
                   <option value="Doubles">Doubles</option>
                   <option value="All-Rounder">All-Rounder</option>
                 </select>

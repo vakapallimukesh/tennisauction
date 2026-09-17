@@ -32,7 +32,7 @@ export default function PlayerManagement({ onBackToControlPanel }) {
     age: 22,
     country: 'India',
     country_flag: '🇮🇳',
-    category: 'Singles',
+    category: 'Group A',
     playing_hand: 'Right Hand',
     world_ranking: 150,
     base_price: 10000,
@@ -69,7 +69,7 @@ export default function PlayerManagement({ onBackToControlPanel }) {
       age: 22,
       country: 'India',
       country_flag: '🇮🇳',
-      category: 'Singles',
+      category: 'Group A',
       playing_hand: 'Right Hand',
       world_ranking: 120,
       base_price: 12000,
@@ -399,7 +399,8 @@ export default function PlayerManagement({ onBackToControlPanel }) {
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-white/10 text-white text-xs"
                   >
-                    <option value="Singles">Singles</option>
+                    <option value="Group A">Group A</option>
+                    <option value="Group B">Group B</option>
                     <option value="Doubles">Doubles</option>
                     <option value="All-Rounder">All-Rounder</option>
                   </select>

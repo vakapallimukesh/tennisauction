@@ -88,6 +88,9 @@ function AppRouter() {
   }
 
   if (route.view === 'players') {
+    if (!isAuthenticated || !isAdmin) {
+      return <LoginPage onNavigate={navigateTo} />;
+    }
     return (
       <AppLayout 
         activeNav="player-pool" 
@@ -102,6 +105,9 @@ function AppRouter() {
   }
 
   if (route.view === 'admin') {
+    if (!isAuthenticated || !isAdmin) {
+      return <LoginPage onNavigate={navigateTo} />;
+    }
     return (
       <AdminControlPanel 
         onNavigate={navigateTo}
