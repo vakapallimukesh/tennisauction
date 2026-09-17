@@ -47,17 +47,15 @@ export function AuctionProvider({ children }) {
     if (!data) return;
     if (data.auction) {
       setAuction(data.auction);
-      setCurrentPlayer(data.auction.current_player || data.current_player);
+      setCurrentPlayer(data.current_player || data.auction.current_player || null);
       if (data.auction.timer_remaining !== undefined) {
         setTimeLeft(data.auction.timer_remaining);
       }
       if (data.auction.timer_running !== undefined) {
         setTimerRunning(data.auction.timer_running);
       }
-    }
-    if (data.current_player) {
-      setCurrentPlayer(data.current_player);
-      setSelectedPlayer(prev => prev ? prev : data.current_player);
+    } else if (data.current_player !== undefined) {
+      setCurrentPlayer(data.current_player || null);
     }
     if (data.teams) setTeams(data.teams);
     if (data.upcoming_players) setUpcomingPlayers(data.upcoming_players);
@@ -144,6 +142,9 @@ export function AuctionProvider({ children }) {
 
     const onPlayerSold = (data) => {
       setSoldCelebration(data);
+      setCurrentPlayer(null);
+      setSelectedPlayer(null);
+      setRecentBids([]);
       // Confetti burst for TV display celebration
       confetti({
         particleCount: 140,
@@ -160,6 +161,9 @@ export function AuctionProvider({ children }) {
 
     const onPlayerUnsold = (data) => {
       setUnsoldNotice(data);
+      setCurrentPlayer(null);
+      setSelectedPlayer(null);
+      setRecentBids([]);
       setTimeout(() => {
         setUnsoldNotice(null);
       }, 5000);

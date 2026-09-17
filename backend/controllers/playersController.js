@@ -19,7 +19,8 @@ exports.getPlayers = async (req, res) => {
         const team = store.teams.find(t => t.id === soldRecord.team_id);
         return {
           ...p,
-          purchase_price: soldRecord.purchase_price,
+          sold_price: soldRecord.purchase_price || p.sold_price,
+          purchase_price: soldRecord.purchase_price || p.sold_price,
           sold_to_team: team ? {
             id: team.id,
             name: team.name,
@@ -28,7 +29,10 @@ exports.getPlayers = async (req, res) => {
           } : null
         };
       }
-      return p;
+      return {
+        ...p,
+        sold_price: p.sold_price || null
+      };
     });
 
     res.json({ success: true, count: enriched.length, data: enriched });
@@ -79,7 +83,8 @@ exports.createPlayer = async (req, res) => {
       age: parseInt(req.body.age, 10) || 22,
       country: req.body.country || 'India',
       country_flag: req.body.country_flag || '🇮🇳',
-      category: req.body.category || 'Group A',
+      category: req.body.category || (req.body.group === 'B' ? 'Group B' : 'Group A'),
+      group: req.body.group === 'B' || req.body.category === 'Group B' ? 'B' : 'A',
       playing_hand: req.body.playing_hand || 'Right Hand',
       world_ranking: parseInt(req.body.world_ranking, 10) || 150,
       wins: parseInt(req.body.wins, 10) || 25,
@@ -120,6 +125,7 @@ exports.updatePlayer = async (req, res) => {
       id: parseInt(id, 10)
     };
 
+    if (req.body.group !== undefined) updated.group = req.body.group === 'B' ? 'B' : 'A';
     if (req.body.age !== undefined) updated.age = parseInt(req.body.age, 10);
     if (req.body.world_ranking !== undefined) updated.world_ranking = parseInt(req.body.world_ranking, 10);
     if (req.body.wins !== undefined) updated.wins = parseInt(req.body.wins, 10);

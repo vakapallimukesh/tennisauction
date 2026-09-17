@@ -282,6 +282,13 @@ exports.markSold = async (req, res) => {
     player.sold_price = price;
     player.sold_to_team_id = team.id;
 
+    // Reset auction block so the live slot is empty and waiting for the next player
+    auction.current_player_id = null;
+    auction.current_bid = 0;
+    auction.highest_bidder_team_id = null;
+    auction.status = 'waiting';
+    auction.timer_remaining = auction.timer_seconds || 15;
+
     // Event log
     store.auction_events.push({
       id: store.auction_events.length + 1,
@@ -346,6 +353,13 @@ exports.markUnsold = async (req, res) => {
     pauseServerTimer();
     auction.timer_running = false;
     player.status = 'unsold';
+
+    // Reset auction block so the live slot is empty and waiting for the next player
+    auction.current_player_id = null;
+    auction.current_bid = 0;
+    auction.highest_bidder_team_id = null;
+    auction.status = 'waiting';
+    auction.timer_remaining = auction.timer_seconds || 15;
 
     store.auction_events.push({
       id: store.auction_events.length + 1,

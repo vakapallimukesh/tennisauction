@@ -9,8 +9,8 @@ function getFullAuctionSnapshot() {
   const store = db.getMemoryStore();
   const auction = store.auction || {};
 
-  // Resolve current player
-  const currentPlayer = store.players.find(p => p.id === auction.current_player_id) || null;
+  // Resolve current player (only if currently on auction block and live)
+  const currentPlayer = (auction.current_player_id && store.players.find(p => p.id === auction.current_player_id && p.status === 'live')) || null;
 
   // Calculate teams with purse remaining and squad roster
   const teams = (store.teams || []).map(t => {
@@ -64,7 +64,22 @@ function getFullAuctionSnapshot() {
     });
 
   const upcomingPlayers = (store.players || []).filter(p => p.status === 'upcoming');
-  const soldPlayers = (store.players || []).filter(p => p.status === 'sold');
+  const soldPlayers = (store.players || []).filter(p => p.status === 'sold').map(p => {
+    const soldRecord = (store.team_players || []).find(tp => tp.player_id === p.id);
+    const team = soldRecord ? teams.find(t => t.id === soldRecord.team_id) : (p.sold_to_team_id ? teams.find(t => t.id === p.sold_to_team_id) : null);
+    const price = soldRecord ? soldRecord.purchase_price : (p.sold_price || p.purchase_price || p.base_price);
+    return {
+      ...p,
+      sold_price: price,
+      purchase_price: price,
+      sold_to_team: team ? {
+        id: team.id,
+        name: team.name,
+        logo_url: team.logo_url,
+        primary_color: team.primary_color
+      } : null
+    };
+  });
   const unsoldPlayers = (store.players || []).filter(p => p.status === 'unsold');
 
   return {

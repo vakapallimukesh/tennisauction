@@ -13,7 +13,9 @@ import {
   Users,
   Trash2,
   ShieldAlert,
-  ArrowUpRight
+  ArrowUpRight,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -40,19 +42,25 @@ export default function AdminDashboard() {
   const [formData, setFormData] = useState({
     name: '',
     player_number: '',
-    age: 22,
     country: 'India',
     country_flag: '🇮🇳',
     category: 'Group A',
+    group: 'A',
     playing_hand: 'Right Hand',
-    world_ranking: 120,
-    wins: 30,
-    aces: 65,
-    matches: 45,
-    win_percentage: 70,
     base_price: 10000,
     image_url: '/images/players/rohan-iyer.jpg'
   });
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image_url: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   if (!isAdminOpen) return null;
 
@@ -108,6 +116,7 @@ export default function AdminDashboard() {
         country: 'India',
         country_flag: '🇮🇳',
         category: 'Group A',
+        group: 'A',
         playing_hand: 'Right Hand',
         world_ranking: 120,
         wins: 30,
@@ -329,7 +338,31 @@ export default function AdminDashboard() {
         {/* TAB 2: Add New Player */}
         {activeTab === 'addPlayer' && (
           <form onSubmit={handleCreatePlayer} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* Photo Upload */}
+            <div className="flex items-center gap-4 p-3 rounded-2xl bg-[#0b1328] border border-slate-700">
+              <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-900 border border-slate-700 flex-shrink-0 flex items-center justify-center">
+                {formData.image_url ? (
+                  <img src={formData.image_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <ImageIcon className="w-6 h-6 text-slate-500" />
+                )}
+              </div>
+              <div className="flex-1">
+                <label className="cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all">
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{formData.image_url ? 'Change Photo' : 'Upload Player Photo'}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                </label>
+                <p className="text-[10px] text-slate-500 mt-1">Upload a photo directly from your device</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Full Name</label>
                 <input
@@ -338,7 +371,7 @@ export default function AdminDashboard() {
                   placeholder="e.g. Carlos Alcaraz"
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
@@ -349,7 +382,7 @@ export default function AdminDashboard() {
                   placeholder="e.g. PLAYER #30"
                   value={formData.player_number}
                   onChange={e => setFormData({ ...formData, player_number: e.target.value })}
-                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
@@ -357,45 +390,23 @@ export default function AdminDashboard() {
                 <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Age</label>
                 <input
                   type="number"
-                  min="16"
-                  max="45"
+                  min="14"
+                  max="55"
                   value={formData.age}
                   onChange={e => setFormData({ ...formData, age: e.target.value })}
-                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-500"
                 />
               </div>
 
               <div>
-                <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Country</label>
-                <input
-                  type="text"
-                  value={formData.country}
-                  onChange={e => setFormData({ ...formData, country: e.target.value })}
-                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
-                />
-              </div>
-
-              <div>
-                <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Flag Emoji</label>
-                <input
-                  type="text"
-                  value={formData.country_flag}
-                  onChange={e => setFormData({ ...formData, country_flag: e.target.value })}
-                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
-                />
-              </div>
-
-              <div>
-                <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Category</label>
+                <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Group (A or B)</label>
                 <select
-                  value={formData.category}
-                  onChange={e => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                  value={formData.group || 'A'}
+                  onChange={e => setFormData({ ...formData, group: e.target.value })}
+                  className="w-full bg-[#0b1328] border border-emerald-500/50 rounded-xl px-3 py-2 text-white text-xs font-bold focus:outline-none focus:border-emerald-400"
                 >
-                  <option value="Group A">Group A</option>
-                  <option value="Group B">Group B</option>
-                  <option value="Doubles">Doubles</option>
-                  <option value="All-Rounder">All-Rounder</option>
+                  <option value="A">Group A</option>
+                  <option value="B">Group B</option>
                 </select>
               </div>
 
@@ -404,21 +415,12 @@ export default function AdminDashboard() {
                 <select
                   value={formData.playing_hand}
                   onChange={e => setFormData({ ...formData, playing_hand: e.target.value })}
-                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-500"
                 >
                   <option value="Right Hand">Right Hand</option>
                   <option value="Left Hand">Left Hand</option>
+                  <option value="Ambidextrous">Ambidextrous</option>
                 </select>
-              </div>
-
-              <div>
-                <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">World Ranking</label>
-                <input
-                  type="number"
-                  value={formData.world_ranking}
-                  onChange={e => setFormData({ ...formData, world_ranking: e.target.value })}
-                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
-                />
               </div>
 
               <div>
@@ -428,7 +430,7 @@ export default function AdminDashboard() {
                   step="1000"
                   value={formData.base_price}
                   onChange={e => setFormData({ ...formData, base_price: e.target.value })}
-                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs"
+                  className="w-full bg-[#0b1328] border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-500"
                 />
               </div>
             </div>

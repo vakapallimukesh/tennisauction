@@ -2,27 +2,102 @@ import React from 'react';
 import { useAuction } from '../context/AuctionContext';
 import { 
   Calendar, 
-  Trophy, 
-  Zap, 
   Hand, 
   Clock, 
   Gavel, 
   CircleDot, 
-  Medal,
-  Activity
+  Layers,
+  Radio,
+  Hourglass,
+  UserPlus
 } from 'lucide-react';
 
 export default function LiveAuction() {
   const { auction, currentPlayer, timeLeft, setIsBiddingModalOpen } = useAuction();
 
+  // Empty Slot State: When no player is currently live (e.g. after sold out or waiting)
   if (!currentPlayer) {
     return (
-      <div className="h-full flex flex-col items-center justify-center glass-panel rounded-2xl p-6 border border-slate-800 text-center">
-        <Activity className="w-8 h-8 animate-pulse text-emerald-400 mb-2" />
-        <h3 className="text-base font-bold text-white mb-1">No Live Auction Active</h3>
-        <p className="text-xs text-slate-400">
-          The auctioneer has not yet nominated a player to the auction stage.
-        </p>
+      <div className="h-full flex flex-col glass-panel rounded-2xl p-4 lg:p-6 border border-slate-800/80 relative overflow-hidden justify-between">
+        {/* Background ambient lighting */}
+        <div className="absolute top-0 right-1/4 w-60 h-60 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-60 h-60 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Top Status Bar */}
+        <div className="flex items-center justify-between pb-3 border-b border-slate-800/60">
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+            </span>
+            <span className="text-[11px] font-black uppercase tracking-wider text-amber-400 font-display">
+              STAGE IDLE • WAITING FOR NEW PLAYER
+            </span>
+          </div>
+          <span className="text-xs text-slate-500 font-mono">LOT STANDBY</span>
+        </div>
+
+        {/* Center Main Stage Placeholder */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 my-auto py-4 items-center">
+          {/* Silhouette Box */}
+          <div className="md:col-span-5 h-48 sm:h-52 rounded-2xl border-2 border-dashed border-slate-800 flex flex-col items-center justify-center p-4 bg-slate-950/40 text-center relative overflow-hidden group">
+            <div className="w-16 h-16 rounded-full bg-slate-900/80 border border-slate-700/80 flex items-center justify-center text-slate-500 mb-2 shadow-inner">
+              <UserPlus className="w-7 h-7 text-emerald-400/60" />
+            </div>
+            <span className="text-xs font-bold text-slate-300">AUCTION BLOCK EMPTY</span>
+            <span className="text-[10px] text-slate-500 mt-0.5">Player sold out</span>
+          </div>
+
+          {/* Message & Status */}
+          <div className="md:col-span-7 space-y-3">
+            <div>
+              <span className="px-2.5 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-black uppercase tracking-wider">
+                ROUND CONCLUDED
+              </span>
+              <h2 className="text-xl lg:text-2xl font-black text-white tracking-tight font-display mt-1">
+                Waiting for the Next Player
+              </h2>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                The previous athlete has been finalized and moved to the Sold roster. Standing by for the auctioneer to cue the next draft candidate onto the live block.
+              </p>
+            </div>
+
+            {/* Price Preview Block */}
+            <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-slate-800/80">
+              <div className="bg-[#0b1328]/60 rounded-xl p-2.5 border border-slate-800/60">
+                <div className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
+                  BASE PRICE
+                </div>
+                <div className="text-base font-black text-slate-400 mt-0.5 font-display">
+                  ₹ --
+                </div>
+              </div>
+
+              <div className="bg-[#0b1328]/60 rounded-xl p-2.5 border border-slate-800/60">
+                <div className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
+                  CURRENT BID
+                </div>
+                <div className="text-base font-black text-slate-400 mt-0.5 font-display">
+                  ₹ --
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="flex items-center justify-between pt-3 border-t border-slate-800/60">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500">
+            <Hourglass className="w-3.5 h-3.5 text-amber-400/80 animate-spin" />
+            <span>Ready for next lot nomination</span>
+          </div>
+          <button
+            disabled
+            className="px-5 py-2 rounded-xl bg-slate-800/50 text-slate-500 font-bold text-xs uppercase cursor-not-allowed border border-slate-800"
+          >
+            BIDDING PAUSED
+          </button>
+        </div>
       </div>
     );
   }
@@ -66,14 +141,18 @@ export default function LiveAuction() {
         {/* Right Column: Player Info, Price Boxes & Bid Action */}
         <div className="md:col-span-7 flex flex-col justify-between space-y-2 py-0.5">
           
-          {/* Top Row: Player Number Badge + Flag + Name */}
+          {/* Top Row: Player Number Badge + Group + Name */}
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="px-2 py-0.5 rounded-md bg-emerald-950/80 border border-emerald-500/50 text-emerald-400 text-[11px] font-black tracking-wider uppercase">
                 {currentPlayer.player_number || 'PLAYER #07'}
               </span>
-              <span className="text-base" title={currentPlayer.country}>
-                {currentPlayer.country_flag || '🇮🇳'}
+              <span className={`px-2 py-0.5 rounded-md text-[11px] font-black tracking-wider uppercase border ${
+                (currentPlayer.group === 'B')
+                  ? 'bg-purple-950/80 border-purple-500/50 text-purple-300'
+                  : 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300'
+              }`}>
+                Group {currentPlayer.group || 'A'}
               </span>
             </div>
 
@@ -83,40 +162,20 @@ export default function LiveAuction() {
           </div>
 
           {/* Quick Info Grid */}
-          <div className="grid grid-cols-3 gap-1.5 py-1.5 border-y border-slate-800/80 text-[11px] text-slate-300">
+          <div className="grid grid-cols-2 gap-2 py-1.5 border-y border-slate-800/80 text-[11px] text-slate-300">
             <div className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-              <span>Age <strong className="text-white">{currentPlayer.age}</strong></span>
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs">{currentPlayer.country_flag || '🇮🇳'}</span>
-              <span className="truncate">{currentPlayer.country}</span>
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              <CircleDot className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-              <span>{currentPlayer.category || 'Group A'}</span>
+              <span>Age: <strong className="text-white">{currentPlayer.age}</strong></span>
             </div>
 
             <div className="flex items-center gap-1.5">
               <Hand className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-              <span className="truncate">{currentPlayer.playing_hand || 'Right Hand'}</span>
+              <span className="truncate">Hand: <strong className="text-white">{currentPlayer.playing_hand || 'Right Hand'}</strong></span>
             </div>
 
-            <div className="flex items-center gap-1.5">
-              <Medal className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-              <span>Rank <strong className="text-white">#{currentPlayer.world_ranking}</strong></span>
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              <Trophy className="w-3.5 h-3.5 text-yellow-400 flex-shrink-0" />
-              <span>Wins <strong className="text-white">{currentPlayer.wins}</strong></span>
-            </div>
-
-            <div className="flex items-center gap-1.5 col-span-3">
-              <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
-              <span>Aces <strong className="text-white">{currentPlayer.aces}</strong></span>
+            <div className="flex items-center gap-1.5 col-span-2">
+              <Layers className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+              <span>Auction Group: <strong className="text-white">Group {currentPlayer.group || 'A'}</strong></span>
             </div>
           </div>
 

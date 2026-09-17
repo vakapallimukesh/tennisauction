@@ -502,7 +502,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                if (onNavigate) onNavigate('/team/1');
+                if (onNavigate) onNavigate('/admin/squads');
               }}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

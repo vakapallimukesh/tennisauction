@@ -14,8 +14,8 @@ import {
   Sparkles,
   Flame,
   Zap,
-  ArrowUpRight,
-  Radio
+  Radio,
+  ArrowLeft
 } from 'lucide-react';
 
 export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
@@ -127,8 +127,17 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
 
       {/* Top Header Bar */}
       <header className="sticky top-0 z-40 px-4 sm:px-6 py-3.5 bg-slate-950/80 backdrop-blur-xl border-b border-white/10 flex items-center justify-between">
-        {/* Left: Team Branding */}
+        {/* Left: Team Branding & Navigation */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => onNavigate ? onNavigate('/admin/squads') : (window.location.href = '/admin/squads')}
+            className="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all flex items-center gap-1.5 text-xs font-bold"
+            title="Back to Admin & Squads"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">Back</span>
+          </button>
+
           {myTeam.logo_url ? (
             <img
               src={myTeam.logo_url}
@@ -339,7 +348,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                         </div>
                       </div>
 
-                      {/* Current Bid & Timer in Card */}
+                      {/* Current Bid in Card */}
                       <div className="pt-2 flex items-center justify-between border-t border-white/10">
                         <div>
                           <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">
@@ -348,19 +357,6 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                           <span className="text-2xl font-black font-mono text-emerald-400">
                             ₹{currentBid.toLocaleString('en-IN')}
                           </span>
-                        </div>
-
-                        <div className="text-right">
-                          <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">
-                            Countdown Timer
-                          </span>
-                          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl border font-mono font-black text-base ${timeLeft <= 5
-                              ? 'bg-rose-500/20 border-rose-500 text-rose-400 animate-pulse'
-                              : 'bg-white/10 border-white/20 text-white'
-                            }`}>
-                            <Clock className="w-4 h-4" />
-                            <span>00:{String(timeLeft).padStart(2, '0')}</span>
-                          </div>
                         </div>
                       </div>
 

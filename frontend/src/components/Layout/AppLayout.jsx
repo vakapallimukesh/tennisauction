@@ -76,7 +76,7 @@ export default function AppLayout({
           </button>
 
           <button
-            onClick={() => onNavigate('/team/1')}
+            onClick={() => onNavigate('/admin/squads')}
             className={`w-full flex items-center px-4 py-3 rounded-lg transition-all text-left ${
               activeNav === 'team-squads'
                 ? 'bg-surface-container-highest text-tertiary font-bold'

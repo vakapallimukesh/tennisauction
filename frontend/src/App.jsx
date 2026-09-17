@@ -5,6 +5,7 @@ import AdminControlPanel from './pages/Admin/AdminControlPanel';
 import LoginPage from './pages/Login/LoginPage';
 import TeamDashboard from './pages/Team/TeamDashboard';
 import PlayerManagement from './pages/Admin/PlayerManagement';
+import TeamSquadsManagement from './pages/Admin/TeamSquadsManagement';
 import AppLayout from './components/Layout/AppLayout';
 
 function AppRouter() {
@@ -19,6 +20,9 @@ function AppRouter() {
     }
     if (path.startsWith('/admin/players') || path === '/players') {
       return { view: 'players', teamId: null };
+    }
+    if (path.startsWith('/admin/squads') || path === '/squads' || path === '/admin/teams' || path === '/teams') {
+      return { view: 'squads', teamId: null };
     }
     if (path === '/admin' || path.startsWith('/admin/')) {
       return { view: 'admin', teamId: null };
@@ -99,6 +103,20 @@ function AppRouter() {
       >
         <PlayerManagement 
           onBackToControlPanel={() => navigateTo('/admin')} 
+        />
+      </AppLayout>
+    );
+  }
+
+  if (route.view === 'squads') {
+    return (
+      <AppLayout 
+        activeNav="team-squads" 
+        onNavigate={navigateTo}
+        currentRole="admin"
+      >
+        <TeamSquadsManagement 
+          onNavigate={navigateTo} 
         />
       </AppLayout>
     );
