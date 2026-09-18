@@ -64,29 +64,24 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Fallback teams if data is loading
   const activeTeams = teams && teams.length === 4 ? teams : [
-    { id: 1, team_number: 1, name: 'Ace Storm', total_purse: 100000, purse_remaining: 78000, players_bought: 2, max_players: 5, primary_color: '#0ea5e9' },
-    { id: 2, team_number: 2, name: 'Thunder Bolts', total_purse: 100000, purse_remaining: 62000, players_bought: 3, max_players: 5, primary_color: '#a855f7' },
-    { id: 3, team_number: 3, name: 'Fire Servers', total_purse: 100000, purse_remaining: 88000, players_bought: 1, max_players: 5, primary_color: '#f97316' },
-    { id: 4, team_number: 4, name: 'The Racquet Warriors', total_purse: 100000, purse_remaining: 100000, players_bought: 0, max_players: 5, primary_color: '#22c55e' }
+    { id: 1, team_number: 1, name: 'Team A', total_purse: 100000, purse_remaining: 100000, players_bought: 0, max_players: 5, primary_color: '#22c55e' },
+    { id: 2, team_number: 2, name: 'Team B', total_purse: 100000, purse_remaining: 100000, players_bought: 0, max_players: 5, primary_color: '#0ea5e9' },
+    { id: 3, team_number: 3, name: 'Team C', total_purse: 100000, purse_remaining: 100000, players_bought: 0, max_players: 5, primary_color: '#a855f7' },
+    { id: 4, team_number: 4, name: 'Team D', total_purse: 100000, purse_remaining: 100000, players_bought: 0, max_players: 5, primary_color: '#f97316' }
   ];
 
-  // Fixed Base Price constant for every player
-  const BASE_PRICE = 10000;
+  // Base price for active player
+  const playerBasePrice = Number(currentPlayer?.base_price || 10000);
+  const currentBid = Number(auction?.current_bid || playerBasePrice);
+  const highestBidderId = auction?.highest_bidder_team_id;
+  const highestTeam = highestBidderId ? (activeTeams.find(t => t.id === highestBidderId) || null) : null;
 
-  // Highest bidder (null if no bids placed yet)
-  const highestTeam = auction?.highest_bidder_team_id
-    ? activeTeams.find(t => t.id === auction.highest_bidder_team_id)
-    : null;
-
-  // Current bid (defaults to BASE_PRICE 10,000 PTS when no bids yet)
-  const currentBid = auction?.current_bid !== undefined && auction?.current_bid !== null
-    ? Number(auction.current_bid)
-    : BASE_PRICE;
-
+  // Check if bidding is actively underway for current player (true if someone has placed the opening bid)
+  const isBiddingActive = Boolean(highestTeam);
   const currentLeaderName = highestTeam ? highestTeam.name : 'NO BIDS YET';
 
-  // Calculate next recommended bid (e.g. 10000 + 2000 = 12000 for first bid)
-  const minRecommendedBid = currentBid + selectedIncrement;
+  // Calculate next recommended bid (playerBasePrice when starting, or currentBid + selectedIncrement when active)
+  const minRecommendedBid = isBiddingActive ? (currentBid + selectedIncrement) : playerBasePrice;
   const confirmedNextBidAmount = customBidInput !== ''
     ? parseFloat(String(customBidInput).replace(/,/g, '')) || minRecommendedBid
     : minRecommendedBid;
@@ -94,6 +89,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
   const selectedTeam = activeTeams.find(t => t.id === selectedTeamId) || activeTeams[0];
   const teamPurseRemaining = selectedTeam?.purse_remaining ?? 100000;
   const teamPurseAfter = Math.max(0, teamPurseRemaining - confirmedNextBidAmount);
+
+  // Recent bids list
+  const displayRecentBids = recentBids || [];
 
   // Total player pool count
   const totalPoolCount = (upcomingPlayers?.length || 0) + (soldPlayers?.length || 0) + (unsoldPlayers?.length || 0) + (currentPlayer ? 1 : 0) || 124;
@@ -303,9 +301,6 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
   // Format timer
   const formattedTimer = `00:${timeLeft < 10 ? '0' : ''}${Math.max(0, timeLeft)}`;
 
-  // Default display bids list if recentBids is empty
-  const displayRecentBids = recentBids && recentBids.length > 0 ? recentBids : [];
-
   return (
     <div className="bg-[#0a0d14] text-slate-100 min-h-screen flex flex-col font-sans select-none antialiased">
       {/* Action Notice Floating Alert */}
@@ -366,13 +361,25 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/1'); }}
                   className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
                 >
-                  Team 1 (Ace Storm)
+                  Team 1 (Team A)
                 </button>
                 <button
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/2'); }}
                   className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
                 >
-                  Team 2 (Thunder Bolts)
+                  Team 2 (Team B)
+                </button>
+                <button
+                  onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/3'); }}
+                  className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
+                >
+                  Team 3 (Team C)
+                </button>
+                <button
+                  onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/4'); }}
+                  className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
+                >
+                  Team 4 (Team D)
                 </button>
                 <button
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/display'); }}
@@ -382,27 +389,6 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                 </button>
               </div>
             )}
-          </div>
-
-          {/* Quick Timer Desk Widget */}
-          <div
-            onClick={handleToggleTimer}
-            className={`flex items-center space-x-2 bg-[#141b29] border border-brand-border/80 px-3 py-1 rounded-md cursor-pointer hover:border-amber-400/50 transition ${
-              timerRunning ? 'ring-1 ring-amber-400/30' : ''
-            }`}
-            title="Click to Pause/Resume Countdown"
-          >
-            <span className="text-[11px] uppercase tracking-wider text-slate-400 font-medium">Gavel Timer:</span>
-            <span className={`font-mono text-sm font-bold ${timeLeft <= 5 ? 'text-red-400 animate-pulse' : 'text-amber-400'}`} id="desk-timer">
-              {formattedTimer}
-            </span>
-            <button
-              onClick={handleResetTimer}
-              className="text-slate-400 hover:text-white text-xs px-1 hover:bg-slate-700/50 rounded"
-              title="Reset Timer"
-            >
-              ↺
-            </button>
           </div>
         </div>
 
@@ -751,12 +737,13 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
               {/* Map through the 4 teams */}
               {activeTeams.map((team, idx) => {
                 const teamNum = idx + 1;
-                const isLeading = highestTeam && highestTeam.id === team.id;
+                const isLeading = isBiddingActive && highestTeam && highestTeam.id === team.id;
                 const isSelected = selectedTeamId === team.id;
                 const totalPurse = team.total_purse || 100000;
-                const remaining = team.purse_remaining !== undefined ? team.purse_remaining : (teamNum === 1 ? 78000 : teamNum === 2 ? 62000 : teamNum === 3 ? 88000 : 100000);
+                const remaining = team.purse_remaining !== undefined ? team.purse_remaining : 100000;
                 const spent = Math.max(0, totalPurse - remaining);
-                const squadCount = team.players_bought !== undefined ? team.players_bought : (teamNum === 1 ? 2 : teamNum === 2 ? 3 : teamNum === 3 ? 1 : 0);
+                const squadCount = team.players_bought !== undefined ? team.players_bought : 0;
+                const squadFull = squadCount >= (team.max_players || 5);
 
                 const teamColorStyles = {
                   1: { border: 'hover:border-cyan-500/60', badgeBg: 'bg-blue-500/20 text-blue-400 border-blue-500/40', btn: 'bg-blue-600/30 hover:bg-blue-600 text-blue-200 border-blue-500/40' },
@@ -816,6 +803,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   );
                 }
 
+                // Check eligibility depending on whether bidding is active or waiting to start
+                const canAfford = remaining >= (isBiddingActive ? minRecommendedBid : playerBasePrice);
+                const isEligible = !squadFull && canAfford;
+
                 return (
                   <div
                     key={team.id || idx}
@@ -848,24 +839,67 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                       </div>
                     </div>
 
-                    {/* Paddle Status & Quick Action Button */}
+                    {/* Paddle Status & Action Button */}
                     <div className="flex items-center space-x-2">
                       <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800/80 text-slate-500 font-semibold uppercase">
-                        {teamNum === 4 ? (
+                        {isEligible ? (
                           <span className="text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/20">Ready</span>
-                        ) : 'Idle'}
+                        ) : squadFull ? (
+                          <span className="text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Full</span>
+                        ) : (
+                          <span className="text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">Low Purse</span>
+                        )}
                       </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedTeamId(team.id);
-                          handleSubmitBid(team.id, minRecommendedBid);
-                        }}
-                        className={`px-2.5 py-1 text-xs font-bold rounded border transition ${teamColorStyles.btn}`}
-                        title={`Raise bid to ${formatCurrency(minRecommendedBid)} for ${team.name}`}
-                      >
-                        + Raise
-                      </button>
+
+                      {!isBiddingActive ? (
+                        /* 1. When player is set LIVE: Show START button beside every team */
+                        <button
+                          disabled={!isEligible}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedTeamId(team.id);
+                            handleSubmitBid(team.id, playerBasePrice);
+                          }}
+                          className={`px-3 py-1 text-xs font-bold rounded border transition ${
+                            !isEligible
+                              ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border-slate-700'
+                              : 'bg-emerald-600/30 hover:bg-emerald-600 text-emerald-200 border-emerald-500/50 shadow-sm'
+                          }`}
+                          title={
+                            squadFull
+                              ? `${team.name} squad is full`
+                              : !canAfford
+                              ? `${team.name} has insufficient purse balance`
+                              : `Start bidding at ${formatCurrency(playerBasePrice)} for ${team.name}`
+                          }
+                        >
+                          Start
+                        </button>
+                      ) : (
+                        /* 2. When any team clicks START: Bidding becomes ACTIVE -> Show RAISE buttons */
+                        <button
+                          disabled={!isEligible}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedTeamId(team.id);
+                            handleSubmitBid(team.id, minRecommendedBid);
+                          }}
+                          className={`px-2.5 py-1 text-xs font-bold rounded border transition ${
+                            !isEligible
+                              ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border-slate-700'
+                              : teamColorStyles.btn
+                          }`}
+                          title={
+                            squadFull
+                              ? `${team.name} squad is full`
+                              : !canAfford
+                              ? `${team.name} has insufficient purse for ${formatCurrency(minRecommendedBid)}`
+                              : `Raise bid to ${formatCurrency(minRecommendedBid)} for ${team.name}`
+                          }
+                        >
+                          + Raise
+                        </button>
+                      )}
                     </div>
                   </div>
                 );

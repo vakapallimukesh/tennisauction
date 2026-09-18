@@ -57,9 +57,11 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
 
   // Status checks
   const isAuctionLive = auction?.status === 'live';
-  const currentBid = auction?.current_bid || currentPlayer?.base_price || 10000;
-  const bidIncrement = auction?.bid_increment || 2000;
+  const playerBasePrice = Number(currentPlayer?.base_price || 10000);
   const highestBidderId = auction?.highest_bidder_team_id;
+  const isBiddingActive = Boolean(highestBidderId);
+  const currentBid = auction?.current_bid || playerBasePrice;
+  const bidIncrement = auction?.bid_increment || 2000;
   const isHighestBidder = highestBidderId === effectiveTeamId;
 
   // Have we placed a bid on this current player before?
@@ -67,12 +69,12 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
     return (recentBids || []).filter(b => b.team_id === effectiveTeamId);
   }, [recentBids, effectiveTeamId]);
 
-  const wasOutbid = !isHighestBidder && highestBidderId !== null;
+  const wasOutbid = !isHighestBidder && isBiddingActive;
 
   // Squad and purse constraints
   const squadFull = (myTeam.players_bought || 0) >= (myTeam.max_players || 5);
   const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : 100000;
-  const nextMinBid = currentBid + bidIncrement;
+  const nextMinBid = isBiddingActive ? (currentBid + bidIncrement) : playerBasePrice;
 
   // Handle Bid Execution
   const handleBid = async (customIncrement = null, exactAmount = null) => {
@@ -89,9 +91,9 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
     if (exactAmount) {
       targetBid = exactAmount;
     } else if (customIncrement) {
-      targetBid = currentBid + customIncrement;
+      targetBid = (isBiddingActive ? currentBid : playerBasePrice) + customIncrement;
     } else {
-      targetBid = currentBid + bidIncrement;
+      targetBid = isBiddingActive ? (currentBid + bidIncrement) : playerBasePrice;
     }
 
     if (targetBid > remainingPurse) {
@@ -411,10 +413,15 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                     <span>SQUAD IS FULL (5/5)</span>
                   ) : nextMinBid > remainingPurse ? (
                     <span>PURSE EXCEEDED</span>
+                  ) : !isBiddingActive ? (
+                    <>
+                      <Zap className="w-5 h-5 fill-slate-950" />
+                      <span>START BID ₹{playerBasePrice.toLocaleString('en-IN')} (BASE PRICE)</span>
+                    </>
                   ) : (
                     <>
                       <Zap className="w-5 h-5 fill-slate-950" />
-                      <span>BID ₹{nextMinBid.toLocaleString('en-IN')} (+₹{bidIncrement.toLocaleString('en-IN')})</span>
+                      <span>RAISE BID ₹{nextMinBid.toLocaleString('en-IN')} (+₹{bidIncrement.toLocaleString('en-IN')})</span>
                     </>
                   )}
                 </button>
@@ -423,37 +430,37 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
-                    disabled={biddingLoading || isHighestBidder || squadFull || (currentBid + 2000) > remainingPurse || !isAuctionLive}
+                    disabled={biddingLoading || isHighestBidder || squadFull || ((isBiddingActive ? currentBid : playerBasePrice) + 2000) > remainingPurse || !isAuctionLive}
                     onClick={() => handleBid(2000)}
                     className="py-3 px-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-emerald-400/50 text-white font-bold text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-0.5"
                   >
                     <span className="text-[10px] text-slate-400">+₹2,000 Step</span>
                     <span className="font-mono text-emerald-400 font-extrabold">
-                      ₹{(currentBid + 2000).toLocaleString('en-IN')}
+                      ₹{((isBiddingActive ? currentBid : playerBasePrice) + 2000).toLocaleString('en-IN')}
                     </span>
                   </button>
 
                   <button
                     type="button"
-                    disabled={biddingLoading || isHighestBidder || squadFull || (currentBid + 5000) > remainingPurse || !isAuctionLive}
+                    disabled={biddingLoading || isHighestBidder || squadFull || ((isBiddingActive ? currentBid : playerBasePrice) + 5000) > remainingPurse || !isAuctionLive}
                     onClick={() => handleBid(5000)}
                     className="py-3 px-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-emerald-400/50 text-white font-bold text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-0.5"
                   >
                     <span className="text-[10px] text-slate-400">+₹5,000 Step</span>
                     <span className="font-mono text-cyan-400 font-extrabold">
-                      ₹{(currentBid + 5000).toLocaleString('en-IN')}
+                      ₹{((isBiddingActive ? currentBid : playerBasePrice) + 5000).toLocaleString('en-IN')}
                     </span>
                   </button>
 
                   <button
                     type="button"
-                    disabled={biddingLoading || isHighestBidder || squadFull || (currentBid + 10000) > remainingPurse || !isAuctionLive}
+                    disabled={biddingLoading || isHighestBidder || squadFull || ((isBiddingActive ? currentBid : playerBasePrice) + 10000) > remainingPurse || !isAuctionLive}
                     onClick={() => handleBid(10000)}
                     className="py-3 px-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-amber-400/50 text-white font-bold text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-0.5"
                   >
                     <span className="text-[10px] text-amber-400 font-extrabold">Power +₹10,000</span>
                     <span className="font-mono text-amber-300 font-extrabold">
-                      ₹{(currentBid + 10000).toLocaleString('en-IN')}
+                      ₹{((isBiddingActive ? currentBid : playerBasePrice) + 10000).toLocaleString('en-IN')}
                     </span>
                   </button>
                 </div>

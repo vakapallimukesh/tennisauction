@@ -13,10 +13,10 @@ const team4Hash = bcrypt.hashSync('team4@auction', 10);
 const initialSeed = {
   users: [
     { id: 1, username: 'admin', password_hash: adminHash, full_name: 'Tournament Director', role: 'admin', team_id: null },
-    { id: 2, username: 'team1', password_hash: team1Hash, full_name: 'The Racquet Warriors Captain', role: 'team', team_id: 1 },
-    { id: 3, username: 'team2', password_hash: team2Hash, full_name: 'Ace Storm Manager', role: 'team', team_id: 2 },
-    { id: 4, username: 'team3', password_hash: team3Hash, full_name: 'Thunder Bolts Owner', role: 'team', team_id: 3 },
-    { id: 5, username: 'team4', password_hash: team4Hash, full_name: 'Fire Servers Head Coach', role: 'team', team_id: 4 }
+    { id: 2, username: 'team1', password_hash: team1Hash, full_name: 'Team A Captain', role: 'team', team_id: 1 },
+    { id: 3, username: 'team2', password_hash: team2Hash, full_name: 'Team B Manager', role: 'team', team_id: 2 },
+    { id: 4, username: 'team3', password_hash: team3Hash, full_name: 'Team C Owner', role: 'team', team_id: 3 },
+    { id: 5, username: 'team4', password_hash: team4Hash, full_name: 'Team D Head Coach', role: 'team', team_id: 4 }
   ],
   sponsors: [
     { id: 1, category: 'POWERED BY', name: 'SportWave', logo_icon: 'sportwave', website: 'https://sportwave.example.com' },
@@ -28,7 +28,7 @@ const initialSeed = {
     {
       id: 1,
       team_number: 1,
-      name: 'The Racquet Warriors',
+      name: 'Team A',
       owner: 'Rohan Iyer',
       total_purse: 100000.00,
       purse_remaining: 100000.00,
@@ -42,7 +42,7 @@ const initialSeed = {
     {
       id: 2,
       team_number: 2,
-      name: 'Ace Storm',
+      name: 'Team B',
       owner: 'Vikramaditya Roy',
       total_purse: 100000.00,
       purse_remaining: 100000.00,
@@ -56,7 +56,7 @@ const initialSeed = {
     {
       id: 3,
       team_number: 3,
-      name: 'Thunder Bolts',
+      name: 'Team C',
 
       owner: 'Maya Sengupta',
       total_purse: 100000.00,
@@ -71,7 +71,7 @@ const initialSeed = {
     {
       id: 4,
       team_number: 4,
-      name: 'Fire Servers',
+      name: 'Team D',
 
       owner: 'Kabir Malhotra',
       total_purse: 100000.00,

@@ -17,10 +17,10 @@ INSERT INTO `sponsors` (`category`, `name`, `logo_icon`, `website`) VALUES
 -- 2. Seed 4 Teams (1 Lakh / 100,000.00 per team)
 -- ----------------------------------------------------------
 INSERT INTO `teams` (`id`, `team_number`, `name`, `tagline`, `owner`, `total_purse`, `purse_remaining`, `max_players`, `logo_url`, `primary_color`, `accent_color`, `glow_color`, `bg_gradient`) VALUES
-(1, 1, 'The Racquet Warriors', '', 'Rohan Iyer', 100000.00, 100000.00, 5, '/images/teams/team1-lion.svg', '#22c55e', '#4ade80', 'rgba(34, 197, 94, 0.45)', 'from-emerald-950/40 to-slate-950/80'),
-(2, 2, 'Ace Storm', '', 'Vikramaditya Roy', 100000.00, 100000.00, 5, '/images/teams/team2-eagle.svg', '#0ea5e9', '#38bdf8', 'rgba(14, 165, 233, 0.45)', 'from-sky-950/40 to-slate-950/80'),
-(3, 3, 'Thunder Bolts', '', 'Maya Sengupta', 100000.00, 100000.00, 5, '/images/teams/team3-crown.svg', '#a855f7', '#c084fc', 'rgba(168, 85, 247, 0.45)', 'from-purple-950/40 to-slate-950/80'),
-(4, 4, 'Fire Servers', '', 'Kabir Malhotra', 100000.00, 100000.00, 5, '/images/teams/team4-flame.svg', '#f97316', '#fb923c', 'rgba(249, 115, 22, 0.45)', 'from-orange-950/40 to-slate-950/80');
+(1, 1, 'Team A', '', 'Rohan Iyer', 100000.00, 100000.00, 5, '/images/teams/team1-lion.svg', '#22c55e', '#4ade80', 'rgba(34, 197, 94, 0.45)', 'from-emerald-950/40 to-slate-950/80'),
+(2, 2, 'Team B', '', 'Vikramaditya Roy', 100000.00, 100000.00, 5, '/images/teams/team2-eagle.svg', '#0ea5e9', '#38bdf8', 'rgba(14, 165, 233, 0.45)', 'from-sky-950/40 to-slate-950/80'),
+(3, 3, 'Team C', '', 'Maya Sengupta', 100000.00, 100000.00, 5, '/images/teams/team3-crown.svg', '#a855f7', '#c084fc', 'rgba(168, 85, 247, 0.45)', 'from-purple-950/40 to-slate-950/80'),
+(4, 4, 'Team D', '', 'Kabir Malhotra', 100000.00, 100000.00, 5, '/images/teams/team4-flame.svg', '#f97316', '#fb923c', 'rgba(249, 115, 22, 0.45)', 'from-orange-950/40 to-slate-950/80');
 
 -- ----------------------------------------------------------
 -- 3. Seed Users (1 Admin + 4 Teams)
@@ -33,10 +33,10 @@ INSERT INTO `teams` (`id`, `team_number`, `name`, `tagline`, `owner`, `total_pur
 -- ----------------------------------------------------------
 INSERT INTO `users` (`id`, `username`, `password_hash`, `full_name`, `role`, `team_id`) VALUES
 (1, 'admin', '$2b$10$2/0TlKjh1HTIGlw1VRCpc.VaWcOc1T9u0IcFm9gq.dNwn9D86cR/a', 'Tournament Director', 'admin', NULL),
-(2, 'team1', '$2b$10$o/xUKW8afZpQE3USfzyktec//nVn0wvHv66BvgrgMg4/KQkvozrKG', 'The Racquet Warriors Captain', 'team', 1),
-(3, 'team2', '$2b$10$WwXQg9A6lRLaGUJ0N/tmcOx.69i7o9fZ23bpIpykJL6gMXE09GO6q', 'Ace Storm Manager', 'team', 2),
-(4, 'team3', '$2b$10$WIkkZ7jqDdCGWRSFu3FYkeCfoNrpd5J.78gDu7ZTigHsEwhM/xMiW', 'Thunder Bolts Owner', 'team', 3),
-(5, 'team4', '$2b$10$n3RRDZtFdiVU4P41bAtGkexdhTP3urxLj6or2ytU1eyj7tOyuqrNu', 'Fire Servers Head Coach', 'team', 4);
+(2, 'team1', '$2b$10$o/xUKW8afZpQE3USfzyktec//nVn0wvHv66BvgrgMg4/KQkvozrKG', 'Team A Captain', 'team', 1),
+(3, 'team2', '$2b$10$WwXQg9A6lRLaGUJ0N/tmcOx.69i7o9fZ23bpIpykJL6gMXE09GO6q', 'Team B Manager', 'team', 2),
+(4, 'team3', '$2b$10$WIkkZ7jqDdCGWRSFu3FYkeCfoNrpd5J.78gDu7ZTigHsEwhM/xMiW', 'Team C Owner', 'team', 3),
+(5, 'team4', '$2b$10$n3RRDZtFdiVU4P41bAtGkexdhTP3urxLj6or2ytU1eyj7tOyuqrNu', 'Team D Head Coach', 'team', 4);
 
 -- ----------------------------------------------------------
 -- 4. Seed Players (All unsold & ready to start)

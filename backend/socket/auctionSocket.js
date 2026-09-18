@@ -264,17 +264,25 @@ function submitBid({ team_id, amount, increment }) {
     throw new Error(`${team.name} has already filled all ${team.max_players} squad positions.`);
   }
 
+  // Determine if bidding is already active for this player
+  const playerBids = (store.bids || []).filter(b => b.player_id === auction.current_player_id);
+  const hasActiveBids = Boolean(auction.highest_bidder_team_id) && playerBids.length > 0;
+
   // Calculate bid amount
   let bidAmount;
   if (amount) {
     bidAmount = parseFloat(amount);
   } else {
     const inc = increment ? parseFloat(increment) : (auction.bid_increment || 2000);
-    bidAmount = auction.current_bid + inc;
+    bidAmount = hasActiveBids ? (auction.current_bid + inc) : auction.current_bid;
   }
 
-  if (bidAmount <= auction.current_bid) {
+  // Validation: If bidding is active, bid must exceed current bid.
+  // If starting player bidding (no bids yet), opening bid must be at least base price (current_bid)
+  if (hasActiveBids && bidAmount <= auction.current_bid) {
     throw new Error(`Bid of ₹${bidAmount.toLocaleString('en-IN')} must be higher than the current bid of ₹${auction.current_bid.toLocaleString('en-IN')}.`);
+  } else if (!hasActiveBids && bidAmount < (auction.current_bid || 10000)) {
+    throw new Error(`Opening bid of ₹${bidAmount.toLocaleString('en-IN')} cannot be lower than the base price of ₹${(auction.current_bid || 10000).toLocaleString('en-IN')}.`);
   }
 
   // Calculate actual purse remaining

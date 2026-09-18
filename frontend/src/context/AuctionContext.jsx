@@ -80,14 +80,24 @@ export function AuctionProvider({ children }) {
     }
   }, [syncSnapshot]);
 
-  // Auth verify on mount
+  // Auth verify on mount and safety timeout to prevent hanging
   useEffect(() => {
+    const safetyTimer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
     api.verifyAuth().then(user => {
       if (user) setCurrentUser(user);
       else {
         setCurrentUser(null);
       }
+    }).catch(() => {
+      // ignore auth check error
+    }).finally(() => {
+      setLoading(false);
     });
+
+    return () => clearTimeout(safetyTimer);
   }, []);
 
   // Socket.IO Setup & Event Listeners

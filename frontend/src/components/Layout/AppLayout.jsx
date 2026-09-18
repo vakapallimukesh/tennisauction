@@ -30,10 +30,10 @@ export default function AppLayout({
 
   const getRoleDropdownValue = () => {
     if (currentRole === 'admin') return 'Admin Control';
-    if (currentRole === 'team1') return 'Team 1 (Eagles)';
-    if (currentRole === 'team2') return 'Team 2 (Falcons)';
-    if (currentRole === 'team3') return 'Team 3 (Vipers)';
-    if (currentRole === 'team4') return 'Team 4 (Strikers)';
+    if (currentRole === 'team1') return 'Team A';
+    if (currentRole === 'team2') return 'Team B';
+    if (currentRole === 'team3') return 'Team C';
+    if (currentRole === 'team4') return 'Team D';
     if (currentRole === 'display') return 'Digital TV LED Display';
     return 'Admin Control';
   };

@@ -138,10 +138,62 @@ function AppRouter() {
   return <LoginPage onNavigate={navigateTo} />;
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('App ErrorBoundary caught an error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#090d16] text-white flex flex-col items-center justify-center p-6 text-center">
+          <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-4 text-2xl">
+            ⚠️
+          </div>
+          <h1 className="text-2xl font-bold text-slate-100 mb-2">Auction Screen Recovery</h1>
+          <p className="text-sm text-slate-400 max-w-md mb-6">
+            {this.state.error?.message || 'A temporary interface error occurred. You can safely reload the page or return to the login terminal.'}
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs transition"
+            >
+              Reload Page
+            </button>
+            <button
+              onClick={() => {
+                window.history.pushState({}, '', '/');
+                this.setState({ hasError: false, error: null });
+                window.location.href = '/';
+              }}
+              className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 transition"
+            >
+              Go to Login
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
-    <AuctionProvider>
-      <AppRouter />
-    </AuctionProvider>
+    <ErrorBoundary>
+      <AuctionProvider>
+        <AppRouter />
+      </AuctionProvider>
+    </ErrorBoundary>
   );
 }

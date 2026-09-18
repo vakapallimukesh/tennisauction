@@ -94,25 +94,25 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
   const displayTeams = useMemo(() => {
     const baseTeams = [
       {
-        id: 1, team_number: 1, name: 'The Racquet Warriors',
+        id: 1, team_number: 1, name: 'Team A',
         short_name: 'TEAM A', owner: 'Rohan Iyer',
         total_purse: 1000000, purse_remaining: 1000000, spent: 0,
         max_players: 8, players_bought: 0, players: []
       },
       {
-        id: 2, team_number: 2, name: 'Ace Storm',
+        id: 2, team_number: 2, name: 'Team B',
         short_name: 'TEAM B', owner: 'Vikramaditya Roy',
         total_purse: 1000000, purse_remaining: 1000000, spent: 0,
         max_players: 8, players_bought: 0, players: []
       },
       {
-        id: 3, team_number: 3, name: 'Thunder Bolts',
+        id: 3, team_number: 3, name: 'Team C',
         short_name: 'TEAM C', owner: 'Maya Sengupta',
         total_purse: 1000000, purse_remaining: 1000000, spent: 0,
         max_players: 8, players_bought: 0, players: []
       },
       {
-        id: 4, team_number: 4, name: 'Fire Servers',
+        id: 4, team_number: 4, name: 'Team D',
         short_name: 'TEAM D', owner: 'Kabir Malhotra',
         total_purse: 1000000, purse_remaining: 1000000, spent: 0,
         max_players: 8, players_bought: 0, players: []
