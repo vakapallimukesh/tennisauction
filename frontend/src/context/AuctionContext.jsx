@@ -160,20 +160,25 @@ export function AuctionProvider({ children }) {
       }
       setPlayerIntro(null);
 
-      const teamNum = data.team?.team_number || data.team?.id || 0;
+      // Socket sends: { player, team, amount }
+      // HTTP controller sends: { player, winning_team, final_price }
+      const team = data.team || data.winning_team || {};
+      const teamId = team.id || 0;
       const shortNames = { 1: 'TEAM A', 2: 'TEAM B', 3: 'TEAM C', 4: 'TEAM D' };
+      const soldAmount = data.amount || data.final_price || 0;
 
       setSoldCelebration({
         ...data,
         player_name: data.player?.name || data.player_name || 'Player',
         player_image: data.player?.image_url || null,
         player_category: data.player?.category || null,
-        team_name: shortNames[teamNum] || data.team?.name || data.team_name || 'Team',
-        amount: data.amount
+        team_name: shortNames[teamId] || team.name || data.team_name || 'Team',
+        amount: soldAmount
       });
       setCurrentPlayer(null);
       setSelectedPlayer(null);
       setRecentBids([]);
+
       // Confetti burst for TV display celebration
       confetti({
         particleCount: 140,
@@ -183,9 +188,10 @@ export function AuctionProvider({ children }) {
       });
 
       // Auto clear celebration banner after 7 seconds
-      setTimeout(() => {
-        setSoldCelebration(null);
-      }, 7000);
+      setTimeout(() => setSoldCelebration(null), 7000);
+
+      // Refresh full state so team purse updates in admin panel
+      setTimeout(() => refreshAll(), 500);
     };
 
     const onPlayerUnsold = (data) => {
@@ -205,9 +211,12 @@ export function AuctionProvider({ children }) {
       setCurrentPlayer(null);
       setSelectedPlayer(null);
       setRecentBids([]);
-      setTimeout(() => {
-        setUnsoldNotice(null);
-      }, 5000);
+
+      // Auto clear unsold banner after 5 seconds
+      setTimeout(() => setUnsoldNotice(null), 5000);
+
+      // Refresh full state
+      setTimeout(() => refreshAll(), 500);
     };
 
     const onPlayerSelected = (data) => {
