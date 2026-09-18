@@ -285,16 +285,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                     : 'bg-[#f8fafc]'
                   }`}
               >
-                {/* Leading Bidder Badge */}
-                {isLeading && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded shadow tracking-wider z-10">
-                    LEADING BIDDER
-                  </div>
-                )}
-
                 {/* Team Header & Amount Box */}
                 <div className={`pb-3 text-center bg-white rounded-lg p-3 shadow-sm border ${isLeading
-                    ? 'border-emerald-300 border-b-2 border-b-emerald-500 mt-1'
+                    ? 'border-emerald-300 border-b-2 border-b-emerald-500'
                     : 'border-slate-300 border-b-2 border-b-slate-700'
                   }`}>
                   <div
