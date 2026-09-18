@@ -473,11 +473,11 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             </div>
           </div>
 
-          {/* 2. Player Name Card — simplified */}
-          <div className="border-2 border-slate-700 rounded-lg p-3 bg-slate-50 shadow-xs text-center shrink-0">
-            <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase font-display">
+          {/* 2. Player Name Header — unboxed, spacious, and prominent */}
+          <div className="text-center py-2 px-1 shrink-0">
+            <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black text-slate-950 tracking-tight uppercase font-display leading-tight">
               {activePlayer.name || 'AWAITING PLAYER'}
-            </h3>
+            </h2>
           </div>
 
           {/* 3. MIDDLE STRIP: [Base Price] & [Category] */}
