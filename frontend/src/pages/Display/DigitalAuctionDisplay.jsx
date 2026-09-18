@@ -205,36 +205,18 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         </div>
       )}
 
-      {/* ===== TOP SPONSORS BAR ===== */}
+      {/* ===== TOP BAR ===== */}
       <header className="w-full bg-[#dbe2e6] border-b-2 border-slate-700/80 py-2.5 px-6 shadow-sm shrink-0">
         <div className="max-w-[1920px] mx-auto flex items-center justify-between">
-          {/* Section Title */}
+          {/* League Title & Live Status */}
           <div className="flex items-center gap-3">
             <span className={`inline-block w-3 h-3 rounded-full ${isSocketConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
-            <span className="text-xs tracking-widest font-black uppercase text-slate-700 font-display">SPONSORS</span>
-          </div>
-          {/* Marquee Partners Row */}
-          <div className="flex items-center gap-8 md:gap-14 text-slate-800 font-bold uppercase tracking-wider text-sm md:text-base">
-            <div className="flex items-center gap-2 hover:text-slate-900 transition-colors">
-              <svg className="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 7.2h7.6l-6.1 4.5 2.3 7.3-6.2-4.6-6.2 4.6 2.3-7.3-6.1-4.5h7.6z" /></svg>
-              <span className="font-black text-slate-900 tracking-tight text-lg">ROLEX</span>
-            </div>
-            <div className="flex items-center gap-1.5 hover:text-slate-900">
-              <span className="text-red-600 font-black text-xl italic tracking-tighter">Wilson</span>
-            </div>
-            <div className="flex items-center gap-2 hover:text-slate-900">
-              <span className="font-extrabold text-red-700 tracking-wide text-xs bg-red-100 border border-red-300 px-2 py-0.5 rounded">Emirates</span>
-              <span className="text-[11px] text-slate-500 font-medium lowercase">Fly Better</span>
-            </div>
-            <div className="flex items-center gap-1 hover:text-slate-900">
-              <span className="font-black tracking-widest text-slate-900 text-lg">HEAD</span>
-            </div>
-            <div className="hidden sm:flex items-center gap-1 hover:text-slate-900">
-              <span className="font-bold tracking-tight text-blue-700 text-base">Babolat.</span>
-            </div>
-            <div className="hidden md:flex items-center gap-2">
-              <span className="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">LIVE STADIUM ARENA</span>
-            </div>
+            <span className="text-sm md:text-base tracking-wider font-black uppercase text-slate-900 font-display">
+              Bhimavaram Tennis League
+            </span>
+            <span className="hidden md:inline-block text-xs font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono">
+              LIVE STADIUM ARENA
+            </span>
           </div>
           {/* Right: Round / Fullscreen */}
           <div className="text-right hidden lg:flex items-center gap-3">
