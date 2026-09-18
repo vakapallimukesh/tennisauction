@@ -223,11 +223,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             </h1>
           </div>
 
-          {/* Right: Round / Fullscreen */}
-          <div className="text-right flex items-center justify-end gap-3 shrink-0">
-            <span className="text-xs md:text-sm font-extrabold tracking-wider text-slate-700 uppercase font-mono">
-              ROUND {auction?.id || 1} • LOT #{lotNumber}
-            </span>
+          {/* Right: Fullscreen & 3-Bar Menu */}
+          <div className="text-right flex items-center justify-end gap-2 shrink-0">
             <button
               onClick={toggleFullscreen}
               className="text-slate-500 hover:text-slate-800 transition p-1.5 rounded hover:bg-slate-300"
@@ -241,15 +238,19 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                 )}
               </svg>
             </button>
-            {onNavigate && (
-              <button
-                onClick={() => onNavigate('/admin')}
-                className="text-xs font-bold px-2.5 py-1 rounded bg-slate-300 hover:bg-slate-400 text-slate-700 transition border border-slate-400"
-                title="Admin Control Room"
-              >
-                Admin
-              </button>
-            )}
+            <button
+              onClick={() => {
+                if (onNavigate) onNavigate('/admin');
+                else window.location.href = '/admin';
+              }}
+              className="text-slate-600 hover:text-slate-900 transition p-1.5 rounded hover:bg-slate-300"
+              title="Menu"
+              aria-label="Menu"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
         </div>
       </header>
@@ -281,14 +282,14 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
               <article
                 key={team.id}
                 className={`flex flex-col h-full p-4 relative ${isLeading
-                    ? 'bg-emerald-50/70 border-2 border-emerald-600'
-                    : 'bg-[#f8fafc]'
+                  ? 'bg-emerald-50/70 border-2 border-emerald-600'
+                  : 'bg-[#f8fafc]'
                   }`}
               >
                 {/* Team Header & Amount Box */}
                 <div className={`pb-3 text-center bg-white rounded-lg p-3 shadow-sm border ${isLeading
-                    ? 'border-emerald-300 border-b-2 border-b-emerald-500'
-                    : 'border-slate-300 border-b-2 border-b-slate-700'
+                  ? 'border-emerald-300 border-b-2 border-b-emerald-500'
+                  : 'border-slate-300 border-b-2 border-b-slate-700'
                   }`}>
                   <div
                     className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs mb-1 ${isLeading ? 'bg-emerald-200 text-emerald-900' : `${badge.bg} ${badge.text}`
@@ -337,27 +338,27 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             <div
                               key={p.id || `ga-${pIdx}`}
                               className={`border rounded-lg p-1.5 flex items-center justify-between shadow-xs ${isLeading
-                                  ? 'border-emerald-300 bg-white'
-                                  : 'border-slate-300 bg-white'
+                                ? 'border-emerald-300 bg-white'
+                                : 'border-slate-300 bg-white'
                                 }`}
                             >
-                              <div className="flex items-center gap-1.5 min-w-0">
+                              <div className="flex items-center gap-2 min-w-0">
                                 <img
                                   src={p.image_url || '/images/players/rohan-iyer.jpg'}
                                   alt={p.name || p.player_name}
-                                  className="w-7 h-7 rounded-full object-cover border border-slate-300 shrink-0"
+                                  className="w-8 h-8 rounded-full object-cover border border-slate-300 shrink-0"
                                   onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
                                 />
                                 <div className="min-w-0">
-                                  <div className="font-bold text-slate-900 truncate text-[11px] leading-tight">
+                                  <div className="font-black text-slate-950 truncate text-[13px] md:text-sm leading-snug">
                                     {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
                                   </div>
-                                  <span className="inline-block px-1 py-0 rounded bg-blue-100 text-blue-800 text-[8px] font-bold uppercase">
+                                  <span className="inline-block px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 text-[9px] font-bold uppercase">
                                     {p.category || 'Group A'}
                                   </span>
                                 </div>
                               </div>
-                              <span className="font-black text-slate-900 text-[11px] shrink-0">
+                              <span className="font-black text-slate-950 text-xs md:text-[13px] shrink-0 font-mono">
                                 {formatLakhsShort(p.purchase_price || p.base_price)}
                               </span>
                             </div>
@@ -391,27 +392,27 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             <div
                               key={p.id || `gb-${pIdx}`}
                               className={`border rounded-lg p-1.5 flex items-center justify-between shadow-xs ${isLeading
-                                  ? 'border-emerald-300 bg-white'
-                                  : 'border-slate-300 bg-white'
+                                ? 'border-emerald-300 bg-white'
+                                : 'border-slate-300 bg-white'
                                 }`}
                             >
-                              <div className="flex items-center gap-1.5 min-w-0">
+                              <div className="flex items-center gap-2 min-w-0">
                                 <img
                                   src={p.image_url || '/images/players/rohan-iyer.jpg'}
                                   alt={p.name || p.player_name}
-                                  className="w-7 h-7 rounded-full object-cover border border-slate-300 shrink-0"
+                                  className="w-8 h-8 rounded-full object-cover border border-slate-300 shrink-0"
                                   onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
                                 />
                                 <div className="min-w-0">
-                                  <div className="font-bold text-slate-900 truncate text-[11px] leading-tight">
+                                  <div className="font-black text-slate-950 truncate text-[13px] md:text-sm leading-snug">
                                     {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
                                   </div>
-                                  <span className="inline-block px-1 py-0 rounded bg-amber-100 text-amber-800 text-[8px] font-bold uppercase">
+                                  <span className="inline-block px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold uppercase">
                                     {p.category || 'Group B'}
                                   </span>
                                 </div>
                               </div>
-                              <span className="font-black text-slate-900 text-[11px] shrink-0">
+                              <span className="font-black text-slate-950 text-xs md:text-[13px] shrink-0 font-mono">
                                 {formatLakhsShort(p.purchase_price || p.base_price)}
                               </span>
                             </div>
@@ -521,8 +522,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                 </span>
               </div>
               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-xs ${highestTeam
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-slate-300 text-slate-600'
+                ? 'bg-emerald-500 text-white'
+                : 'bg-slate-300 text-slate-600'
                 }`}>
                 {highestTeam ? 'LEADING' : 'WAITING'}
               </span>
