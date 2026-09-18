@@ -38,9 +38,11 @@ export function AuctionProvider({ children }) {
   const [timeLeft, setTimeLeft] = useState(15);
   const [timerRunning, setTimerRunning] = useState(false);
 
-  // Dramatic SOLD celebration & UNSOLD banner states for Digital Display
+  // Dramatic SOLD celebration & UNSOLD banner & Player Intro states for Digital Display
   const [soldCelebration, setSoldCelebration] = useState(null);
   const [unsoldNotice, setUnsoldNotice] = useState(null);
+  const [playerIntro, setPlayerIntro] = useState(null);
+  const playerIntroTimerRef = useRef(null);
 
   // Sync whole state from server snapshot
   const syncSnapshot = useCallback((data) => {
@@ -151,7 +153,24 @@ export function AuctionProvider({ children }) {
     };
 
     const onPlayerSold = (data) => {
-      setSoldCelebration(data);
+      // Clear any active player intro
+      if (playerIntroTimerRef.current) {
+        clearTimeout(playerIntroTimerRef.current);
+        playerIntroTimerRef.current = null;
+      }
+      setPlayerIntro(null);
+
+      const teamNum = data.team?.team_number || data.team?.id || 0;
+      const shortNames = { 1: 'TEAM A', 2: 'TEAM B', 3: 'TEAM C', 4: 'TEAM D' };
+
+      setSoldCelebration({
+        ...data,
+        player_name: data.player?.name || data.player_name || 'Player',
+        player_image: data.player?.image_url || null,
+        player_category: data.player?.category || null,
+        team_name: shortNames[teamNum] || data.team?.name || data.team_name || 'Team',
+        amount: data.amount
+      });
       setCurrentPlayer(null);
       setSelectedPlayer(null);
       setRecentBids([]);
@@ -170,7 +189,19 @@ export function AuctionProvider({ children }) {
     };
 
     const onPlayerUnsold = (data) => {
-      setUnsoldNotice(data);
+      // Clear any active player intro
+      if (playerIntroTimerRef.current) {
+        clearTimeout(playerIntroTimerRef.current);
+        playerIntroTimerRef.current = null;
+      }
+      setPlayerIntro(null);
+
+      setUnsoldNotice({
+        ...data,
+        player_name: data.player?.name || data.player_name || 'Player',
+        player_image: data.player?.image_url || null,
+        player_category: data.player?.category || null
+      });
       setCurrentPlayer(null);
       setSelectedPlayer(null);
       setRecentBids([]);
@@ -182,9 +213,27 @@ export function AuctionProvider({ children }) {
     const onPlayerSelected = (data) => {
       setSoldCelebration(null);
       setUnsoldNotice(null);
+
       if (data.player) {
         setCurrentPlayer(data.player);
         setSelectedPlayer(data.player);
+
+        // Trigger player intro overlay for 10 seconds
+        setPlayerIntro({
+          name: data.player.name,
+          image_url: data.player.image_url,
+          category: data.player.category || 'Group A',
+          base_price: data.player.base_price
+        });
+
+        // Clear any existing intro timer
+        if (playerIntroTimerRef.current) {
+          clearTimeout(playerIntroTimerRef.current);
+        }
+        playerIntroTimerRef.current = setTimeout(() => {
+          setPlayerIntro(null);
+          playerIntroTimerRef.current = null;
+        }, 10000);
       }
     };
 
@@ -312,6 +361,8 @@ export function AuctionProvider({ children }) {
     setSoldCelebration,
     unsoldNotice,
     setUnsoldNotice,
+    playerIntro,
+    setPlayerIntro,
     placeBid,
     undoLastBid,
     markSold,

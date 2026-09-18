@@ -13,6 +13,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
     timerRunning,
     soldCelebration,
     unsoldNotice,
+    playerIntro,
     isSocketConnected,
     sponsors
   } = useAuction();
@@ -40,28 +41,20 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Format currency helpers
+  // Format points helpers
   const formatCurrency = (val) => {
-    if (val === undefined || val === null) return '₹0';
-    return '₹' + Number(val).toLocaleString('en-IN');
+    if (val === undefined || val === null) return '0 pts';
+    return Number(val).toLocaleString('en-IN') + ' pts';
   };
 
   const formatLakhs = (val) => {
-    if (val === undefined || val === null) return '₹0';
-    const num = Number(val);
-    if (num >= 100000) {
-      return `₹${(num / 100000).toFixed(2)} Lakhs`;
-    }
-    if (num >= 1000) {
-      return `₹${(num / 100000).toFixed(2)}L`;
-    }
-    return formatCurrency(num);
+    if (val === undefined || val === null) return '0 pts';
+    return Number(val).toLocaleString('en-IN') + ' pts';
   };
 
   const formatLakhsShort = (val) => {
-    if (val === undefined || val === null) return '₹0';
-    const num = Number(val);
-    return `₹${(num / 100000).toFixed(2)}L`;
+    if (val === undefined || val === null) return '0 pts';
+    return Number(val).toLocaleString('en-IN') + ' pts';
   };
 
   // Full comprehensive active player resolution
@@ -175,32 +168,164 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         maxHeight: '1080px'
       }}
     >
+      {/* ===== NEW PLAYER INTRO OVERLAY (10 seconds) ===== */}
+      {playerIntro && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(15, 23, 42, 0.55)' }}>
+          <div className="flex flex-col items-center text-center">
+            {/* Player Photo — slides from right to center */}
+            <div
+              className="w-64 h-64 xl:w-72 xl:h-72 rounded-full border-[5px] border-white/90 shadow-2xl overflow-hidden mb-8 bg-slate-700"
+              style={{
+                animation: 'slideFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                boxShadow: '0 0 80px rgba(255,255,255,0.15), 0 25px 50px rgba(0,0,0,0.4)'
+              }}
+            >
+              {playerIntro.image_url ? (
+                <img
+                  src={playerIntro.image_url}
+                  alt={playerIntro.name}
+                  className="w-full h-full object-cover object-top"
+                  onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-slate-600">
+                  <svg className="w-28 h-28 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+            {/* NOW ON STAGE label */}
+            <div className="flex items-center gap-3 mb-4" style={{ animation: 'fadeUpIn 0.6s ease-out 0.5s both' }}>
+              <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+              <span className="text-base font-black tracking-[0.35em] uppercase text-emerald-400 drop-shadow-lg">NOW ON STAGE</span>
+              <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+            </div>
+            {/* Player Name */}
+            <h1
+              className="text-6xl xl:text-8xl font-black text-white uppercase tracking-tight mb-4 font-display"
+              style={{ animation: 'fadeUpIn 0.7s ease-out 0.7s both', textShadow: '0 4px 30px rgba(0,0,0,0.5)' }}
+            >
+              {playerIntro.name || 'PLAYER'}
+            </h1>
+            {/* Category Badge */}
+            <div className="flex items-center gap-4 mt-1" style={{ animation: 'fadeUpIn 0.6s ease-out 0.95s both' }}>
+              <span className="px-8 py-2.5 rounded-full bg-white/10 border-2 border-white/25 text-white text-xl font-bold uppercase tracking-widest backdrop-blur-sm shadow-lg">
+                {playerIntro.category || 'Group A'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ===== SOLD CELEBRATION OVERLAY ===== */}
       {soldCelebration && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-white/90 backdrop-blur-lg">
-          <div className="text-center animate-bounce">
-            <div className="text-6xl mb-4">🎾</div>
-            <h1 className="text-5xl font-black text-emerald-700 uppercase tracking-tight mb-2 font-display">SOLD!</h1>
-            <p className="text-2xl font-bold text-slate-800">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(6, 78, 59, 0.55)' }}>
+          <div className="flex flex-col items-center text-center">
+            {/* Player Photo — slides from right */}
+            <div
+              className="w-56 h-56 xl:w-64 xl:h-64 rounded-full border-[5px] border-emerald-300/90 shadow-2xl overflow-hidden mb-6 bg-slate-700"
+              style={{
+                animation: 'slideFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                boxShadow: '0 0 80px rgba(34, 197, 94, 0.4), 0 25px 50px rgba(0,0,0,0.4)'
+              }}
+            >
+              {soldCelebration.player_image ? (
+                <img
+                  src={soldCelebration.player_image}
+                  alt={soldCelebration.player_name}
+                  className="w-full h-full object-cover object-top"
+                  onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-emerald-900">
+                  <span className="text-7xl">🎾</span>
+                </div>
+              )}
+            </div>
+            {/* SOLD Badge */}
+            <div
+              className="px-10 py-2.5 rounded-full bg-emerald-500 shadow-lg mb-4"
+              style={{ animation: 'fadeUpIn 0.5s ease-out 0.5s both' }}
+            >
+              <h1 className="text-5xl xl:text-7xl font-black text-white uppercase tracking-wider font-display" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>SOLD!</h1>
+            </div>
+            {/* Player Name */}
+            <p
+              className="text-3xl xl:text-5xl font-black text-white mb-4 tracking-tight"
+              style={{ animation: 'fadeUpIn 0.6s ease-out 0.7s both', textShadow: '0 3px 20px rgba(0,0,0,0.4)' }}
+            >
               {soldCelebration.player_name || 'Player'}
             </p>
-            <p className="text-xl text-slate-600 mt-1">
-              to <strong className="text-slate-900">{soldCelebration.team_name || 'Team'}</strong> for{' '}
-              <strong className="text-emerald-700">{formatCurrency(soldCelebration.amount)}</strong>
+            {/* Team Name */}
+            <p
+              className="text-2xl xl:text-3xl text-emerald-200 font-bold mb-3"
+              style={{ animation: 'fadeUpIn 0.5s ease-out 0.9s both' }}
+            >
+              Sold to <strong className="text-white font-black">{soldCelebration.team_name || 'Team'}</strong>
             </p>
+            {/* Amount */}
+            <div
+              className="px-8 py-3 rounded-xl bg-white/10 border-2 border-white/20 backdrop-blur-sm shadow-lg"
+              style={{ animation: 'fadeUpIn 0.6s ease-out 1.1s both' }}
+            >
+              <span className="text-5xl xl:text-6xl font-black text-white font-display" style={{ textShadow: '0 2px 15px rgba(0,0,0,0.3)' }}>{formatCurrency(soldCelebration.amount)}</span>
+            </div>
+            <span
+              className="text-base text-emerald-300 font-bold mt-2"
+              style={{ animation: 'fadeUpIn 0.4s ease-out 1.3s both' }}
+            >({formatCurrency(soldCelebration.amount)})</span>
           </div>
         </div>
       )}
 
       {/* ===== UNSOLD NOTICE OVERLAY ===== */}
       {unsoldNotice && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-white/90 backdrop-blur-lg">
-          <div className="text-center">
-            <div className="text-6xl mb-4">❌</div>
-            <h1 className="text-4xl font-black text-red-600 uppercase tracking-tight mb-2 font-display">UNSOLD</h1>
-            <p className="text-xl text-slate-600">
-              {unsoldNotice.player_name || 'Player'} — No buyer this round
+        <div className="fixed inset-0 z-[200] flex items-center justify-center" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(127, 29, 29, 0.45)' }}>
+          <div className="flex flex-col items-center text-center">
+            {/* Player Photo — slides from right with red tint */}
+            <div
+              className="relative w-56 h-56 xl:w-64 xl:h-64 rounded-full border-[5px] border-red-400/70 shadow-2xl overflow-hidden mb-6"
+              style={{
+                animation: 'slideFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                boxShadow: '0 0 70px rgba(239, 68, 68, 0.35), 0 25px 50px rgba(0,0,0,0.4)'
+              }}
+            >
+              {unsoldNotice.player_image ? (
+                <img
+                  src={unsoldNotice.player_image}
+                  alt={unsoldNotice.player_name}
+                  className="w-full h-full object-cover object-top opacity-70"
+                  onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                  <svg className="w-24 h-24 text-slate-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
+                </div>
+              )}
+              {/* Red X overlay on photo */}
+              <div className="absolute inset-0 flex items-center justify-center bg-red-900/30">
+                <span className="text-8xl font-black text-red-400 drop-shadow-lg opacity-80">✕</span>
+              </div>
+            </div>
+            {/* UNSOLD label */}
+            <h1
+              className="text-5xl xl:text-7xl font-black text-red-400 uppercase tracking-wider mb-4 font-display"
+              style={{ animation: 'fadeUpIn 0.6s ease-out 0.5s both', textShadow: '0 4px 25px rgba(239, 68, 68, 0.4)' }}
+            >UNSOLD</h1>
+            {/* Player Name */}
+            <p
+              className="text-3xl xl:text-4xl font-black text-white/90 mb-3"
+              style={{ animation: 'fadeUpIn 0.6s ease-out 0.75s both', textShadow: '0 3px 20px rgba(0,0,0,0.4)' }}
+            >
+              {unsoldNotice.player_name || 'Player'}
             </p>
+            <p
+              className="text-xl text-red-300/80 font-bold"
+              style={{ animation: 'fadeUpIn 0.5s ease-out 0.95s both' }}
+            >No buyer this round</p>
           </div>
         </div>
       )}
@@ -288,8 +413,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
               >
                 {/* Team Header & Amount Box */}
                 <div className={`pb-3 text-center bg-white rounded-lg p-3 shadow-sm border ${isLeading
-                  ? 'border-emerald-300 border-b-2 border-b-emerald-500'
-                  : 'border-slate-300 border-b-2 border-b-slate-700'
+                    ? 'border-emerald-300 border-b-2 border-b-emerald-500 mt-1'
+                    : 'border-slate-300 border-b-2 border-b-slate-700'
                   }`}>
                   <div
                     className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs mb-1 ${isLeading ? 'bg-emerald-200 text-emerald-900' : `${badge.bg} ${badge.text}`
@@ -299,10 +424,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   </div>
                   <h2 className="text-2xl font-black text-slate-900 tracking-tight">{team.short_name}</h2>
                   <div className={`mt-2 pt-2 ${isLeading ? 'border-t border-emerald-100' : 'border-t border-slate-200'}`}>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block">amount:</span>
-                    <span className="text-xl xl:text-2xl font-black text-slate-900">{formatLakhs(remaining)}</span>
-                    <div className="flex justify-between items-center text-[10px] text-slate-500 mt-1 font-semibold px-1">
-                      <span>Spent: {formatLakhsShort(spent)}</span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block">points:</span>
+                    <span className="text-xl xl:text-2xl font-black text-slate-900">{formatCurrency(remaining)}</span>
+                    <div className="flex justify-center items-center text-[10px] text-slate-500 mt-1 font-semibold px-1">
                       <span>Squad: {squadCount}/{maxSquad}</span>
                     </div>
                   </div>
@@ -487,7 +611,6 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             <div className="border-2 border-slate-700 rounded-lg p-2.5 bg-slate-50 text-center shadow-xs">
               <span className="text-[10px] font-black uppercase tracking-wider text-slate-600 block mb-0.5">BASE PRICE:</span>
               <span className="text-lg xl:text-xl font-black text-slate-900 font-display">{formatCurrency(activePlayer.base_price)}</span>
-              <span className="text-[10px] text-emerald-700 block font-semibold">({formatLakhsShort(activePlayer.base_price)} LAKHS)</span>
             </div>
             {/* Right: Category */}
             <div className="border-2 border-slate-700 rounded-lg p-2.5 bg-slate-50 text-center shadow-xs flex flex-col justify-center">
@@ -511,7 +634,6 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
               <div className="text-3xl xl:text-4xl font-black text-slate-900 tracking-tight font-display">
                 {formatCurrency(currentBid)}
               </div>
-              <span className="text-xs font-bold text-emerald-700">({formatLakhs(currentBid)})</span>
             </div>
             {/* Team Holding Bid */}
             <div className="flex items-center justify-between bg-white border-2 border-slate-700 rounded-lg px-4 py-2 shadow-sm">
@@ -533,35 +655,14 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       </main>
 
       {/* ===== BOTTOM SPONSORS BAR ===== */}
-      <footer className="w-full bg-[#dbe2e6] border-t-2 border-slate-700/80 py-2.5 px-6 shadow-inner shrink-0">
-        <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xs tracking-widest font-black uppercase text-slate-700 font-display">SPONSORS</span>
+      <footer className="w-full bg-[#dbe2e6] border-t-2 border-slate-700/80 py-2 px-6 shadow-inner shrink-0">
+        <div className="max-w-[1920px] mx-auto flex items-center justify-between">
+          <span className="text-xs tracking-widest font-black uppercase text-slate-600 font-display shrink-0">SPONSORS</span>
+          <div className="flex items-center justify-center gap-10 sm:gap-16 flex-1">
+            <img src="/images/sponsors/bhimavaram-digitals.png" alt="Bhimavaram Digitals" className="h-10 w-auto object-contain" />
+            <img src="/images/sponsors/pv-enterprises.png" alt="PV Enterprises" className="h-10 w-auto object-contain" />
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-slate-800 font-bold uppercase tracking-wider text-xs md:text-sm">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-blue-600 rounded-full"></span>
-              <span className="font-extrabold tracking-normal text-slate-900">BNP PARIBAS</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-green-600 rounded-full"></span>
-              <span className="font-black text-slate-900">LACOSTE</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-sky-500 rounded-full"></span>
-              <span className="font-black italic text-slate-900 tracking-tight">YONEX</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-amber-500 rounded-full"></span>
-              <span className="font-extrabold text-slate-900">DUNLOP</span>
-            </div>
-            <div className="hidden sm:flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-indigo-600 rounded-full"></span>
-              <span className="font-black tracking-widest text-slate-900">INFOSYS</span>
-            </div>
-          </div>
-          <div className="text-xs text-slate-600 font-bold text-center md:text-right uppercase tracking-wider">
-          </div>
+          <div className="shrink-0 w-16"></div>
         </div>
       </footer>
 
@@ -570,6 +671,24 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         @keyframes pulseBid {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.05); }
+        }
+        @keyframes slideFromRight {
+          0% { opacity: 0; transform: translateX(100vw) scale(0.6); }
+          60% { opacity: 1; transform: translateX(-20px) scale(1.02); }
+          80% { transform: translateX(8px) scale(0.99); }
+          100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        @keyframes fadeUpIn {
+          0% { opacity: 0; transform: translateY(30px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUpFadeIn {
+          0% { opacity: 0; transform: translateY(40px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleIn {
+          0% { opacity: 0; transform: scale(0.7); }
+          100% { opacity: 1; transform: scale(1); }
         }
         .font-display {
           font-family: 'Space Grotesk', sans-serif;

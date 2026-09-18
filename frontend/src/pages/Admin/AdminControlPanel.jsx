@@ -306,11 +306,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
       {/* Action Notice Floating Alert */}
       {actionNotice && (
         <div
-          className={`fixed top-16 right-6 z-50 px-4 py-2.5 rounded-lg shadow-2xl flex items-center gap-2.5 border text-xs font-bold transition-all animate-bounce ${
-            actionNotice.type === 'error'
+          className={`fixed top-16 right-6 z-50 px-4 py-2.5 rounded-lg shadow-2xl flex items-center gap-2.5 border text-xs font-bold transition-all animate-bounce ${actionNotice.type === 'error'
               ? 'bg-red-950/90 text-red-300 border-red-500/50'
               : 'bg-emerald-950/90 text-brand-neon border-emerald-500/50'
-          }`}
+            }`}
         >
           <span>{actionNotice.type === 'error' ? '⚠️' : '✅'}</span>
           <span>{actionNotice.text}</span>
@@ -411,9 +410,8 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
           {/* Volume Alert Toggle */}
           <button
             onClick={() => setIsMuted(prev => !prev)}
-            className={`w-8 h-8 rounded bg-brand-surface border border-brand-border flex items-center justify-center hover:bg-slate-800 transition ${
-              isMuted ? 'text-slate-500' : 'text-slate-300 hover:text-white'
-            }`}
+            className={`w-8 h-8 rounded bg-brand-surface border border-brand-border flex items-center justify-center hover:bg-slate-800 transition ${isMuted ? 'text-slate-500' : 'text-slate-300 hover:text-white'
+              }`}
             title={isMuted ? 'Unmute Gavel Audio' : 'Mute Gavel Audio'}
           >
             {isMuted ? (
@@ -757,9 +755,8 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                     <div
                       key={team.id || idx}
                       onClick={() => setSelectedTeamId(team.id)}
-                      className={`bg-brand-surface border-2 border-brand-neon paddle-active rounded-lg p-2.5 cursor-pointer transition flex items-center justify-between group relative shadow-lg shadow-emerald-950/30 ${
-                        isSelected ? 'ring-1 ring-emerald-400' : ''
-                      }`}
+                      className={`bg-brand-surface border-2 border-brand-neon paddle-active rounded-lg p-2.5 cursor-pointer transition flex items-center justify-between group relative shadow-lg shadow-emerald-950/30 ${isSelected ? 'ring-1 ring-emerald-400' : ''
+                        }`}
                       data-purpose={`team-card-${teamNum}`}
                     >
                       <div className="flex items-center space-x-3">
@@ -811,11 +808,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   <div
                     key={team.id || idx}
                     onClick={() => setSelectedTeamId(team.id)}
-                    className={`bg-brand-surface border rounded-lg p-2.5 cursor-pointer transition flex items-center justify-between group relative ${
-                      isSelected
+                    className={`bg-brand-surface border rounded-lg p-2.5 cursor-pointer transition flex items-center justify-between group relative ${isSelected
                         ? 'border-brand-neon/80 bg-brand-surface/90 shadow-md ring-1 ring-brand-neon/40'
                         : `border-brand-border ${teamColorStyles.border}`
-                    }`}
+                      }`}
                     data-purpose={`team-card-${teamNum}`}
                   >
                     <div className="flex items-center space-x-3">
@@ -860,17 +856,16 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                             setSelectedTeamId(team.id);
                             handleSubmitBid(team.id, playerBasePrice);
                           }}
-                          className={`px-3 py-1 text-xs font-bold rounded border transition ${
-                            !isEligible
+                          className={`px-3 py-1 text-xs font-bold rounded border transition ${!isEligible
                               ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border-slate-700'
                               : 'bg-emerald-600/30 hover:bg-emerald-600 text-emerald-200 border-emerald-500/50 shadow-sm'
-                          }`}
+                            }`}
                           title={
                             squadFull
                               ? `${team.name} squad is full`
                               : !canAfford
-                              ? `${team.name} has insufficient purse balance`
-                              : `Start bidding at ${formatCurrency(playerBasePrice)} for ${team.name}`
+                                ? `${team.name} has insufficient purse balance`
+                                : `Start bidding at ${formatCurrency(playerBasePrice)} for ${team.name}`
                           }
                         >
                           Start
@@ -884,17 +879,16 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                             setSelectedTeamId(team.id);
                             handleSubmitBid(team.id, minRecommendedBid);
                           }}
-                          className={`px-2.5 py-1 text-xs font-bold rounded border transition ${
-                            !isEligible
+                          className={`px-2.5 py-1 text-xs font-bold rounded border transition ${!isEligible
                               ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border-slate-700'
                               : teamColorStyles.btn
-                          }`}
+                            }`}
                           title={
                             squadFull
                               ? `${team.name} squad is full`
                               : !canAfford
-                              ? `${team.name} has insufficient purse for ${formatCurrency(minRecommendedBid)}`
-                              : `Raise bid to ${formatCurrency(minRecommendedBid)} for ${team.name}`
+                                ? `${team.name} has insufficient purse for ${formatCurrency(minRecommendedBid)}`
+                                : `Raise bid to ${formatCurrency(minRecommendedBid)} for ${team.name}`
                           }
                         >
                           + Raise
@@ -1094,11 +1088,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                             setSelectedIncrement(inc);
                             setCustomBidInput('');
                           }}
-                          className={`py-2 bg-brand-card hover:bg-slate-700/60 border rounded font-mono font-bold text-xs transition cursor-pointer ${
-                            isIncActive
+                          className={`py-2 bg-brand-card hover:bg-slate-700/60 border rounded font-mono font-bold text-xs transition cursor-pointer ${isIncActive
                               ? 'border-brand-neon text-brand-neon hover:border-emerald-400 ring-1 ring-emerald-500/30'
                               : 'border-brand-border text-cyan-300 hover:border-cyan-400'
-                          }`}
+                            }`}
                         >
                           +{inc.toLocaleString()} {inc === 2000 ? '★' : ''}
                         </button>
