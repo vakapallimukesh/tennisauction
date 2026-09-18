@@ -264,25 +264,38 @@ function submitBid({ team_id, amount, increment }) {
     throw new Error(`${team.name} has already filled all ${team.max_players} squad positions.`);
   }
 
-  // Determine if bidding is already active for this player
-  const playerBids = (store.bids || []).filter(b => b.player_id === auction.current_player_id);
-  const hasActiveBids = Boolean(auction.highest_bidder_team_id) && playerBids.length > 0;
+  // Check if bidding has already started for this player
+  const isBiddingStarted = Boolean(auction.highest_bidder_team_id);
+  const currentPlayer = store.players.find(p => p.id === auction.current_player_id);
+  const playerBasePrice = parseFloat(currentPlayer?.base_price || 10000);
 
-  // Calculate bid amount
   let bidAmount;
-  if (amount) {
-    bidAmount = parseFloat(amount);
-  } else {
-    const inc = increment ? parseFloat(increment) : (auction.bid_increment || 2000);
-    bidAmount = hasActiveBids ? (auction.current_bid + inc) : auction.current_bid;
-  }
 
-  // Validation: If bidding is active, bid must exceed current bid.
-  // If starting player bidding (no bids yet), opening bid must be at least base price (current_bid)
-  if (hasActiveBids && bidAmount <= auction.current_bid) {
-    throw new Error(`Bid of ₹${bidAmount.toLocaleString('en-IN')} must be higher than the current bid of ₹${auction.current_bid.toLocaleString('en-IN')}.`);
-  } else if (!hasActiveBids && bidAmount < (auction.current_bid || 10000)) {
-    throw new Error(`Opening bid of ₹${bidAmount.toLocaleString('en-IN')} cannot be lower than the base price of ₹${(auction.current_bid || 10000).toLocaleString('en-IN')}.`);
+  if (!isBiddingStarted) {
+    // 1. FIRST START ACTION: Allow starting at exact base price (or higher if specified)
+    if (amount) {
+      bidAmount = parseFloat(amount);
+    } else {
+      bidAmount = playerBasePrice;
+    }
+
+    // Validation for START BID: Must be at least the base price
+    if (bidAmount < playerBasePrice) {
+      throw new Error(`Opening bid of ₹${bidAmount.toLocaleString('en-IN')} cannot be lower than the base price of ₹${playerBasePrice.toLocaleString('en-IN')}.`);
+    }
+  } else {
+    // 2. SUBSEQUENT RAISE ACTIONS: Must be strictly greater than current bid
+    if (amount) {
+      bidAmount = parseFloat(amount);
+    } else {
+      const inc = increment ? parseFloat(increment) : (auction.bid_increment || 2000);
+      bidAmount = auction.current_bid + inc;
+    }
+
+    // Validation for RAISE BID: Must be strictly higher than current_bid
+    if (bidAmount <= auction.current_bid) {
+      throw new Error(`Bid of ₹${bidAmount.toLocaleString('en-IN')} must be higher than the current bid of ₹${auction.current_bid.toLocaleString('en-IN')}.`);
+    }
   }
 
   // Calculate actual purse remaining
