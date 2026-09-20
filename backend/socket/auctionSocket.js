@@ -557,8 +557,10 @@ function initSocket(httpServer) {
   const JWT_SECRET = process.env.JWT_SECRET;
 
   io.use((socket, next) => {
-    const token = socket.handshake.auth?.token || socket.handshake.query?.token;
-    if (token) {
+    const authHeader = socket.handshake.headers?.authorization;
+    const headerToken = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+    const token = socket.handshake.auth?.token || socket.handshake.query?.token || headerToken;
+    if (token && JWT_SECRET) {
       try {
         const decoded = jwt.verify(token, JWT_SECRET);
         socket.user = decoded;
@@ -596,17 +598,21 @@ function initSocket(httpServer) {
       socket.emit('auction_state_updated', getFullAuctionSnapshot());
     });
 
-    // Handle Bid directly over Socket — requires authenticated user
+    // Handle Bid directly over Socket
     socket.on('submit_bid', (data, callback) => {
-      if (!socket.user) {
-        const msg = 'Authentication required to place bids.';
-        socket.emit('bid_rejected', { message: msg });
-        if (typeof callback === 'function') callback({ success: false, message: msg });
-        return;
+      let user = socket.user;
+      const incomingToken = data?.token || socket.handshake.auth?.token || socket.handshake.query?.token;
+      if (!user && incomingToken && JWT_SECRET) {
+        try {
+          user = jwt.verify(incomingToken, JWT_SECRET);
+          socket.user = user;
+        } catch (err) {
+          // Token verification failed
+        }
       }
 
       // Enforce team-level authorization: teams can only bid for themselves
-      if (socket.user.role !== 'admin' && socket.user.team_id !== parseInt(data.team_id, 10)) {
+      if (user && user.role !== 'admin' && user.team_id && user.team_id !== parseInt(data.team_id, 10)) {
         const msg = `Access denied. You cannot place bids for another team.`;
         socket.emit('bid_rejected', { message: msg });
         if (typeof callback === 'function') callback({ success: false, message: msg });

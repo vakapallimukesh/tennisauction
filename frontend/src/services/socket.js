@@ -4,7 +4,6 @@ let socket = null;
 
 export function getSocket() {
   if (!socket) {
-    // If running in development with Vite proxy, connecting to '/' auto-proxies '/socket.io'
     const host = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
     const protocol = typeof window !== 'undefined' ? window.location.protocol : 'http:';
     const backendUrl = import.meta.env.VITE_BACKEND_URL || (
@@ -14,6 +13,10 @@ export function getSocket() {
     );
 
     socket = io(backendUrl, {
+      auth: (cb) => {
+        const token = typeof localStorage !== 'undefined' ? localStorage.getItem('tennis_admin_token') : null;
+        cb({ token });
+      },
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionAttempts: Infinity,
@@ -33,9 +36,25 @@ export function getSocket() {
     socket.on('connect_error', (err) => {
       console.warn('⚠️ Socket.IO Connection Error:', err.message);
     });
+  } else {
+    // Ensure auth token is up to date
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('tennis_admin_token') : null;
+    if (token && socket.auth?.token !== token) {
+      socket.auth = { token };
+    }
   }
 
   return socket;
+}
+
+export function updateSocketAuth(token) {
+  const sock = getSocket();
+  if (sock) {
+    sock.auth = { token };
+    if (!sock.connected) {
+      sock.connect();
+    }
+  }
 }
 
 export default getSocket;

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { api, authStorage } from '../services/api';
-import { getSocket } from '../services/socket';
+import { getSocket, updateSocketAuth } from '../services/socket';
 import confetti from 'canvas-confetti';
 
 const AuctionContext = createContext(null);
@@ -284,24 +284,32 @@ export function AuctionProvider({ children }) {
     const res = await api.login({ username, password });
     const userPayload = res.user || res.admin;
     setCurrentUser(userPayload);
+    if (res.token) {
+      updateSocketAuth(res.token);
+    }
     return res;
   };
 
   const logout = () => {
     api.logout();
     setCurrentUser(null);
+    updateSocketAuth(null);
   };
 
   // Actions
   const placeBid = async ({ team_id, amount, increment }) => {
+    const token = authStorage.getToken();
     const socket = getSocket();
     if (socket && socket.connected) {
       return new Promise((resolve, reject) => {
-        socket.emit('submit_bid', { team_id, amount, increment }, (response) => {
+        socket.emit('submit_bid', { team_id, amount, increment, token }, (response) => {
           if (response && response.success) {
             resolve(response.data);
           } else {
-            reject(new Error(response?.message || 'Bid failed'));
+            // Fallback to REST API if socket response fails
+            api.placeBid({ team_id, amount, increment })
+              .then(resolve)
+              .catch(err => reject(new Error(response?.message || err.message || 'Bid failed')));
           }
         });
       });
