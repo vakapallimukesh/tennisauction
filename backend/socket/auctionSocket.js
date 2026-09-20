@@ -32,7 +32,7 @@ function getFullAuctionSnapshot() {
       };
     });
 
-    const remaining = Math.max(0, (parseFloat(t.total_purse) || 100000) - totalSpent);
+    const remaining = Math.max(0, (parseFloat(t.total_purse) || 400000) - totalSpent);
 
     return {
       ...t,

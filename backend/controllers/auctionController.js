@@ -116,7 +116,7 @@ exports.placeBid = async (req, res) => {
 
     // Calculate current purse remaining
     const totalSpent = teamPlayers.reduce((sum, tp) => sum + (parseFloat(tp.purchase_price) || 0), 0);
-    const purseRemaining = (parseFloat(team.total_purse) || 100000) - totalSpent;
+    const purseRemaining = (parseFloat(team.total_purse) || 400000) - totalSpent;
 
     if (bidAmount > purseRemaining) {
       return res.status(400).json({

@@ -92,26 +92,26 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       {
         id: 1, team_number: 1, name: 'Team A',
         short_name: 'TEAM A', owner: 'Rohan Iyer',
-        total_purse: 1000000, purse_remaining: 1000000, spent: 0,
-        max_players: 8, players_bought: 0, players: []
+        total_purse: 400000, purse_remaining: 400000, spent: 0,
+        max_players: 5, players_bought: 0, players: []
       },
       {
         id: 2, team_number: 2, name: 'Team B',
         short_name: 'TEAM B', owner: 'Vikramaditya Roy',
-        total_purse: 1000000, purse_remaining: 1000000, spent: 0,
-        max_players: 8, players_bought: 0, players: []
+        total_purse: 400000, purse_remaining: 400000, spent: 0,
+        max_players: 5, players_bought: 0, players: []
       },
       {
         id: 3, team_number: 3, name: 'Team C',
         short_name: 'TEAM C', owner: 'Maya Sengupta',
-        total_purse: 1000000, purse_remaining: 1000000, spent: 0,
-        max_players: 8, players_bought: 0, players: []
+        total_purse: 400000, purse_remaining: 400000, spent: 0,
+        max_players: 5, players_bought: 0, players: []
       },
       {
         id: 4, team_number: 4, name: 'Team D',
         short_name: 'TEAM D', owner: 'Kabir Malhotra',
-        total_purse: 1000000, purse_remaining: 1000000, spent: 0,
-        max_players: 8, players_bought: 0, players: []
+        total_purse: 400000, purse_remaining: 400000, spent: 0,
+        max_players: 5, players_bought: 0, players: []
       }
     ];
 
@@ -452,7 +452,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-700 border-r-2 border-slate-700 bg-[#e2e8f0]">
           {displayTeams.map((team, idx) => {
             const isLeading = highestTeam?.id === team.id;
-            const totalPurse = team.total_purse || 1000000;
+            const totalPurse = team.total_purse || 400000;
             const remaining = team.purse_remaining || 0;
             const spent = Math.max(0, totalPurse - remaining);
             const squadCount = team.players_bought || team.players?.length || 0;

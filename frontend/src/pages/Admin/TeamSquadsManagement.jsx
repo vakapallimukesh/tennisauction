@@ -18,11 +18,11 @@ export default function TeamSquadsManagement({ onNavigate }) {
 
   // Calculate totals
   const totalPurseAllocated = useMemo(() => {
-    return (teams || []).reduce((sum, t) => sum + (t.total_purse || 100000), 0);
+    return (teams || []).reduce((sum, t) => sum + (t.total_purse || 400000), 0);
   }, [teams]);
 
   const totalPurseSpent = useMemo(() => {
-    return (teams || []).reduce((sum, t) => sum + ((t.total_purse || 100000) - (t.purse_remaining !== undefined ? t.purse_remaining : 100000)), 0);
+    return (teams || []).reduce((sum, t) => sum + ((t.total_purse || 400000) - (t.purse_remaining !== undefined ? t.purse_remaining : 400000)), 0);
   }, [teams]);
 
   const totalPlayersAcquired = useMemo(() => {
@@ -164,8 +164,8 @@ export default function TeamSquadsManagement({ onNavigate }) {
         {filteredTeams.map((team) => {
           const squadCount = team.players_bought || team.roster?.length || 0;
           const maxSquad = team.max_players || 5;
-          const purseRemaining = team.purse_remaining !== undefined ? team.purse_remaining : 100000;
-          const totalPurse = team.total_purse || 100000;
+          const purseRemaining = team.purse_remaining !== undefined ? team.purse_remaining : 400000;
+          const totalPurse = team.total_purse || 400000;
           const totalSpent = totalPurse - purseRemaining;
           const roster = team.roster || [];
 

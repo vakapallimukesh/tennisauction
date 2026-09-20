@@ -45,8 +45,8 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
     return (teams || []).find(t => t.id === effectiveTeamId) || {
       id: effectiveTeamId,
       name: `Team ${effectiveTeamId}`,
-      total_purse: 100000,
-      purse_remaining: 100000,
+      total_purse: 400000,
+      purse_remaining: 400000,
       players_bought: 0,
       max_players: 5,
       roster: [],
@@ -73,7 +73,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
 
   // Squad and purse constraints
   const squadFull = (myTeam.players_bought || 0) >= (myTeam.max_players || 5);
-  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : 100000;
+  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : 400000;
   const nextMinBid = isBiddingActive ? (currentBid + bidIncrement) : playerBasePrice;
 
   // Handle Bid Execution
@@ -487,7 +487,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                   <div className="flex justify-between text-xs">
                     <span className="text-slate-400">Purse Utilization</span>
                     <span className="font-mono font-bold text-slate-200">
-                      ₹{(myTeam.total_spent || 0).toLocaleString('en-IN')} / ₹{(myTeam.total_purse || 100000).toLocaleString('en-IN')}
+                      ₹{(myTeam.total_spent || 0).toLocaleString('en-IN')} / ₹{(myTeam.total_purse || 400000).toLocaleString('en-IN')}
                     </span>
                   </div>
                   {/* Progress bar */}
@@ -495,7 +495,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
-                        width: `${Math.min(100, ((myTeam.total_spent || 0) / (myTeam.total_purse || 100000)) * 100)}%`,
+                        width: `${Math.min(100, ((myTeam.total_spent || 0) / (myTeam.total_purse || 400000)) * 100)}%`,
                         backgroundColor: myTeam.primary_color || '#22c55e'
                       }}
                     />

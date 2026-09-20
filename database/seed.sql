@@ -14,13 +14,13 @@ INSERT INTO `sponsors` (`category`, `name`, `logo_icon`, `website`) VALUES
 ('OFFICIAL PARTNER', 'GrandVista', 'grandvista', 'https://grandvista.example.com');
 
 -- ----------------------------------------------------------
--- 2. Seed 4 Teams (1 Lakh / 100,000.00 per team)
+-- 2. Seed 4 Teams (4 Lakh / 400,000.00 per team)
 -- ----------------------------------------------------------
 INSERT INTO `teams` (`id`, `team_number`, `name`, `tagline`, `owner`, `total_purse`, `purse_remaining`, `max_players`, `logo_url`, `primary_color`, `accent_color`, `glow_color`, `bg_gradient`) VALUES
-(1, 1, 'Team A', '', 'Rohan Iyer', 100000.00, 100000.00, 5, '/images/teams/team1-lion.svg', '#22c55e', '#4ade80', 'rgba(34, 197, 94, 0.45)', 'from-emerald-950/40 to-slate-950/80'),
-(2, 2, 'Team B', '', 'Vikramaditya Roy', 100000.00, 100000.00, 5, '/images/teams/team2-eagle.svg', '#0ea5e9', '#38bdf8', 'rgba(14, 165, 233, 0.45)', 'from-sky-950/40 to-slate-950/80'),
-(3, 3, 'Team C', '', 'Maya Sengupta', 100000.00, 100000.00, 5, '/images/teams/team3-crown.svg', '#a855f7', '#c084fc', 'rgba(168, 85, 247, 0.45)', 'from-purple-950/40 to-slate-950/80'),
-(4, 4, 'Team D', '', 'Kabir Malhotra', 100000.00, 100000.00, 5, '/images/teams/team4-flame.svg', '#f97316', '#fb923c', 'rgba(249, 115, 22, 0.45)', 'from-orange-950/40 to-slate-950/80');
+(1, 1, 'Team A', '', 'Rohan Iyer', 400000.00, 400000.00, 5, '/images/teams/team1-lion.svg', '#22c55e', '#4ade80', 'rgba(34, 197, 94, 0.45)', 'from-emerald-950/40 to-slate-950/80'),
+(2, 2, 'Team B', '', 'Vikramaditya Roy', 400000.00, 400000.00, 5, '/images/teams/team2-eagle.svg', '#0ea5e9', '#38bdf8', 'rgba(14, 165, 233, 0.45)', 'from-sky-950/40 to-slate-950/80'),
+(3, 3, 'Team C', '', 'Maya Sengupta', 400000.00, 400000.00, 5, '/images/teams/team3-crown.svg', '#a855f7', '#c084fc', 'rgba(168, 85, 247, 0.45)', 'from-purple-950/40 to-slate-950/80'),
+(4, 4, 'Team D', '', 'Kabir Malhotra', 400000.00, 400000.00, 5, '/images/teams/team4-flame.svg', '#f97316', '#fb923c', 'rgba(249, 115, 22, 0.45)', 'from-orange-950/40 to-slate-950/80');
 
 -- ----------------------------------------------------------
 -- 3. Seed Users (1 Admin + 4 Teams)
