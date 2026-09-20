@@ -79,7 +79,8 @@ router.post('/login', async (req, res) => {
     });
   } catch (err) {
     console.error('Auth login error:', err);
-    res.status(500).json({ success: false, message: 'Server authentication error', error: err.message });
+    const isProduction = process.env.NODE_ENV === 'production';
+    res.status(500).json({ success: false, message: 'Server authentication error', ...(isProduction ? {} : { error: err.message }) });
   }
 });
 

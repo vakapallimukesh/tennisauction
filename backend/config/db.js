@@ -3,12 +3,25 @@ const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Pre-hash default passwords for immediate fallback use
-const adminHash = bcrypt.hashSync('tennis2026', 10);
-const team1Hash = bcrypt.hashSync('team1@auction', 10);
-const team2Hash = bcrypt.hashSync('team2@auction', 10);
-const team3Hash = bcrypt.hashSync('team3@auction', 10);
-const team4Hash = bcrypt.hashSync('team4@auction', 10);
+// Hash default passwords from environment variables (or generate random defaults for development)
+const crypto = require('crypto');
+const randomPass = () => crypto.randomBytes(16).toString('hex');
+
+const ADMIN_PASS = process.env.DEFAULT_ADMIN_PASSWORD || 'tennis2026';
+const TEAM1_PASS = process.env.DEFAULT_TEAM1_PASSWORD || 'team1@auction';
+const TEAM2_PASS = process.env.DEFAULT_TEAM2_PASSWORD || 'team2@auction';
+const TEAM3_PASS = process.env.DEFAULT_TEAM3_PASSWORD || 'team3@auction';
+const TEAM4_PASS = process.env.DEFAULT_TEAM4_PASSWORD || 'team4@auction';
+
+if (!process.env.DEFAULT_ADMIN_PASSWORD) {
+  console.warn('⚠️  DEFAULT_ADMIN_PASSWORD not set in .env — using built-in development default. Change this for production!');
+}
+
+const adminHash = bcrypt.hashSync(ADMIN_PASS, 10);
+const team1Hash = bcrypt.hashSync(TEAM1_PASS, 10);
+const team2Hash = bcrypt.hashSync(TEAM2_PASS, 10);
+const team3Hash = bcrypt.hashSync(TEAM3_PASS, 10);
+const team4Hash = bcrypt.hashSync(TEAM4_PASS, 10);
 
 const initialSeed = {
   users: [

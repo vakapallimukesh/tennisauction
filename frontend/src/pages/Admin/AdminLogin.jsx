@@ -108,7 +108,7 @@ export default function AdminLogin({ onLoginSuccess }) {
               onClick={fillDemo}
               className="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2"
             >
-              Fill Default (admin / tennis2026)
+              Fill Default (admin / ••••••••)
             </button>
           </div>
 

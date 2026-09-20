@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'tennis_auction_super_secret_jwt_key_2026';
+if (!process.env.JWT_SECRET) {
+  console.error('❌ FATAL: JWT_SECRET environment variable is not set. Server cannot start securely.');
+  console.error('   Set JWT_SECRET in your .env file or environment variables before starting the server.');
+  process.exit(1);
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 function authenticateJWT(req, res, next) {
   const authHeader = req.headers.authorization;

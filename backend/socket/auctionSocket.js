@@ -527,15 +527,47 @@ function selectNextPlayer(playerId = null) {
 }
 
 function initSocket(httpServer) {
+  const ALLOWED_ORIGINS = process.env.CLIENT_URL
+    ? process.env.CLIENT_URL.split(',')
+    : ['http://localhost:5173', 'http://localhost:3000'];
+
   io = new Server(httpServer, {
     cors: {
-      origin: '*',
-      methods: ['GET', 'POST']
+      origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (ALLOWED_ORIGINS.includes(origin)) {
+          return callback(null, true);
+        }
+        return callback(new Error('Not allowed by CORS'));
+      },
+      methods: ['GET', 'POST'],
+      credentials: true
     }
   });
 
+  // Socket.IO JWT authentication middleware
+  const jwt = require('jsonwebtoken');
+  const JWT_SECRET = process.env.JWT_SECRET;
+
+  io.use((socket, next) => {
+    const token = socket.handshake.auth?.token || socket.handshake.query?.token;
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        socket.user = decoded;
+      } catch (err) {
+        // Token invalid — allow connection but mark as unauthenticated (display clients)
+        socket.user = null;
+      }
+    } else {
+      // No token — allow connection for display/read-only clients
+      socket.user = null;
+    }
+    next();
+  });
+
   io.on('connection', (socket) => {
-    console.log(`🔌 Client connected to Socket.IO: ${socket.id}`);
+    console.log(`🔌 Client connected to Socket.IO: ${socket.id} (${socket.user ? socket.user.username : 'unauthenticated'})`);
 
     // Immediately send full snapshot and timer
     socket.emit('auction_state_updated', getFullAuctionSnapshot());
@@ -557,8 +589,23 @@ function initSocket(httpServer) {
       socket.emit('auction_state_updated', getFullAuctionSnapshot());
     });
 
-    // Handle Bid directly over Socket
+    // Handle Bid directly over Socket — requires authenticated user
     socket.on('submit_bid', (data, callback) => {
+      if (!socket.user) {
+        const msg = 'Authentication required to place bids.';
+        socket.emit('bid_rejected', { message: msg });
+        if (typeof callback === 'function') callback({ success: false, message: msg });
+        return;
+      }
+
+      // Enforce team-level authorization: teams can only bid for themselves
+      if (socket.user.role !== 'admin' && socket.user.team_id !== parseInt(data.team_id, 10)) {
+        const msg = `Access denied. You cannot place bids for another team.`;
+        socket.emit('bid_rejected', { message: msg });
+        if (typeof callback === 'function') callback({ success: false, message: msg });
+        return;
+      }
+
       try {
         const result = submitBid(data);
         if (typeof callback === 'function') callback({ success: true, data: result });

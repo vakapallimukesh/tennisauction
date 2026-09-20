@@ -141,10 +141,11 @@ The database schema is defined in [database/schema.sql](file:///Users/vakapallim
 
 ## 🔐 5. Admin Login Credentials
 
-For local testing and administration:
+Default credentials are configured via environment variables in `backend/.env`:
 - **Username**: `admin`
-- **Password**: `tennis2026`
-*(Quick "Fill Default" button is available on the login page for one-click testing)*
+- **Password**: Set via `DEFAULT_ADMIN_PASSWORD` in `backend/.env`
+
+> ⚠️ **Important**: Always change default passwords before deploying to production.
 
 ---
 
@@ -175,7 +176,7 @@ Frontend runs on: **`http://localhost:5173`**
 
 1. Open your laptop browser and visit:
    👉 **`http://localhost:5173/admin`**
-2. Log in with `admin` / `tennis2026`.
+2. Log in with your configured admin credentials (see Section 5 & 13).
 3. You now have full auction control over bids, timer, athletes, and hammer fall.
 
 ---
@@ -243,11 +244,13 @@ When running the auction at a venue with a laptop and a separate smart TV / PC:
 ### Backend (`backend/.env`)
 ```env
 PORT=5001
-JWT_SECRET=tennis_auction_super_secret_jwt_key_2026
+JWT_SECRET=CHANGE_ME_to_a_random_64_character_secret
+DEFAULT_ADMIN_PASSWORD=your_secure_admin_password
+CLIENT_URL=http://localhost:5173
 DB_HOST=localhost
 DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your_password
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
 DB_NAME=tennis_auction
 NODE_ENV=development
 ```
@@ -261,7 +264,7 @@ VITE_BACKEND_URL=http://localhost:5001
 
 ## ✅ 14. Testing Checklist
 
-- [x] **Admin Authentication**: Admin logs in via `/admin/login` using `admin` / `tennis2026`.
+- [x] **Admin Authentication**: Admin logs in via `/admin/login` using configured credentials.
 - [x] **Real-Time Bid Sync**: Placing a bid on `/admin` updates the current bid and highest bidder on `/display` in real time with 0 page refresh.
 - [x] **Authoritative Timer**: Timer counts down from server ticks; pausing or adding +5s reflects simultaneously on both screens without drift.
 - [x] **Bid Validation**: Prevents bids lower than current bid, prevents bids exceeding franchise purse, and blocks bids when squad is full (5/5).

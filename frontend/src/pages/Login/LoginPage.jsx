@@ -10,52 +10,8 @@ const TERMINAL_ROLES = [
     badge: 'SEC_LEVEL: 01',
     description: 'Full override privileges, hammer control, player pool management, and audit log oversight.',
     username: 'admin',
-    defaultPass: 'tennis2026',
+    defaultPass: '',
     targetRoute: '/admin'
-  },
-  {
-    id: 'team1',
-    name: 'Team A',
-    category: 'Franchise 01',
-    icon: 'shield',
-    badge: 'PURSE: ₹1.0L',
-    description: 'Dedicated bidding console, purse telemetry, and real-time squad roster tracking.',
-    username: 'team1',
-    defaultPass: 'team1@auction',
-    targetRoute: '/team/1'
-  },
-  {
-    id: 'team2',
-    name: 'Team B',
-    category: 'Franchise 02',
-    icon: 'shield',
-    badge: 'PURSE: ₹1.0L',
-    description: 'Dedicated bidding console, purse telemetry, and real-time squad roster tracking.',
-    username: 'team2',
-    defaultPass: 'team2@auction',
-    targetRoute: '/team/2'
-  },
-  {
-    id: 'team3',
-    name: 'Team C',
-    category: 'Franchise 03',
-    icon: 'shield',
-    badge: 'PURSE: ₹1.0L',
-    description: 'Dedicated bidding console, purse telemetry, and real-time squad roster tracking.',
-    username: 'team3',
-    defaultPass: 'team3@auction',
-    targetRoute: '/team/3'
-  },
-  {
-    id: 'team4',
-    name: 'Team D',
-    category: 'Franchise 04',
-    icon: 'shield',
-    badge: 'PURSE: ₹1.0L',
-    description: 'Dedicated bidding console, purse telemetry, and real-time squad roster tracking.',
-    username: 'team4',
-    defaultPass: 'team4@auction',
-    targetRoute: '/team/4'
   },
   {
     id: 'display',
@@ -104,19 +60,6 @@ export default function LoginPage({ onNavigate }) {
         onNavigate(selectedRole.targetRoute);
       }, 400);
     } catch (err) {
-      // Fallback for admin if seeded with alternative password
-      if (selectedRole.id === 'admin' && passkey !== 'tennis2026') {
-        try {
-          await login(selectedRole.username, 'tennis2026');
-          setTimeout(() => {
-            setIsAuthenticating(false);
-            onNavigate(selectedRole.targetRoute);
-          }, 400);
-          return;
-        } catch {
-          // ignore fallback error
-        }
-      }
       setIsAuthenticating(false);
       setErrorMsg(err.message || 'Authentication failed. Please verify credentials.');
     }
@@ -150,7 +93,7 @@ export default function LoginPage({ onNavigate }) {
         </div>
 
         {/* Roles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-10 max-w-3xl mx-auto">
           {TERMINAL_ROLES.map((role) => {
             const isSelected = selectedRole.id === role.id;
             return (

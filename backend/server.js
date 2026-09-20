@@ -11,6 +11,7 @@ const auctionRouter = require('./routes/auction');
 const sponsorsRouter = require('./routes/sponsors');
 const authRouter = require('./routes/auth');
 const { initSocket } = require('./socket/auctionSocket');
+const { requireAdmin } = require('./middleware/auth');
 
 const app = express();
 const server = http.createServer(app);
@@ -19,11 +20,23 @@ const PORT = process.env.PORT || 5001;
 // Initialize Socket.IO
 initSocket(server);
 
-// Middleware
+// Middleware — Restrict CORS to trusted origins
+const ALLOWED_ORIGINS = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',')
+  : ['http://localhost:5173', 'http://localhost:3000'];
+
 app.use(cors({
-  origin: '*',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    if (ALLOWED_ORIGINS.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
@@ -41,8 +54,8 @@ app.use('/api/teams', teamsRouter);
 app.use('/api/auction', auctionRouter);
 app.use('/api/sponsors', sponsorsRouter);
 
-// Reset auction data (clear everything back to initial state)
-app.post('/api/auction/reset', (req, res) => {
+// Reset auction data (clear everything back to initial state) — Admin only
+app.post('/api/auction/reset', requireAdmin, (req, res) => {
   const db = require('./config/db');
   const store = db.resetMemoryStore();
   const { broadcastAuctionState } = require('./socket/auctionSocket');
@@ -67,10 +80,15 @@ app.use((req, res) => {
   res.status(404).json({ success: false, message: 'API Route Not Found' });
 });
 
-// Global error handler
+// Global error handler — suppress details in production
 app.use((err, req, res, next) => {
   console.error('Server error:', err);
-  res.status(500).json({ success: false, message: 'Internal Server Error', error: err.message });
+  const isProduction = process.env.NODE_ENV === 'production';
+  res.status(500).json({
+    success: false,
+    message: 'Internal Server Error',
+    ...(isProduction ? {} : { error: err.message })
+  });
 });
 
 server.listen(PORT, () => {
