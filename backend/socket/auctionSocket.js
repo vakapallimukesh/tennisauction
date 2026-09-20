@@ -398,9 +398,12 @@ function markPlayerSold(winning_team_id = null, final_price = null) {
 
   // Prepare celebration data
   const celebrationData = {
-    player: { ...player },
+    player: { ...player, sold_price: price, sold_to_team_id: team.id },
     team: { ...team },
+    winning_team: { ...team },
+    team_name: team.name,
     amount: price,
+    final_price: price,
     timestamp: new Date().toISOString()
   };
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuction } from '../../context/AuctionContext';
+import SpinningCounter from '../../components/SpinningCounter';
+import LogoLoop from '../../components/LogoLoop';
 
 export default function DigitalAuctionDisplay({ onNavigate }) {
   const {
@@ -159,18 +161,59 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
     (soldPlayers?.length || 0) + (activePlayer?.display_order || activePlayer?.id || 1)
   ).padStart(3, '0');
 
+  // Sponsor logos for bottom scrolling bar (Devee Group, PV Enterprises, Bhimavaram Online)
+  const sponsorLogos = useMemo(() => {
+    const deveeLogoItem = {
+      node: (
+        <img
+          src="/images/sponsors/devee-group.png"
+          alt="Devee Group"
+          className="h-10 sm:h-11 md:h-12 w-auto object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+          onError={(e) => { e.target.style.display = 'none'; }}
+        />
+      ),
+      title: "Devee Group"
+    };
+
+    const pvLogoItem = {
+      node: (
+        <img
+          src="/images/sponsors/pv-enterprises.png"
+          alt="PV Enterprises"
+          className="h-10 sm:h-11 md:h-12 w-auto object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+          onError={(e) => { e.target.style.display = 'none'; }}
+        />
+      ),
+      title: "PV Enterprises"
+    };
+
+    const bhimavaramOnlineItem = {
+      node: (
+        <img
+          src="/images/sponsors/bhimavaram-online.png"
+          alt="Bhimavaram Online"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+          onError={(e) => { e.target.style.display = 'none'; }}
+        />
+      ),
+      title: "Bhimavaram Online"
+    };
+
+    return [deveeLogoItem, pvLogoItem, bhimavaramOnlineItem, deveeLogoItem, pvLogoItem, bhimavaramOnlineItem];
+  }, []);
+
   return (
     <div
-      className="bg-[#cfd8dc] text-slate-900 antialiased flex flex-col justify-between min-h-screen"
+      className="bg-[#cfd8dc] text-slate-900 antialiased flex flex-col justify-between min-h-screen font-montserrat-bold font-bold"
       style={{
-        fontFamily: "'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif",
+        fontFamily: "'Montserrat', sans-serif",
         height: '100vh',
         maxHeight: '1080px'
       }}
     >
       {/* ===== NEW PLAYER INTRO OVERLAY (10 seconds) ===== */}
       {playerIntro && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(15, 23, 42, 0.55)' }}>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center font-montserrat-bold" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(15, 23, 42, 0.55)' }}>
           <div className="flex flex-col items-center text-center">
             {/* Player Photo — slides from right to center */}
             <div
@@ -198,20 +241,32 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             {/* NOW ON STAGE label */}
             <div className="flex items-center gap-3 mb-4" style={{ animation: 'fadeUpIn 0.6s ease-out 0.5s both' }}>
               <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
-              <span className="text-base font-black tracking-[0.35em] uppercase text-emerald-400 drop-shadow-lg">NOW ON STAGE</span>
+              <span className="text-base font-black tracking-[0.35em] uppercase text-emerald-400 drop-shadow-lg font-montserrat-bold">NOW ON STAGE</span>
               <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
             </div>
-            {/* Player Name */}
+            {/* Player Name — Montserrat Black */}
             <h1
-              className="text-6xl xl:text-8xl font-black text-white uppercase tracking-tight mb-4 font-display"
+              className="text-6xl xl:text-8xl font-black text-white uppercase tracking-tight mb-4 font-montserrat-black"
               style={{ animation: 'fadeUpIn 0.7s ease-out 0.7s both', textShadow: '0 4px 30px rgba(0,0,0,0.5)' }}
             >
               {playerIntro.name || 'PLAYER'}
             </h1>
-            {/* Category Badge */}
-            <div className="flex items-center gap-4 mt-1" style={{ animation: 'fadeUpIn 0.6s ease-out 0.95s both' }}>
+            {/* Badges: Category & Base Price — Montserrat Bold */}
+            <div className="flex items-center gap-4 mt-2 flex-wrap justify-center font-montserrat-bold" style={{ animation: 'fadeUpIn 0.6s ease-out 0.95s both' }}>
               <span className="px-8 py-2.5 rounded-full bg-white/10 border-2 border-white/25 text-white text-xl font-bold uppercase tracking-widest backdrop-blur-sm shadow-lg">
                 {playerIntro.category || 'Group A'}
+              </span>
+              <span className="px-8 py-2.5 rounded-full bg-emerald-500/20 border-2 border-emerald-400/40 text-emerald-300 text-xl font-bold uppercase tracking-wider backdrop-blur-sm shadow-lg flex items-center gap-2.5">
+                <span className="text-emerald-400/80 text-sm font-semibold tracking-widest uppercase">Base Price:</span>
+                <span className="text-white font-montserrat-bold font-black text-2xl">
+                  <SpinningCounter
+                    value={playerIntro.base_price || 10000}
+                    suffix=" pts"
+                    spins={2}
+                    duration={1200}
+                    stagger={70}
+                  />
+                </span>
               </span>
             </div>
           </div>
@@ -220,7 +275,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
       {/* ===== SOLD CELEBRATION OVERLAY ===== */}
       {soldCelebration && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(6, 78, 59, 0.55)' }}>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center font-montserrat-bold" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(6, 78, 59, 0.55)' }}>
           <div className="flex flex-col items-center text-center">
             {/* Player Photo — slides from right */}
             <div
@@ -248,40 +303,44 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
               className="px-10 py-2.5 rounded-full bg-emerald-500 shadow-lg mb-4"
               style={{ animation: 'fadeUpIn 0.5s ease-out 0.5s both' }}
             >
-              <h1 className="text-5xl xl:text-7xl font-black text-white uppercase tracking-wider font-display" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>SOLD!</h1>
+              <h1 className="text-5xl xl:text-7xl font-black text-white uppercase tracking-wider font-montserrat-black" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>SOLD!</h1>
             </div>
-            {/* Player Name */}
+            {/* Player Name — Montserrat Black */}
             <p
-              className="text-3xl xl:text-5xl font-black text-white mb-4 tracking-tight"
+              className="text-3xl xl:text-5xl font-black text-white mb-4 tracking-tight font-montserrat-black"
               style={{ animation: 'fadeUpIn 0.6s ease-out 0.7s both', textShadow: '0 3px 20px rgba(0,0,0,0.4)' }}
             >
               {soldCelebration.player_name || 'Player'}
             </p>
-            {/* Team Name */}
+            {/* Team Name — Montserrat Bold */}
             <p
-              className="text-2xl xl:text-3xl text-emerald-200 font-bold mb-3"
+              className="text-2xl xl:text-3xl text-emerald-200 font-bold mb-3 font-montserrat-bold"
               style={{ animation: 'fadeUpIn 0.5s ease-out 0.9s both' }}
             >
               Sold to <strong className="text-white font-black">{soldCelebration.team_name || 'Team'}</strong>
             </p>
-            {/* Amount */}
+            {/* Amount with Transitions.dev Spinning Counter */}
             <div
-              className="px-8 py-3 rounded-xl bg-white/10 border-2 border-white/20 backdrop-blur-sm shadow-lg"
+              className="px-8 py-3 rounded-xl bg-white/10 border-2 border-white/20 backdrop-blur-sm shadow-lg font-montserrat-bold flex items-center justify-center"
               style={{ animation: 'fadeUpIn 0.6s ease-out 1.1s both' }}
             >
-              <span className="text-5xl xl:text-6xl font-black text-white font-display" style={{ textShadow: '0 2px 15px rgba(0,0,0,0.3)' }}>{formatCurrency(soldCelebration.amount)}</span>
+              <div className="text-5xl xl:text-6xl font-black text-white font-montserrat-bold flex items-center" style={{ textShadow: '0 2px 15px rgba(0,0,0,0.3)' }}>
+                <SpinningCounter
+                  value={soldCelebration.amount || soldCelebration.final_price || 10000}
+                  suffix=" pts"
+                  spins={3}
+                  duration={1400}
+                  stagger={90}
+                />
+              </div>
             </div>
-            <span
-              className="text-base text-emerald-300 font-bold mt-2"
-              style={{ animation: 'fadeUpIn 0.4s ease-out 1.3s both' }}
-            >({formatCurrency(soldCelebration.amount)})</span>
           </div>
         </div>
       )}
 
       {/* ===== UNSOLD NOTICE OVERLAY ===== */}
       {unsoldNotice && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(127, 29, 29, 0.45)' }}>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center font-montserrat-bold" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(127, 29, 29, 0.45)' }}>
           <div className="flex flex-col items-center text-center">
             {/* Player Photo — slides from right with red tint */}
             <div
@@ -312,18 +371,18 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             </div>
             {/* UNSOLD label */}
             <h1
-              className="text-5xl xl:text-7xl font-black text-red-400 uppercase tracking-wider mb-4 font-display"
+              className="text-5xl xl:text-7xl font-black text-red-400 uppercase tracking-wider mb-4 font-montserrat-black"
               style={{ animation: 'fadeUpIn 0.6s ease-out 0.5s both', textShadow: '0 4px 25px rgba(239, 68, 68, 0.4)' }}
             >UNSOLD</h1>
-            {/* Player Name */}
+            {/* Player Name — Montserrat Black */}
             <p
-              className="text-3xl xl:text-4xl font-black text-white/90 mb-3"
+              className="text-3xl xl:text-4xl font-black text-white/90 mb-3 font-montserrat-black"
               style={{ animation: 'fadeUpIn 0.6s ease-out 0.75s both', textShadow: '0 3px 20px rgba(0,0,0,0.4)' }}
             >
               {unsoldNotice.player_name || 'Player'}
             </p>
             <p
-              className="text-xl text-red-300/80 font-bold"
+              className="text-xl text-red-300/80 font-bold font-montserrat-bold"
               style={{ animation: 'fadeUpIn 0.5s ease-out 0.95s both' }}
             >No buyer this round</p>
           </div>
@@ -331,19 +390,24 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       )}
 
       {/* ===== TOP BAR ===== */}
-      <header className="w-full bg-[#dbe2e6] border-b-2 border-slate-700/80 py-2.5 px-6 shadow-sm shrink-0">
+      <header className="w-full bg-[#dbe2e6] border-b-2 border-slate-700/80 py-2.5 px-6 shadow-sm shrink-0 font-montserrat-bold">
         <div className="max-w-[1920px] mx-auto flex items-center justify-between">
           {/* Left: Live Status & Stadium Arena */}
           <div className="flex items-center gap-3 shrink-0">
             <span className={`inline-block w-3 h-3 rounded-full ${isSocketConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
-            <span className="hidden sm:inline-block text-xs font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono tracking-wider">
+            <span className="hidden sm:inline-block text-xs font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 tracking-wider font-montserrat-bold">
               LIVE STADIUM ARENA
             </span>
           </div>
 
-          {/* Middle: Big Prominent League Title */}
-          <div className="flex-1 text-center px-4">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-black uppercase tracking-wider text-slate-900 font-display">
+          {/* Middle: Big Prominent League Title with Tennis Ball Logo — Montserrat Black */}
+          <div className="flex-1 flex items-center justify-center gap-2.5 sm:gap-3 px-4">
+            <img
+              src="/images/tennis-ball-glow.svg"
+              alt="Tennis Ball Logo"
+              className="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 shrink-0 drop-shadow-sm"
+            />
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-black uppercase tracking-wider text-slate-900 font-montserrat-black">
               Bhimavaram Tennis League
             </h1>
           </div>
@@ -381,7 +445,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       </header>
 
       {/* ===== MAIN AUCTION STAGE ===== */}
-      <main className="flex-1 w-full max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden bg-slate-100 border-x-2 border-slate-700">
+      <main className="flex-1 w-full max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden bg-slate-100 border-x-2 border-slate-700 font-montserrat-bold">
 
         {/* ===== LEFT: 4 TEAM COLUMNS (8 cols) ===== */}
         <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-700 border-r-2 border-slate-700 bg-[#e2e8f0]">
@@ -411,10 +475,10 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   : 'bg-[#f8fafc]'
                   }`}
               >
-                {/* Team Header & Amount Box */}
+                {/* Team Header & Amount Box — Montserrat Bold */}
                 <div className={`pb-3 text-center bg-white rounded-lg p-3 shadow-sm border ${isLeading
-                    ? 'border-emerald-300 border-b-2 border-b-emerald-500 mt-1'
-                    : 'border-slate-300 border-b-2 border-b-slate-700'
+                  ? 'border-emerald-300 border-b-2 border-b-emerald-500 mt-1'
+                  : 'border-slate-300 border-b-2 border-b-slate-700'
                   }`}>
                   <div
                     className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs mb-1 ${isLeading ? 'bg-emerald-200 text-emerald-900' : `${badge.bg} ${badge.text}`
@@ -422,24 +486,24 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   >
                     {badge.label}
                   </div>
-                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">{team.short_name}</h2>
+                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-montserrat-bold">{team.short_name}</h2>
                   <div className={`mt-2 pt-2 ${isLeading ? 'border-t border-emerald-100' : 'border-t border-slate-200'}`}>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block">points:</span>
-                    <span className="text-xl xl:text-2xl font-black text-slate-900">{formatCurrency(remaining)}</span>
-                    <div className="flex justify-center items-center text-[10px] text-slate-500 mt-1 font-semibold px-1">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block font-montserrat-bold">points:</span>
+                    <span className="text-xl xl:text-2xl font-bold text-slate-900 font-montserrat-bold">{formatCurrency(remaining)}</span>
+                    <div className="flex justify-center items-center text-[10px] text-slate-500 mt-1 font-bold px-1 font-montserrat-bold">
                       <span>Squad: {squadCount}/{maxSquad}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Confirmed Roster with Group A & Group B Separation */}
+                {/* Confirmed Roster with Group A & Group B Separation — Montserrat Bold */}
                 <div className="flex-1 flex flex-col justify-between mt-2.5 min-h-0">
                   <div className="flex-1 overflow-y-auto pr-0.5 space-y-2">
                     <div className="flex items-center justify-between pb-1 border-b border-slate-300">
-                      <p className={`text-[10px] font-black uppercase tracking-wider ${isLeading ? 'text-emerald-900' : 'text-slate-700'}`}>
+                      <p className={`text-[10px] font-bold uppercase tracking-wider font-montserrat-bold ${isLeading ? 'text-emerald-900' : 'text-slate-700'}`}>
                         CONFIRMED ROSTER
                       </p>
-                      <span className="text-[9px] font-bold text-slate-500">
+                      <span className="text-[9px] font-bold text-slate-500 font-montserrat-bold">
                         {teamPlayers.length}/{maxSquad}
                       </span>
                     </div>
@@ -449,9 +513,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                       <div className="flex items-center justify-between px-2 py-0.5 rounded bg-blue-50 border border-blue-200">
                         <div className="flex items-center gap-1.5">
                           <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                          <span className="text-[10px] font-black text-blue-950 uppercase tracking-wider font-display">GROUP A</span>
+                          <span className="text-[10px] font-bold text-blue-950 uppercase tracking-wider font-montserrat-bold">GROUP A</span>
                         </div>
-                        <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-blue-200/80 text-blue-800">
+                        <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-blue-200/80 text-blue-800 font-montserrat-bold">
                           {groupAPlayers.length}
                         </span>
                       </div>
@@ -461,34 +525,24 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                           groupAPlayers.map((p, pIdx) => (
                             <div
                               key={p.id || `ga-${pIdx}`}
-                              className={`border rounded-lg p-1.5 flex items-center justify-between shadow-xs ${isLeading
+                              className={`border rounded-lg px-2.5 py-1.5 flex items-center justify-between gap-2 shadow-xs transition-colors ${isLeading
                                 ? 'border-emerald-300 bg-white'
                                 : 'border-slate-300 bg-white'
                                 }`}
                             >
-                              <div className="flex items-center gap-2 min-w-0">
-                                <img
-                                  src={p.image_url || '/images/players/rohan-iyer.jpg'}
-                                  alt={p.name || p.player_name}
-                                  className="w-8 h-8 rounded-full object-cover border border-slate-300 shrink-0"
-                                  onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
-                                />
-                                <div className="min-w-0">
-                                  <div className="font-black text-slate-950 truncate text-[13px] md:text-sm leading-snug">
-                                    {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
-                                  </div>
-                                  <span className="inline-block px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 text-[9px] font-bold uppercase">
-                                    {p.category || 'Group A'}
-                                  </span>
-                                </div>
+                              {/* Player Name in Roster — Montserrat Bold */}
+                              <div className="font-bold text-slate-950 truncate text-[12px] md:text-[13px] leading-normal font-montserrat-bold min-w-0 flex-1">
+                                {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
                               </div>
-                              <span className="font-black text-slate-950 text-xs md:text-[13px] shrink-0 font-mono">
-                                {formatLakhsShort(p.purchase_price || p.base_price)}
-                              </span>
+                              <div className="text-right shrink-0">
+                                <span className="font-bold text-slate-900 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold">
+                                  {formatLakhsShort(p.purchase_price || p.base_price)}
+                                </span>
+                              </div>
                             </div>
                           ))
                         ) : (
-                          <div className="text-center py-1.5 text-slate-400 text-[10px] italic bg-white/60 rounded border border-dashed border-slate-300">
+                          <div className="text-center py-1.5 text-slate-400 text-[10px] italic bg-white/60 rounded border border-dashed border-slate-300 font-montserrat-bold">
                             No Group A acquired
                           </div>
                         )}
@@ -503,9 +557,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                       <div className="flex items-center justify-between px-2 py-0.5 rounded bg-amber-50 border border-amber-200">
                         <div className="flex items-center gap-1.5">
                           <span className="w-2 h-2 rounded-full bg-amber-600"></span>
-                          <span className="text-[10px] font-black text-amber-950 uppercase tracking-wider font-display">GROUP B</span>
+                          <span className="text-[10px] font-bold text-amber-950 uppercase tracking-wider font-montserrat-bold">GROUP B</span>
                         </div>
-                        <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-amber-200/80 text-amber-800">
+                        <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-amber-200/80 text-amber-800 font-montserrat-bold">
                           {groupBPlayers.length}
                         </span>
                       </div>
@@ -515,34 +569,24 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                           groupBPlayers.map((p, pIdx) => (
                             <div
                               key={p.id || `gb-${pIdx}`}
-                              className={`border rounded-lg p-1.5 flex items-center justify-between shadow-xs ${isLeading
+                              className={`border rounded-lg px-2.5 py-1.5 flex items-center justify-between gap-2 shadow-xs transition-colors ${isLeading
                                 ? 'border-emerald-300 bg-white'
                                 : 'border-slate-300 bg-white'
                                 }`}
                             >
-                              <div className="flex items-center gap-2 min-w-0">
-                                <img
-                                  src={p.image_url || '/images/players/rohan-iyer.jpg'}
-                                  alt={p.name || p.player_name}
-                                  className="w-8 h-8 rounded-full object-cover border border-slate-300 shrink-0"
-                                  onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
-                                />
-                                <div className="min-w-0">
-                                  <div className="font-black text-slate-950 truncate text-[13px] md:text-sm leading-snug">
-                                    {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
-                                  </div>
-                                  <span className="inline-block px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold uppercase">
-                                    {p.category || 'Group B'}
-                                  </span>
-                                </div>
+                              {/* Player Name in Roster — Montserrat Bold */}
+                              <div className="font-bold text-slate-950 truncate text-[12px] md:text-[13px] leading-normal font-montserrat-bold min-w-0 flex-1">
+                                {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
                               </div>
-                              <span className="font-black text-slate-950 text-xs md:text-[13px] shrink-0 font-mono">
-                                {formatLakhsShort(p.purchase_price || p.base_price)}
-                              </span>
+                              <div className="text-right shrink-0">
+                                <span className="font-bold text-slate-900 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold">
+                                  {formatLakhsShort(p.purchase_price || p.base_price)}
+                                </span>
+                              </div>
                             </div>
                           ))
                         ) : (
-                          <div className="text-center py-1.5 text-slate-400 text-[10px] italic bg-white/60 rounded border border-dashed border-slate-300">
+                          <div className="text-center py-1.5 text-slate-400 text-[10px] italic bg-white/60 rounded border border-dashed border-slate-300 font-montserrat-bold">
                             No Group B acquired
                           </div>
                         )}
@@ -552,7 +596,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
                   {/* Team Footer Status - only shown when leading bidder */}
                   {isLeading && (
-                    <div className="mt-2 pt-2 border-t border-emerald-300 shrink-0">
+                    <div className="mt-2 pt-2 border-t border-emerald-300 shrink-0 font-montserrat-bold">
                       <div className="flex flex-col items-center justify-center">
                         <div
                           className="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-md"
@@ -563,7 +607,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             <path d="M5 10l7-7m0 0l7 7m-7-7v18" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </div>
-                        <span className="text-[9px] font-black uppercase text-slate-900 mt-1 tracking-wider">
+                        <span className="text-[9px] font-bold uppercase text-slate-900 mt-1 tracking-wider font-montserrat-bold">
                           HOLDING {formatLakhs(currentBid)}
                         </span>
                       </div>
@@ -576,7 +620,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         </div>
 
         {/* ===== RIGHT PANEL: Player Detail + Bidding (4 cols) ===== */}
-        <section className="lg:col-span-4 flex flex-col p-4 xl:p-5 bg-white space-y-3 min-h-0 overflow-hidden font-display">
+        <section className="lg:col-span-4 flex flex-col p-4 xl:p-5 bg-white space-y-3 min-h-0 overflow-hidden font-montserrat-bold">
           {/* 1. TOP: Large Rectangular Player Photo — flexible height */}
           <div className="border-2 border-slate-700 rounded-lg bg-slate-200 overflow-hidden relative shadow-sm flex-1 min-h-0">
             {activePlayer.image_url ? (
@@ -593,57 +637,54 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                 </svg>
               </div>
             )}
-            <div className="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur-sm text-white px-2.5 py-1 rounded text-[11px] font-bold tracking-wide">
-              ATP RANK #{activePlayer.world_ranking || '-'}
-            </div>
           </div>
 
-          {/* 2. Player Name Header — unboxed, spacious, and prominent */}
+          {/* 2. Player Name Header — Montserrat Black */}
           <div className="text-center py-2 px-1 shrink-0">
-            <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black text-slate-950 tracking-tight uppercase font-display leading-tight">
+            <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black text-slate-950 tracking-tight uppercase font-montserrat-black leading-tight">
               {activePlayer.name || 'AWAITING PLAYER'}
             </h2>
           </div>
 
-          {/* 3. MIDDLE STRIP: [Base Price] & [Category] */}
-          <div className="grid grid-cols-2 gap-3 shrink-0">
+          {/* 3. MIDDLE STRIP: [Base Price] & [Category] — Montserrat Bold */}
+          <div className="grid grid-cols-2 gap-3 shrink-0 font-montserrat-bold">
             {/* Left: Base Price */}
             <div className="border-2 border-slate-700 rounded-lg p-2.5 bg-slate-50 text-center shadow-xs">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-600 block mb-0.5">BASE PRICE:</span>
-              <span className="text-lg xl:text-xl font-black text-slate-900 font-display">{formatCurrency(activePlayer.base_price)}</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-0.5 font-montserrat-bold">BASE PRICE:</span>
+              <span className="text-lg xl:text-xl font-bold text-slate-900 font-montserrat-bold">{formatCurrency(activePlayer.base_price)}</span>
             </div>
             {/* Right: Category */}
             <div className="border-2 border-slate-700 rounded-lg p-2.5 bg-slate-50 text-center shadow-xs flex flex-col justify-center">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-600 block mb-0.5">CATEGORY:</span>
-              <span className="text-lg xl:text-xl font-black text-slate-900 font-display uppercase">{activePlayer.category || 'Group A'}</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-0.5 font-montserrat-bold">CATEGORY:</span>
+              <span className="text-lg xl:text-xl font-bold text-slate-900 font-montserrat-bold uppercase">{activePlayer.category || 'Group A'}</span>
             </div>
           </div>
 
-          {/* 4. BOTTOM: Bidding Container */}
-          <div className="border-2 border-slate-700 rounded-lg p-4 bg-[#dbe2e6] shadow-md flex flex-col justify-between shrink-0">
+          {/* 4. BOTTOM: Bidding Container — Montserrat Bold */}
+          <div className="border-2 border-slate-700 rounded-lg p-4 bg-[#dbe2e6] shadow-md flex flex-col justify-between shrink-0 font-montserrat-bold">
             <div className="flex items-center justify-between border-b-2 border-slate-700/60 pb-1.5 mb-2">
-              <span className="text-xs font-black uppercase tracking-widest text-slate-800 font-display">BIDDING</span>
-              <span className="flex items-center gap-1.5 text-[11px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-800 font-montserrat-bold">BIDDING</span>
+              <span className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded font-montserrat-bold">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                 LIVE AUCTION
               </span>
             </div>
             {/* Current Highest Bid */}
             <div className="text-center py-2 bg-white rounded-lg border-2 border-slate-700 shadow-sm mb-2.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">CURRENT HIGHEST BID:</span>
-              <div className="text-3xl xl:text-4xl font-black text-slate-900 tracking-tight font-display">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-montserrat-bold">CURRENT HIGHEST BID:</span>
+              <div className="text-3xl xl:text-4xl font-bold text-slate-900 tracking-tight font-montserrat-bold">
                 {formatCurrency(currentBid)}
               </div>
             </div>
             {/* Team Holding Bid */}
             <div className="flex items-center justify-between bg-white border-2 border-slate-700 rounded-lg px-4 py-2 shadow-sm">
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-black uppercase text-slate-500">TEAM:</span>
-                <span className="text-sm font-black text-slate-900">
+                <span className="text-[11px] font-bold uppercase text-slate-500 font-montserrat-bold">TEAM:</span>
+                <span className="text-sm font-bold text-slate-900 font-montserrat-bold">
                   {highestTeam ? highestTeam.short_name : 'NO BIDS YET'}
                 </span>
               </div>
-              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-xs ${highestTeam
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs font-montserrat-bold ${highestTeam
                 ? 'bg-emerald-500 text-white'
                 : 'bg-slate-300 text-slate-600'
                 }`}>
@@ -654,35 +695,28 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         </section>
       </main>
 
-      {/* ===== BOTTOM SPONSORS BAR ===== */}
-      <footer className="w-full bg-[#dbe2e6] border-t-2 border-slate-700/80 py-2.5 px-6 shadow-inner shrink-0">
-        <div className="max-w-[1920px] mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xs tracking-widest font-black uppercase text-slate-700 font-display">SPONSORS</span>
+      {/* ===== BOTTOM SPONSORS BAR WITH LOGO LOOP ===== */}
+      <footer className="w-full bg-[#dbe2e6] border-t-2 border-slate-700/80 py-0.5 px-4 shadow-inner shrink-0 font-montserrat-bold">
+        <div className="max-w-[1920px] mx-auto flex items-center justify-between gap-3">
+          {/* Left: Sponsors Label */}
+          <div className="flex items-center gap-1 shrink-0 bg-white/70 px-2 py-0.5 rounded border border-slate-400/60 shadow-xs">
+            <span className="text-[10px] tracking-wider font-black uppercase text-slate-800 font-montserrat-bold">SPONSORS</span>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 text-slate-800 font-bold uppercase tracking-wider text-xs md:text-sm">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-blue-600 rounded-full"></span>
-              <span className="font-extrabold tracking-normal text-slate-900">BNP PARIBAS</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-green-600 rounded-full"></span>
-              <span className="font-black text-slate-900">LACOSTE</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-sky-500 rounded-full"></span>
-              <span className="font-black italic text-slate-900 tracking-tight">YONEX</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-amber-500 rounded-full"></span>
-              <span className="font-extrabold text-slate-900">DUNLOP</span>
-            </div>
-            <div className="hidden sm:flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 bg-indigo-600 rounded-full"></span>
-              <span className="font-black tracking-widest text-slate-900">INFOSYS</span>
-            </div>
-          </div>
-          <div className="text-xs text-slate-600 font-bold text-center md:text-right uppercase tracking-wider">
+
+          {/* Middle: Scrolling Sponsor Logos Loop */}
+          <div className="flex-1 overflow-hidden min-w-0">
+            <LogoLoop
+              logos={sponsorLogos}
+              speed={45}
+              direction="left"
+              logoHeight={44}
+              gap={48}
+              hoverSpeed={0}
+              scaleOnHover
+              fadeOut
+              fadeOutColor="#dbe2e6"
+              ariaLabel="Tournament Official Sponsors"
+            />
           </div>
         </div>
       </footer>
@@ -710,9 +744,6 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         @keyframes scaleIn {
           0% { opacity: 0; transform: scale(0.7); }
           100% { opacity: 1; transform: scale(1); }
-        }
-        .font-display {
-          font-family: 'Space Grotesk', sans-serif;
         }
       `}</style>
     </div>

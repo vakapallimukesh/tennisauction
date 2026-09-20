@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 export default function PlayerManagement({ onBackToControlPanel }) {
-  const { selectLivePlayer } = useAuction();
+  const { selectLivePlayer, teams = [] } = useAuction();
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -255,95 +255,114 @@ export default function PlayerManagement({ onBackToControlPanel }) {
                 <th className="p-3.5">Group</th>
                 <th className="p-3.5">Base Price</th>
                 <th className="p-3.5">Sold Price</th>
+                {selectedStatus === 'sold' && <th className="p-3.5">Sold To</th>}
                 <th className="p-3.5">Status</th>
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {filteredPlayers.length > 0 ? (
-                filteredPlayers.map((player) => (
-                  <tr key={player.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="p-3.5 flex items-center gap-3">
-                      <img
-                        src={player.image_url}
-                        alt=""
-                        className="w-10 h-12 object-cover rounded-lg border border-white/10 bg-slate-950"
-                      />
-                      <div>
-                        <span className="font-bold text-white text-sm block">{player.name}</span>
-                        <span className="text-[11px] text-slate-400">
-                          {player.player_number} • Age {player.age} • {player.playing_hand || 'Right Hand'}
-                        </span>
-                      </div>
-                    </td>
+                filteredPlayers.map((player) => {
+                  const soldTeamName = player.sold_to_team?.name || player.team_name || (teams.find(t => t.id === (player.sold_to_team_id || player.team_id))?.name);
 
-                    <td className="p-3.5">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wider uppercase border ${
-                        (player.group === 'B')
-                          ? 'bg-purple-500/15 text-purple-300 border-purple-500/40 shadow-sm shadow-purple-500/10'
-                          : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-sm shadow-emerald-500/10'
-                      }`}>
-                        Group {player.group || 'A'}
-                      </span>
-                    </td>
+                  return (
+                    <tr key={player.id} className="hover:bg-white/[0.02] transition-colors">
+                      <td className="p-3.5 flex items-center gap-3">
+                        <img
+                          src={player.image_url}
+                          alt=""
+                          className="w-10 h-12 object-cover rounded-lg border border-white/10 bg-slate-950"
+                        />
+                        <div>
+                          <span className="font-bold text-white text-sm block">{player.name}</span>
+                          <span className="text-[11px] text-slate-400">
+                            {player.player_number} • Age {player.age} • {player.playing_hand || 'Right Hand'}
+                          </span>
+                        </div>
+                      </td>
 
-                    <td className="p-3.5 font-bold text-slate-300 font-mono">
-                      ₹{parseFloat(player.base_price).toLocaleString('en-IN')}
-                    </td>
-
-                    <td className="p-3.5 font-black font-mono">
-                      {player.status === 'sold' && (player.sold_price || player.purchase_price) ? (
-                        <span className="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/30">
-                          ₹{parseFloat(player.sold_price || player.purchase_price).toLocaleString('en-IN')}
-                        </span>
-                      ) : (
-                        <span className="text-slate-600 font-normal">—</span>
-                      )}
-                    </td>
-
-                    <td className="p-3.5">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${player.status === 'live' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 animate-pulse' :
-                          player.status === 'sold' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' :
-                            player.status === 'unsold' ? 'bg-rose-500/20 text-rose-400 border-rose-500/40' :
-                              'bg-sky-500/20 text-sky-400 border-sky-500/40'
+                      <td className="p-3.5">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wider uppercase border ${
+                          (player.group === 'B')
+                            ? 'bg-purple-500/15 text-purple-300 border-purple-500/40 shadow-sm shadow-purple-500/10'
+                            : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40 shadow-sm shadow-emerald-500/10'
                         }`}>
-                        {player.status}
-                      </span>
-                    </td>
+                          Group {player.group || 'A'}
+                        </span>
+                      </td>
 
-                    <td className="p-3.5 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        {player.status !== 'live' && (
-                          <button
-                            onClick={() => handleSetLive(player)}
-                            title="Cue Live onto Digital Auction Display"
-                            className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-bold border border-emerald-500/30 flex items-center gap-1"
-                          >
-                            <Zap className="w-3 h-3" />
-                            <span>SET LIVE</span>
-                          </button>
+                      <td className="p-3.5 font-bold text-slate-300 font-mono">
+                        ₹{parseFloat(player.base_price).toLocaleString('en-IN')}
+                      </td>
+
+                      <td className="p-3.5 font-black font-mono">
+                        {player.status === 'sold' && (player.sold_price || player.purchase_price) ? (
+                          <span className="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-lg border border-emerald-500/30">
+                            ₹{parseFloat(player.sold_price || player.purchase_price).toLocaleString('en-IN')}
+                          </span>
+                        ) : (
+                          <span className="text-slate-600 font-normal">—</span>
                         )}
-                        <button
-                          onClick={() => openEditModal(player)}
-                          title="Edit Player"
-                          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(player.id, player.name)}
-                          title="Delete Player"
-                          className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+
+                      {/* Sold To Team Column (Only shown on Sold status tab) */}
+                      {selectedStatus === 'sold' && (
+                        <td className="p-3.5">
+                          {player.status === 'sold' && soldTeamName ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/15 text-amber-300 border border-amber-500/40 shadow-sm shadow-amber-500/10">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                              {soldTeamName}
+                            </span>
+                          ) : (
+                            <span className="text-slate-600 font-normal">—</span>
+                          )}
+                        </td>
+                      )}
+
+                      <td className="p-3.5">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${player.status === 'live' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 animate-pulse' :
+                            player.status === 'sold' ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' :
+                              player.status === 'unsold' ? 'bg-rose-500/20 text-rose-400 border-rose-500/40' :
+                                'bg-sky-500/20 text-sky-400 border-sky-500/40'
+                          }`}>
+                          {player.status}
+                        </span>
+                      </td>
+
+                      <td className="p-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          {player.status !== 'live' && player.status !== 'sold' && (
+                            <button
+                              onClick={() => handleSetLive(player)}
+                              title="Cue Live onto Digital Auction Display"
+                              className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-bold border border-emerald-500/30 flex items-center gap-1"
+                            >
+                              <Zap className="w-3 h-3" />
+                              <span>SET LIVE</span>
+                            </button>
+                          )}
+                          <button
+                            onClick={() => openEditModal(player)}
+                            title="Edit Player"
+                            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(player.id, player.name)}
+                            title="Delete Player"
+                            className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-500 italic">
+                  <td colSpan={selectedStatus === 'sold' ? 7 : 6} className="p-8 text-center text-slate-500 italic">
                     No athletes found matching the active criteria.
                   </td>
                 </tr>

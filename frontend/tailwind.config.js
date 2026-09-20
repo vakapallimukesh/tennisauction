@@ -112,7 +112,10 @@ export default {
         "headline-md": ["'Space Grotesk'", "sans-serif"],
         "headline-lg": ["'Space Grotesk'", "sans-serif"],
         "sans": ["'Plus Jakarta Sans'", "'Space Grotesk'", "sans-serif"],
-        "display": ["'Space Grotesk'", "sans-serif"]
+        "display": ["'Space Grotesk'", "sans-serif"],
+        "montserrat": ["'Montserrat'", "sans-serif"],
+        "montserrat-black": ["'Montserrat'", "sans-serif"],
+        "montserrat-bold": ["'Montserrat'", "sans-serif"]
       },
       fontSize: {
         "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],

@@ -330,13 +330,24 @@ exports.markSold = async (req, res) => {
         sold_price: price,
         sold_to_team_id: team.id
       },
-      winning_team: {
+      team: {
         id: team.id,
+        team_number: team.team_number,
         name: team.name,
         logo_url: team.logo_url,
         primary_color: team.primary_color,
         glow_color: team.glow_color
       },
+      winning_team: {
+        id: team.id,
+        team_number: team.team_number,
+        name: team.name,
+        logo_url: team.logo_url,
+        primary_color: team.primary_color,
+        glow_color: team.glow_color
+      },
+      team_name: team.name,
+      amount: price,
       final_price: price,
       sold_at: new Date().toISOString()
     });
@@ -466,6 +477,10 @@ exports.setLivePlayer = async (req, res) => {
     const player = store.players.find(p => p.id === parseInt(player_id, 10));
     if (!player) {
       return res.status(404).json({ success: false, message: 'Player not found' });
+    }
+
+    if (player.status === 'sold') {
+      return res.status(400).json({ success: false, message: 'Cannot set a sold player live' });
     }
 
     // If there was a previous live player not sold/unsold, return them to upcoming

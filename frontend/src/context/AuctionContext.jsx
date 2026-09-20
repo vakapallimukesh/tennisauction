@@ -160,16 +160,19 @@ export function AuctionProvider({ children }) {
       }
       setPlayerIntro(null);
 
-      const teamNum = data.team?.team_number || data.team?.id || 0;
-      const shortNames = { 1: 'TEAM A', 2: 'TEAM B', 3: 'TEAM C', 4: 'TEAM D' };
+      const targetTeam = data.team || data.winning_team || {};
+      const teamNum = targetTeam.team_number || targetTeam.id || 0;
+      const teamDisplayName = targetTeam.name || data.team_name || `Team ${teamNum || ''}`.trim() || 'Team';
+      const soldAmount = data.amount ?? data.final_price ?? data.price ?? data.player?.sold_price ?? 0;
 
       setSoldCelebration({
         ...data,
         player_name: data.player?.name || data.player_name || 'Player',
         player_image: data.player?.image_url || null,
         player_category: data.player?.category || null,
-        team_name: shortNames[teamNum] || data.team?.name || data.team_name || 'Team',
-        amount: data.amount
+        team_name: teamDisplayName,
+        team_logo: targetTeam.logo_url || null,
+        amount: soldAmount
       });
       setCurrentPlayer(null);
       setSelectedPlayer(null);
@@ -229,7 +232,7 @@ export function AuctionProvider({ children }) {
           name: data.player.name,
           image_url: data.player.image_url,
           category: data.player.category || 'Group A',
-          base_price: data.player.base_price
+          base_price: data.player.base_price || data.current_bid || 10000
         });
 
         // Clear any existing intro timer
