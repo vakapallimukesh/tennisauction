@@ -1,4 +1,6 @@
 const http = require('http');
+const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -22,14 +24,20 @@ initSocket(server);
 
 // Middleware — Restrict CORS to trusted origins
 const ALLOWED_ORIGINS = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',')
+  ? process.env.CLIENT_URL.split(',').map(s => s.trim())
   : ['http://localhost:5173', 'http://localhost:3000'];
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true;
+  if (ALLOWED_ORIGINS.includes(origin) || ALLOWED_ORIGINS.includes('*')) return true;
+  if (origin.endsWith('.onrender.com')) return true;
+  if (process.env.NODE_ENV !== 'production' && (origin.includes('localhost') || origin.includes('127.0.0.1'))) return true;
+  return false;
+};
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, curl, server-to-server)
-    if (!origin) return callback(null, true);
-    if (ALLOWED_ORIGINS.includes(origin)) {
+    if (isOriginAllowed(origin)) {
       return callback(null, true);
     }
     return callback(new Error('Not allowed by CORS'));
@@ -75,7 +83,19 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// 404 handler
+// Serve frontend static build in production (if frontend/dist exists)
+const frontendDist = path.join(__dirname, '../frontend/dist');
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+}
+
+// 404 handler for unmatched API routes
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'API Route Not Found' });
 });

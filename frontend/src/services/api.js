@@ -1,6 +1,6 @@
 // API Service connecting to Node.js backend with JWT Auth
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, '') : '') + '/api';
 
 export const authStorage = {
   getToken: () => localStorage.getItem('tennis_admin_token'),

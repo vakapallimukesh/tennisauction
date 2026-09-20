@@ -528,14 +528,21 @@ function selectNextPlayer(playerId = null) {
 
 function initSocket(httpServer) {
   const ALLOWED_ORIGINS = process.env.CLIENT_URL
-    ? process.env.CLIENT_URL.split(',')
+    ? process.env.CLIENT_URL.split(',').map(s => s.trim())
     : ['http://localhost:5173', 'http://localhost:3000'];
+
+  const isOriginAllowed = (origin) => {
+    if (!origin) return true;
+    if (ALLOWED_ORIGINS.includes(origin) || ALLOWED_ORIGINS.includes('*')) return true;
+    if (origin.endsWith('.onrender.com')) return true;
+    if (process.env.NODE_ENV !== 'production' && (origin.includes('localhost') || origin.includes('127.0.0.1'))) return true;
+    return false;
+  };
 
   io = new Server(httpServer, {
     cors: {
       origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (ALLOWED_ORIGINS.includes(origin)) {
+        if (isOriginAllowed(origin)) {
           return callback(null, true);
         }
         return callback(new Error('Not allowed by CORS'));
