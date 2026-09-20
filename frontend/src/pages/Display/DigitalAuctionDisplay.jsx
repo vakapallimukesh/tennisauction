@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useAuction } from '../../context/AuctionContext';
 import SpinningCounter from '../../components/SpinningCounter';
 import LogoLoop from '../../components/LogoLoop';
+import Player3DCube from '../../components/Player3DCube';
 
 export default function DigitalAuctionDisplay({ onNavigate }) {
   const {
@@ -621,22 +622,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
         {/* ===== RIGHT PANEL: Player Detail + Bidding (4 cols) ===== */}
         <section className="lg:col-span-4 flex flex-col p-4 xl:p-5 bg-white space-y-3 min-h-0 overflow-hidden font-montserrat-bold">
-          {/* 1. TOP: Large Rectangular Player Photo — flexible height */}
-          <div className="border-2 border-slate-700 rounded-lg bg-slate-200 overflow-hidden relative shadow-sm flex-1 min-h-0">
-            {activePlayer.image_url ? (
-              <img
-                src={activePlayer.image_url}
-                alt={activePlayer.name}
-                className="w-full h-full object-cover object-top"
-                onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gradient-to-tr from-slate-300 via-slate-200 to-slate-300">
-                <svg className="w-24 h-24 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-              </div>
-            )}
+          {/* 1. TOP: 3D Rotating Showcase Cube (Player Photo & Sponsors) */}
+          <div className="relative flex-1 min-h-[260px] flex items-center justify-center overflow-visible py-2">
+            <Player3DCube player={activePlayer} />
           </div>
 
           {/* 2. Player Name Header — Montserrat Black */}
