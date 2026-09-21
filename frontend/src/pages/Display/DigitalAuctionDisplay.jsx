@@ -188,19 +188,19 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       title: "PV Enterprises"
     };
 
-    const bhimavaramOnlineItem = {
+    const bhimavaramDigitalsItem = {
       node: (
         <img
-          src="/images/sponsors/bhimavaram-online.png"
-          alt="Bhimavaram Online"
+          src="/images/sponsors/bhimavaram-digitals.png"
+          alt="Bhimavaram Digitals"
           className="h-7 sm:h-8 md:h-9 w-auto object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
           onError={(e) => { e.target.style.display = 'none'; }}
         />
       ),
-      title: "Bhimavaram Online"
+      title: "Bhimavaram Digitals"
     };
 
-    return [deveeLogoItem, pvLogoItem, bhimavaramOnlineItem, deveeLogoItem, pvLogoItem, bhimavaramOnlineItem];
+    return [deveeLogoItem, pvLogoItem, bhimavaramDigitalsItem, deveeLogoItem, pvLogoItem, bhimavaramDigitalsItem];
   }, []);
 
   return (

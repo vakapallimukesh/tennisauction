@@ -90,7 +90,7 @@ export default function Player3DCube({ player }) {
             </div>
           </div>
 
-          {/* 3. BACK FACE: Sponsor 2 (Bhimavaram Online) */}
+          {/* 3. BACK FACE: Sponsor 2 (Bhimavaram Digitals) */}
           <div className="cube-face cube-face-back">
             <div className="relative w-full h-full flex flex-col items-center justify-between p-4 bg-gradient-to-b from-white via-slate-50 to-slate-100">
               {/* Header Badge */}
@@ -104,8 +104,8 @@ export default function Player3DCube({ player }) {
               {/* Sponsor Logo */}
               <div className="flex-1 flex items-center justify-center px-2 py-1 w-full">
                 <img
-                  src="/images/sponsors/bhimavaram-online.png"
-                  alt="Bhimavaram Online"
+                  src="/images/sponsors/bhimavaram-digitals.png"
+                  alt="Bhimavaram Digitals"
                   className="max-h-20 w-auto max-w-[88%] object-contain drop-shadow-sm select-none"
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -118,7 +118,7 @@ export default function Player3DCube({ player }) {
               {/* Footer */}
               <div className="w-full text-center border-t border-slate-200 pt-1.5">
                 <span className="text-[10px] font-black uppercase text-slate-800 tracking-wider font-montserrat-bold">
-                  BHIMAVARAM ONLINE
+                  BHIMAVARAM DIGITALS
                 </span>
               </div>
             </div>

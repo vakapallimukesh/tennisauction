@@ -96,7 +96,7 @@
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
 }
 
-/* Back Face: Sponsor 2 (Bhimavaram Online) */
+/* Back Face: Sponsor 2 (Bhimavaram Digitals) */
 .cube-face-back {
   transform: rotateY(180deg) translateZ(var(--showcase-half-size));
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
