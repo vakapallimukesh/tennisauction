@@ -1043,61 +1043,8 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   </span>
                 </div>
 
-                {/* 1. Fully Editable Confirmed Next Bid Amount Box */}
-                <div className="space-y-1 mb-3">
-                  <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    <label htmlFor="confirmed-bid-input" className="cursor-pointer">
-                      Confirmed Next Bid Amount (PTS)
-                    </label>
-                    <span className="text-[10px] font-mono text-emerald-400 font-semibold">
-                      PENDING BID
-                    </span>
-                  </div>
-                  <div className="relative">
-                    <input
-                      id="confirmed-bid-input"
-                      className="w-full bg-[#0d121c] border-2 border-brand-border focus:border-brand-neon rounded-lg py-2.5 pl-3 pr-14 text-xl font-mono font-black text-brand-neon tracking-wide focus:outline-none focus:ring-0 transition"
-                      type="text"
-                      value={bidInput}
-                      onChange={(e) => setBidInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          handleSubmitBid();
-                        }
-                      }}
-                      placeholder={minRecommendedBid.toLocaleString()}
-                    />
-                    <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold font-mono pointer-events-none">
-                      PTS
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[11px] text-slate-400 px-1 pt-0.5 font-mono">
-                    <span>Min Next Bid: <strong className="text-slate-200">{formatCurrency(minRecommendedBid)}</strong></span>
-                    <span>Team Purse After: <strong className="text-emerald-400">{formatCurrency(teamPurseAfter)}</strong></span>
-                  </div>
-                </div>
-
-                {/* Submit & Sync to Live Screen Button */}
-                <div className="mb-4 space-y-1.5">
-                  <button
-                    type="button"
-                    onClick={() => handleSubmitBid()}
-                    className="w-full bg-brand-neon hover:bg-brand-neonHover text-slate-950 font-black py-3 px-4 rounded-xl text-sm uppercase tracking-wider flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition duration-150 cursor-pointer"
-                    data-purpose="submit-bid-button"
-                  >
-                    <svg className="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z" />
-                    </svg>
-                    <span>SUBMIT &amp; SYNC TO TV SCREEN (ENTER)</span>
-                  </button>
-                  <p className="text-[10px] text-center text-slate-500">
-                    Instant sync broadcasting to live stream. Press <kbd className="px-1 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700 font-mono text-[9px]">Space</kbd> for Gavel Count 1-2-3.
-                  </p>
-                </div>
-
-                {/* 2. Select Team Target */}
-                <div className="space-y-1.5 mb-3 pt-3 border-t border-brand-border/60">
+                {/* Select Team Target */}
+                <div className="space-y-1.5 mb-3">
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Target Team</label>
                   <div className="grid grid-cols-2 gap-1.5">
                     {activeTeams.map((t, idx) => {
@@ -1135,7 +1082,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                 </div>
 
                 {/* 10 Dynamic Quick Absolute Bid Amount Buttons */}
-                <div className="space-y-1.5 mb-1">
+                <div className="space-y-1.5 mb-3">
                   <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     <span>Quick Bid Amounts (Exact PTS)</span>
                     <span className="text-[10px] font-normal text-emerald-400">Calculated from {Number(currentBid).toLocaleString()} PTS</span>
@@ -1180,6 +1127,60 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                     })}
                   </div>
                 </div>
+
+                {/* Fully Editable Confirmed Next Bid Amount Box */}
+                <div className="space-y-1 mb-3">
+                  <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    <label htmlFor="confirmed-bid-input" className="cursor-pointer">
+                      Confirmed Next Bid Amount (PTS)
+                    </label>
+                    <span className="text-[10px] font-mono text-emerald-400 font-semibold">
+                      PENDING BID
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      id="confirmed-bid-input"
+                      className="w-full bg-[#0d121c] border-2 border-brand-border focus:border-brand-neon rounded-lg py-2.5 pl-3 pr-14 text-xl font-mono font-black text-brand-neon tracking-wide focus:outline-none focus:ring-0 transition"
+                      type="text"
+                      value={bidInput}
+                      onChange={(e) => setBidInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleSubmitBid();
+                        }
+                      }}
+                      placeholder={minRecommendedBid.toLocaleString()}
+                    />
+                    <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold font-mono pointer-events-none">
+                      PTS
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[11px] text-slate-400 px-1 pt-0.5 font-mono">
+                    <span>Min Next Bid: <strong className="text-slate-200">{formatCurrency(minRecommendedBid)}</strong></span>
+                    <span>Team Purse After: <strong className="text-emerald-400">{formatCurrency(teamPurseAfter)}</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mega Action: Submit & Sync to Live Screen */}
+              <div className="pt-2 space-y-2">
+                <button
+                  type="button"
+                  onClick={() => handleSubmitBid()}
+                  className="w-full bg-brand-neon hover:bg-brand-neonHover text-slate-950 font-black py-3.5 px-4 rounded-xl text-sm uppercase tracking-wider flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition duration-150 cursor-pointer"
+                  data-purpose="submit-bid-button"
+                >
+                  <svg className="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L11 6.477V16h2a1 1 0 110 2H7a1 1 0 110-2h2V6.477L6.237 7.582l1.715 5.349a1 1 0 01-.285 1.05A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L9 4.323V3a1 1 0 011-1z" />
+                  </svg>
+                  <span>SUBMIT &amp; SYNC TO TV SCREEN (ENTER)</span>
+                </button>
+                {/* Desk Safe Guard Notice */}
+                <p className="text-[10px] text-center text-slate-500">
+                  Instant sync broadcasting to live stream. Press <kbd className="px-1 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700 font-mono text-[9px]">Space</kbd> for Gavel Count 1-2-3.
+                </p>
               </div>
             </div>
           </div>
