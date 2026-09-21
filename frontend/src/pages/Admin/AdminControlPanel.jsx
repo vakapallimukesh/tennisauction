@@ -25,7 +25,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
   // Local state
   const [selectedTeamId, setSelectedTeamId] = useState(1);
   const [participatingTeams, setParticipatingTeams] = useState(new Set());
-  const [selectedBidAmount, setSelectedBidAmount] = useState(null);
+  const [bidInput, setBidInput] = useState('');
   const [isSelectPlayerModalOpen, setIsSelectPlayerModalOpen] = useState(false);
   const [playerSearchQuery, setPlayerSearchQuery] = useState('');
   const [actionNotice, setActionNotice] = useState(null); // { type: 'success' | 'error', text }
@@ -83,8 +83,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
   // 10 Dynamic absolute quick bid amounts: CURRENT HIGHEST BID + 1,000 to + 10,000
   const quickBidAmounts = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000].map(step => currentBid + step);
   const minRecommendedBid = currentBid + 1000;
-  const confirmedNextBidAmount = (selectedBidAmount && selectedBidAmount > currentBid)
-    ? selectedBidAmount
+  const parsedBidInput = bidInput.trim() !== '' ? parseFloat(String(bidInput).replace(/,/g, '')) : NaN;
+  const confirmedNextBidAmount = (!isNaN(parsedBidInput) && parsedBidInput > 0)
+    ? parsedBidInput
     : minRecommendedBid;
 
   const selectedTeam = activeTeams.find(t => t.id === selectedTeamId) || activeTeams[0];
@@ -227,7 +228,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
     try {
       setIsSelectPlayerModalOpen(false);
       setPlayerSearchQuery('');
-      setSelectedBidAmount(null);
+      setBidInput('');
       setParticipatingTeams(new Set());
       await selectLivePlayer(player.id);
       showNotice(`${player.name} is now LIVE on auction block (Base Price: 10,000 PTS, No Bids Yet).`);
@@ -267,7 +268,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
         amount: parsedAmount
       });
       showNotice(`Bid of ${formatCurrency(parsedAmount)} recorded for ${targetTeam.name}`);
-      setSelectedBidAmount(null);
+      setBidInput('');
       playTone(800, 0.1, 'sine');
     } catch (err) {
       showNotice(err.message || 'Bid submission failed', 'error');
@@ -1094,7 +1095,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                           type="button"
                           disabled={!isEnabled}
                           onClick={() => {
-                            setSelectedBidAmount(amount);
+                            setBidInput(amount.toString());
                             playTone(720, 0.08, 'triangle');
                           }}
                           className={`py-2 px-1 rounded font-mono font-black text-xs transition cursor-pointer text-center ${
@@ -1121,17 +1122,39 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   </div>
                 </div>
 
-                {/* Non-Editable Selected Pending Bid Display */}
+                {/* Fully Editable Confirmed Next Bid Amount Box */}
                 <div className="space-y-1 mb-3">
                   <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                    <span>Confirmed Next Bid Amount</span>
-                    <span className="text-[10px] font-mono text-emerald-400 font-semibold">SELECTED PENDING BID</span>
-                  </div>
-                  <div className="w-full bg-[#0d121c] border-2 border-emerald-500/40 rounded-lg py-2 px-3 flex items-center justify-between shadow-inner select-none">
-                    <span className="text-xl font-mono font-black text-brand-neon tracking-wide drop-shadow-[0_0_8px_rgba(0,230,118,0.25)]">
-                      {confirmedNextBidAmount.toLocaleString()}
+                    <label htmlFor="confirmed-bid-input" className="cursor-pointer">
+                      Confirmed Next Bid Amount (PTS)
+                    </label>
+                    <span className="text-[10px] font-mono text-emerald-400 font-semibold">
+                      {bidInput.trim() !== '' ? 'PENDING BID READY' : 'DEFAULT PENDING BID'}
                     </span>
-                    <span className="text-xs text-slate-300 font-bold font-mono bg-slate-800/80 px-2 py-0.5 rounded border border-slate-700">
+                  </div>
+                  <div className="relative">
+                    <input
+                      id="confirmed-bid-input"
+                      className="w-full bg-[#0d121c] border-2 border-brand-border focus:border-brand-neon rounded-lg py-2.5 pl-3 pr-14 text-xl font-mono font-black text-brand-neon tracking-wide focus:outline-none focus:ring-0 transition"
+                      type="text"
+                      inputMode="numeric"
+                      value={bidInput !== '' ? bidInput : confirmedNextBidAmount.toLocaleString()}
+                      onFocus={(e) => {
+                        if (bidInput === '') {
+                          setBidInput(String(confirmedNextBidAmount));
+                          e.target.select();
+                        }
+                      }}
+                      onChange={(e) => setBidInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleSubmitBid();
+                        }
+                      }}
+                      placeholder={confirmedNextBidAmount.toLocaleString()}
+                    />
+                    <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold font-mono pointer-events-none">
                       PTS
                     </span>
                   </div>
