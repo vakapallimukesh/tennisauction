@@ -1086,6 +1086,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                       const isSelfBidding = highestBidderId === selectedTeamId;
                       const isSquadFull = (selectedTeam?.players_bought || 0) >= (selectedTeam?.max_players || 5);
                       const isEnabled = isAffordable && !isSelfBidding && !isSquadFull && amount > currentBid;
+                      const isPendingSelected = confirmedNextBidAmount === amount;
 
                       return (
                         <button
@@ -1093,12 +1094,15 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                           type="button"
                           disabled={!isEnabled}
                           onClick={() => {
-                            handleSubmitBid(selectedTeamId, amount);
+                            setCustomBidInput(amount.toString());
+                            playTone(720, 0.08, 'triangle');
                           }}
                           className={`py-2 px-1 rounded font-mono font-black text-xs transition cursor-pointer text-center ${
                             !isEnabled
                               ? 'opacity-35 bg-slate-900 border border-slate-800 text-slate-500 cursor-not-allowed'
-                              : 'bg-[#141d2e] hover:bg-emerald-500 hover:text-slate-950 border border-emerald-500/40 text-emerald-300 shadow-sm active:scale-95'
+                              : isPendingSelected
+                              ? 'bg-emerald-500 text-slate-950 border-2 border-emerald-300 shadow-md ring-1 ring-emerald-300 scale-[1.02]'
+                              : 'bg-[#141d2e] hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 shadow-sm active:scale-95'
                           }`}
                           title={
                             !isAffordable
@@ -1107,7 +1111,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                               ? `${selectedTeam?.name} is already leading`
                               : isSquadFull
                               ? `${selectedTeam?.name} squad is full`
-                              : `Place exact bid of ${amount.toLocaleString()} PTS for ${selectedTeam?.name}`
+                              : `Select pending bid of ${amount.toLocaleString()} PTS for ${selectedTeam?.name} (Click Submit to Sync)`
                           }
                         >
                           {amount.toLocaleString()}
