@@ -149,6 +149,12 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
     }
   }, [auction?.highest_bidder_team_id]);
 
+  // Synchronize default bid input whenever official currentBid or currentPlayer changes
+  useEffect(() => {
+    const nextBid = (Number(auction?.current_bid) || 10000) + 1000;
+    setBidInput(String(nextBid));
+  }, [auction?.current_bid, currentPlayer?.id]);
+
   // Master Action Handlers
   const handleToggleTimer = async () => {
     try {
@@ -1129,7 +1135,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                       Confirmed Next Bid Amount (PTS)
                     </label>
                     <span className="text-[10px] font-mono text-emerald-400 font-semibold">
-                      {bidInput.trim() !== '' ? 'PENDING BID READY' : 'DEFAULT PENDING BID'}
+                      PENDING BID
                     </span>
                   </div>
                   <div className="relative">
@@ -1137,14 +1143,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                       id="confirmed-bid-input"
                       className="w-full bg-[#0d121c] border-2 border-brand-border focus:border-brand-neon rounded-lg py-2.5 pl-3 pr-14 text-xl font-mono font-black text-brand-neon tracking-wide focus:outline-none focus:ring-0 transition"
                       type="text"
-                      inputMode="numeric"
-                      value={bidInput !== '' ? bidInput : confirmedNextBidAmount.toLocaleString()}
-                      onFocus={(e) => {
-                        if (bidInput === '') {
-                          setBidInput(String(confirmedNextBidAmount));
-                          e.target.select();
-                        }
-                      }}
+                      value={bidInput}
                       onChange={(e) => setBidInput(e.target.value)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
@@ -1152,7 +1151,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                           handleSubmitBid();
                         }
                       }}
-                      placeholder={confirmedNextBidAmount.toLocaleString()}
+                      placeholder={minRecommendedBid.toLocaleString()}
                     />
                     <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold font-mono pointer-events-none">
                       PTS
