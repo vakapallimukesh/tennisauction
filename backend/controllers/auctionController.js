@@ -74,44 +74,22 @@ exports.placeBid = async (req, res) => {
       });
     }
 
-    // Check if bidding has already started for this player
-    const isBiddingStarted = Boolean(auction.highest_bidder_team_id);
-    const currentPlayer = store.players.find(p => p.id === auction.current_player_id);
-    const playerBasePrice = parseFloat(currentPlayer?.base_price || 10000);
+    const currentBidVal = parseFloat(auction.current_bid || 10000);
+    const bidAmount = parseFloat(amount);
 
-    let bidAmount;
+    if (isNaN(bidAmount) || bidAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please specify a valid numeric bid amount.'
+      });
+    }
 
-    if (!isBiddingStarted) {
-      // 1. FIRST START ACTION: Allow starting at exact base price (or higher if specified)
-      if (amount) {
-        bidAmount = parseFloat(amount);
-      } else {
-        bidAmount = playerBasePrice;
-      }
-
-      // Validation for START BID: Must be at least the base price
-      if (bidAmount < playerBasePrice) {
-        return res.status(400).json({
-          success: false,
-          message: `Opening bid of ₹${bidAmount.toLocaleString('en-IN')} cannot be lower than the base price of ₹${playerBasePrice.toLocaleString('en-IN')}.`
-        });
-      }
-    } else {
-      // 2. SUBSEQUENT RAISE ACTIONS: Must be strictly greater than current bid
-      if (amount) {
-        bidAmount = parseFloat(amount);
-      } else {
-        const inc = increment ? parseFloat(increment) : (auction.bid_increment || 2000);
-        bidAmount = auction.current_bid + inc;
-      }
-
-      // Validation for RAISE BID: Must be strictly higher than current_bid
-      if (bidAmount <= auction.current_bid) {
-        return res.status(400).json({
-          success: false,
-          message: `Bid of ₹${bidAmount.toLocaleString('en-IN')} must be higher than the current bid of ₹${auction.current_bid.toLocaleString('en-IN')}.`
-        });
-      }
+    // Validation: Bid must be strictly greater than current highest bid
+    if (bidAmount <= currentBidVal) {
+      return res.status(400).json({
+        success: false,
+        message: `Bid of ${bidAmount.toLocaleString('en-IN')} PTS must be higher than the current highest bid of ${currentBidVal.toLocaleString('en-IN')} PTS.`
+      });
     }
 
     // Calculate current purse remaining
@@ -121,7 +99,7 @@ exports.placeBid = async (req, res) => {
     if (bidAmount > purseRemaining) {
       return res.status(400).json({
         success: false,
-        message: `Insufficient purse! ${team.name} has only ₹${purseRemaining.toLocaleString('en-IN')} remaining, but the bid is ₹${bidAmount.toLocaleString('en-IN')}.`
+        message: `Insufficient purse! ${team.name} has only ${purseRemaining.toLocaleString('en-IN')} PTS remaining, but the bid is ${bidAmount.toLocaleString('en-IN')} PTS.`
       });
     }
 
@@ -171,7 +149,7 @@ exports.placeBid = async (req, res) => {
 
     res.json({
       success: true,
-      message: `Bid of ₹${bidAmount.toLocaleString('en-IN')} placed by ${team.name}`,
+      message: `Bid of ${bidAmount.toLocaleString('en-IN')} PTS placed by ${team.name}`,
       data: {
         current_bid: auction.current_bid,
         highest_bidder_team_id: team.id,

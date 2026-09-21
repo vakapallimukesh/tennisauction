@@ -63,7 +63,7 @@ export default function PlayerManagement({ onBackToControlPanel }) {
       age: 22,
       group: 'A',
       playing_hand: 'Right Hand',
-      base_price: 12000,
+      base_price: 10000,
       image_url: '/images/players/rohan-iyer.jpg',
       status: 'upcoming'
     });

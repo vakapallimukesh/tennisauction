@@ -264,38 +264,16 @@ function submitBid({ team_id, amount, increment }) {
     throw new Error(`${team.name} has already filled all ${team.max_players} squad positions.`);
   }
 
-  // Check if bidding has already started for this player
-  const isBiddingStarted = Boolean(auction.highest_bidder_team_id);
-  const currentPlayer = store.players.find(p => p.id === auction.current_player_id);
-  const playerBasePrice = parseFloat(currentPlayer?.base_price || 10000);
+  const currentBidVal = parseFloat(auction.current_bid || 10000);
+  const bidAmount = parseFloat(amount);
 
-  let bidAmount;
+  if (isNaN(bidAmount) || bidAmount <= 0) {
+    throw new Error('Please specify a valid numeric bid amount.');
+  }
 
-  if (!isBiddingStarted) {
-    // 1. FIRST START ACTION: Allow starting at exact base price (or higher if specified)
-    if (amount) {
-      bidAmount = parseFloat(amount);
-    } else {
-      bidAmount = playerBasePrice;
-    }
-
-    // Validation for START BID: Must be at least the base price
-    if (bidAmount < playerBasePrice) {
-      throw new Error(`Opening bid of ₹${bidAmount.toLocaleString('en-IN')} cannot be lower than the base price of ₹${playerBasePrice.toLocaleString('en-IN')}.`);
-    }
-  } else {
-    // 2. SUBSEQUENT RAISE ACTIONS: Must be strictly greater than current bid
-    if (amount) {
-      bidAmount = parseFloat(amount);
-    } else {
-      const inc = increment ? parseFloat(increment) : (auction.bid_increment || 2000);
-      bidAmount = auction.current_bid + inc;
-    }
-
-    // Validation for RAISE BID: Must be strictly higher than current_bid
-    if (bidAmount <= auction.current_bid) {
-      throw new Error(`Bid of ₹${bidAmount.toLocaleString('en-IN')} must be higher than the current bid of ₹${auction.current_bid.toLocaleString('en-IN')}.`);
-    }
+  // Validation: Bid must be strictly greater than current highest bid
+  if (bidAmount <= currentBidVal) {
+    throw new Error(`Bid of ${bidAmount.toLocaleString('en-IN')} PTS must be higher than current highest bid of ${currentBidVal.toLocaleString('en-IN')} PTS.`);
   }
 
   // Calculate actual purse remaining
@@ -305,7 +283,7 @@ function submitBid({ team_id, amount, increment }) {
   const remainingPurse = Math.max(0, parseFloat(team.total_purse) - totalSpent);
 
   if (bidAmount > remainingPurse) {
-    throw new Error(`Insufficient purse! ${team.name} has ₹${remainingPurse.toLocaleString('en-IN')} remaining, but bid is ₹${bidAmount.toLocaleString('en-IN')}.`);
+    throw new Error(`Insufficient purse! ${team.name} has ${remainingPurse.toLocaleString('en-IN')} PTS remaining, but bid is ${bidAmount.toLocaleString('en-IN')} PTS.`);
   }
 
   // Update auction state

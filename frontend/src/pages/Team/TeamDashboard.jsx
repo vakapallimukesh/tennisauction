@@ -73,11 +73,11 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
 
   // Squad and purse constraints
   const squadFull = (myTeam.players_bought || 0) >= (myTeam.max_players || 5);
-  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : 400000;
-  const nextMinBid = isBiddingActive ? (currentBid + bidIncrement) : playerBasePrice;
+  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : (myTeam.total_purse || 100000);
+  const nextMinBid = currentBid + 1000;
 
   // Handle Bid Execution
-  const handleBid = async (customIncrement = null, exactAmount = null) => {
+  const handleBid = async (exactAmount = null) => {
     if (isHighestBidder) {
       setBidError('Your team is already the highest bidder! You cannot bid against yourself.');
       return;
@@ -87,17 +87,15 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
       return;
     }
 
-    let targetBid;
-    if (exactAmount) {
-      targetBid = exactAmount;
-    } else if (customIncrement) {
-      targetBid = (isBiddingActive ? currentBid : playerBasePrice) + customIncrement;
-    } else {
-      targetBid = isBiddingActive ? (currentBid + bidIncrement) : playerBasePrice;
+    const targetBid = exactAmount ? parseFloat(exactAmount) : nextMinBid;
+
+    if (targetBid <= currentBid) {
+      setBidError(`Bid of ${targetBid.toLocaleString()} PTS must be higher than current highest bid of ${currentBid.toLocaleString()} PTS.`);
+      return;
     }
 
     if (targetBid > remainingPurse) {
-      setBidError(`Insufficient purse! Needed ₹${targetBid.toLocaleString('en-IN')}, available ₹${remainingPurse.toLocaleString('en-IN')}.`);
+      setBidError(`Insufficient purse! Needed ${targetBid.toLocaleString()} PTS, available ${remainingPurse.toLocaleString()} PTS.`);
       return;
     }
 
@@ -106,10 +104,9 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
     try {
       await placeBid({
         team_id: effectiveTeamId,
-        amount: targetBid,
-        increment: customIncrement || bidIncrement
+        amount: targetBid
       });
-      setSuccessToast(`Bid of ₹${targetBid.toLocaleString('en-IN')} successfully placed!`);
+      setSuccessToast(`Bid of ${targetBid.toLocaleString()} PTS successfully placed!`);
       setTimeout(() => setSuccessToast(''), 3000);
     } catch (err) {
       setBidError(err.message || 'Bid failed');
@@ -392,7 +389,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                 <button
                   type="button"
                   disabled={biddingLoading || isHighestBidder || squadFull || nextMinBid > remainingPurse || !isAuctionLive}
-                  onClick={() => handleBid(null, null)}
+                  onClick={() => handleBid(nextMinBid)}
                   className={`w-full py-4 px-6 rounded-2xl font-black font-display text-lg tracking-wide uppercase transition-all duration-200 flex items-center justify-center gap-3 shadow-xl ${isHighestBidder
                       ? 'bg-slate-800 text-slate-500 border border-white/10 cursor-not-allowed opacity-60'
                       : squadFull
@@ -413,15 +410,10 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                     <span>SQUAD IS FULL (5/5)</span>
                   ) : nextMinBid > remainingPurse ? (
                     <span>PURSE EXCEEDED</span>
-                  ) : !isBiddingActive ? (
-                    <>
-                      <Zap className="w-5 h-5 fill-slate-950" />
-                      <span>START BID ₹{playerBasePrice.toLocaleString('en-IN')} (BASE PRICE)</span>
-                    </>
                   ) : (
                     <>
                       <Zap className="w-5 h-5 fill-slate-950" />
-                      <span>RAISE BID ₹{nextMinBid.toLocaleString('en-IN')} (+₹{bidIncrement.toLocaleString('en-IN')})</span>
+                      <span>BID {nextMinBid.toLocaleString('en-IN')} PTS</span>
                     </>
                   )}
                 </button>
@@ -430,37 +422,37 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
-                    disabled={biddingLoading || isHighestBidder || squadFull || ((isBiddingActive ? currentBid : playerBasePrice) + 2000) > remainingPurse || !isAuctionLive}
-                    onClick={() => handleBid(2000)}
+                    disabled={biddingLoading || isHighestBidder || squadFull || (currentBid + 2000) > remainingPurse || !isAuctionLive}
+                    onClick={() => handleBid(currentBid + 2000)}
                     className="py-3 px-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-emerald-400/50 text-white font-bold text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-0.5"
                   >
-                    <span className="text-[10px] text-slate-400">+₹2,000 Step</span>
+                    <span className="text-[10px] text-slate-400">Bid +2,000</span>
                     <span className="font-mono text-emerald-400 font-extrabold">
-                      ₹{((isBiddingActive ? currentBid : playerBasePrice) + 2000).toLocaleString('en-IN')}
+                      {(currentBid + 2000).toLocaleString('en-IN')} PTS
                     </span>
                   </button>
 
                   <button
                     type="button"
-                    disabled={biddingLoading || isHighestBidder || squadFull || ((isBiddingActive ? currentBid : playerBasePrice) + 5000) > remainingPurse || !isAuctionLive}
-                    onClick={() => handleBid(5000)}
+                    disabled={biddingLoading || isHighestBidder || squadFull || (currentBid + 5000) > remainingPurse || !isAuctionLive}
+                    onClick={() => handleBid(currentBid + 5000)}
                     className="py-3 px-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-emerald-400/50 text-white font-bold text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-0.5"
                   >
-                    <span className="text-[10px] text-slate-400">+₹5,000 Step</span>
+                    <span className="text-[10px] text-slate-400">Bid +5,000</span>
                     <span className="font-mono text-cyan-400 font-extrabold">
-                      ₹{((isBiddingActive ? currentBid : playerBasePrice) + 5000).toLocaleString('en-IN')}
+                      {(currentBid + 5000).toLocaleString('en-IN')} PTS
                     </span>
                   </button>
 
                   <button
                     type="button"
-                    disabled={biddingLoading || isHighestBidder || squadFull || ((isBiddingActive ? currentBid : playerBasePrice) + 10000) > remainingPurse || !isAuctionLive}
-                    onClick={() => handleBid(10000)}
+                    disabled={biddingLoading || isHighestBidder || squadFull || (currentBid + 10000) > remainingPurse || !isAuctionLive}
+                    onClick={() => handleBid(currentBid + 10000)}
                     className="py-3 px-2 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-amber-400/50 text-white font-bold text-xs transition-all disabled:opacity-40 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-0.5"
                   >
-                    <span className="text-[10px] text-amber-400 font-extrabold">Power +₹10,000</span>
+                    <span className="text-[10px] text-amber-400 font-extrabold">Bid +10,000</span>
                     <span className="font-mono text-amber-300 font-extrabold">
-                      ₹{((isBiddingActive ? currentBid : playerBasePrice) + 10000).toLocaleString('en-IN')}
+                      {(currentBid + 10000).toLocaleString('en-IN')} PTS
                     </span>
                   </button>
                 </div>
