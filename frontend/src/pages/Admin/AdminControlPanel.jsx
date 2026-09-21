@@ -24,6 +24,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Local state
   const [selectedTeamId, setSelectedTeamId] = useState(1);
+  const [participatingTeams, setParticipatingTeams] = useState(new Set());
   const [customBidInput, setCustomBidInput] = useState('');
   const [isSelectPlayerModalOpen, setIsSelectPlayerModalOpen] = useState(false);
   const [playerSearchQuery, setPlayerSearchQuery] = useState('');
@@ -212,14 +213,24 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
     });
   };
 
+  // Register Team Hand Raise / Participation
+  const handleTeamRaise = (teamId) => {
+    setSelectedTeamId(teamId);
+    setParticipatingTeams(prev => new Set([...prev, teamId]));
+    const targetTeam = activeTeams.find(t => t.id === teamId);
+    showNotice(`✋ ${targetTeam?.name || 'Franchise'} raised hand! Selected for exact bid entry.`);
+    playTone(720, 0.12, 'triangle');
+  };
+
   // Select Player from Modal -> becomes CURRENT LOT with reset auction state
   const handleSelectPlayer = async (player) => {
     try {
       setIsSelectPlayerModalOpen(false);
       setPlayerSearchQuery('');
       setCustomBidInput('');
+      setParticipatingTeams(new Set());
       await selectLivePlayer(player.id);
-      showNotice(`${player.name} is now the CURRENT LOT (Base: 10,000 PTS, No Bids Yet).`);
+      showNotice(`${player.name} is now LIVE on auction block (Base Price: 10,000 PTS, No Bids Yet).`);
       playTone(700, 0.15);
     } catch (err) {
       showNotice(err.message || 'Failed to select player', 'error');
@@ -852,7 +863,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                     {/* Paddle Status & Action Button */}
                     <div className="flex items-center space-x-2">
                       <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800/80 text-slate-500 font-semibold uppercase">
-                        {isEligible ? (
+                        {participatingTeams.has(team.id) ? (
+                          <span className="text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded border border-emerald-500/30 font-bold">✋ Raised</span>
+                        ) : isEligible ? (
                           <span className="text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/20">Ready</span>
                         ) : squadFull ? (
                           <span className="text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Full</span>
@@ -865,12 +878,13 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                         disabled={!isEligible}
                         onClick={(e) => {
                           e.stopPropagation();
-                          setSelectedTeamId(team.id);
-                          handleSubmitBid(team.id, minRecommendedBid);
+                          handleTeamRaise(team.id);
                         }}
-                        className={`px-2.5 py-1 text-xs font-bold rounded border transition ${
+                        className={`px-3 py-1 text-xs font-black rounded uppercase tracking-wider border transition shadow-sm ${
                           !isEligible
                             ? 'opacity-40 cursor-not-allowed bg-slate-800 text-slate-500 border-slate-700'
+                            : isSelected
+                            ? 'bg-brand-neon hover:bg-emerald-400 text-slate-950 border-emerald-400 ring-1 ring-emerald-400'
                             : teamColorStyles.btn
                         }`}
                         title={
@@ -878,10 +892,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                             ? `${team.name} squad is full`
                             : !canAfford
                             ? `${team.name} has insufficient purse balance`
-                            : `Bid ${formatCurrency(minRecommendedBid)} for ${team.name}`
+                            : `Register ${team.name} hand raise / participation`
                         }
                       >
-                        Bid {formatCurrency(minRecommendedBid)}
+                        RAISE
                       </button>
                     </div>
                   </div>
