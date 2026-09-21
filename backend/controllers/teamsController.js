@@ -72,6 +72,8 @@ exports.updateTeam = async (req, res) => {
       id: parseInt(id, 10)
     };
 
+    db.saveStore();
+
     res.json({ success: true, message: 'Team updated successfully', data: store.teams[index] });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

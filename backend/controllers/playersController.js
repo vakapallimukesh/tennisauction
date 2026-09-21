@@ -68,7 +68,7 @@ exports.getPlayerById = async (req, res) => {
   }
 };
 
-// Create player (Admin)
+// Create player (Admin) - Permanently saves to Database
 exports.createPlayer = async (req, res) => {
   try {
     const store = db.getMemoryStore();
@@ -79,9 +79,9 @@ exports.createPlayer = async (req, res) => {
     const newPlayer = {
       id: newId,
       player_number: playerNumber,
-      name: req.body.name || 'New Player',
+      name: (req.body.name || 'New Player').trim(),
       age: parseInt(req.body.age, 10) || 22,
-      country: req.body.country || 'India',
+      country: (req.body.country || 'India').trim(),
       country_flag: req.body.country_flag || '🇮🇳',
       category: req.body.category || (req.body.group === 'B' ? 'Group B' : 'Group A'),
       group: req.body.group === 'B' || req.body.category === 'Group B' ? 'B' : 'A',
@@ -92,40 +92,51 @@ exports.createPlayer = async (req, res) => {
       matches: parseInt(req.body.matches, 10) || 35,
       win_percentage: parseInt(req.body.win_percentage, 10) || 70,
       base_price: parseFloat(req.body.base_price) || 10000,
-      image_url: req.body.image_url || '/images/players/rohan-iyer.jpg',
+      image_url: req.body.image_url ? req.body.image_url.trim() : '',
       status: req.body.status || 'upcoming',
       display_order: newId
     };
 
-    store.players.push(newPlayer);
+    // Save permanently to database (MySQL and persistent disk store)
+    await db.dbSavePlayer(newPlayer);
 
     emitEvent('player_updated', { action: 'create', player: newPlayer });
     broadcastAuctionState();
 
-    res.status(201).json({ success: true, message: 'Player added successfully', data: newPlayer });
+    res.status(201).json({ success: true, message: 'Player added and saved to database successfully', data: newPlayer });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Update player (Admin)
+// Update player (Admin) - Permanently updates in Database
 exports.updatePlayer = async (req, res) => {
   try {
     const { id } = req.params;
     const store = db.getMemoryStore();
-    const index = store.players.findIndex(p => p.id === parseInt(id, 10));
+    const existing = store.players.find(p => p.id === parseInt(id, 10));
 
-    if (index === -1) {
-      return res.status(404).json({ success: false, message: 'Player not found' });
+    if (!existing) {
+      return res.status(404).json({ success: false, message: 'Player not found in database' });
     }
 
     const updated = {
-      ...store.players[index],
+      ...existing,
       ...req.body,
       id: parseInt(id, 10)
     };
 
-    if (req.body.group !== undefined) updated.group = req.body.group === 'B' ? 'B' : 'A';
+    if (req.body.name !== undefined) updated.name = req.body.name.trim();
+    if (req.body.player_number !== undefined) updated.player_number = req.body.player_number.trim();
+    if (req.body.country !== undefined) updated.country = req.body.country.trim();
+    if (req.body.group !== undefined) {
+      updated.group = req.body.group === 'B' ? 'B' : 'A';
+      updated.category = updated.group === 'B' ? 'Group B' : 'Group A';
+    }
+    if (req.body.category !== undefined) {
+      updated.category = req.body.category;
+      updated.group = req.body.category.toLowerCase().includes('group b') ? 'B' : 'A';
+    }
     if (req.body.age !== undefined) updated.age = parseInt(req.body.age, 10);
     if (req.body.world_ranking !== undefined) updated.world_ranking = parseInt(req.body.world_ranking, 10);
     if (req.body.wins !== undefined) updated.wins = parseInt(req.body.wins, 10);
@@ -133,35 +144,34 @@ exports.updatePlayer = async (req, res) => {
     if (req.body.matches !== undefined) updated.matches = parseInt(req.body.matches, 10);
     if (req.body.win_percentage !== undefined) updated.win_percentage = parseInt(req.body.win_percentage, 10);
     if (req.body.base_price !== undefined) updated.base_price = parseFloat(req.body.base_price);
+    if (req.body.image_url !== undefined) updated.image_url = req.body.image_url;
 
-    store.players[index] = updated;
+    // Save permanently to database (MySQL and persistent disk store)
+    await db.dbSavePlayer(updated);
 
     emitEvent('player_updated', { action: 'update', player: updated });
     broadcastAuctionState();
 
-    res.json({ success: true, message: 'Player updated successfully', data: store.players[index] });
+    res.json({ success: true, message: 'Player updated in database successfully', data: updated });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 };
 
-// Delete player (Admin)
+// Delete player (Admin) - Permanently removes from Database
 exports.deletePlayer = async (req, res) => {
   try {
     const { id } = req.params;
-    const store = db.getMemoryStore();
-    const index = store.players.findIndex(p => p.id === parseInt(id, 10));
+    const removed = await db.dbDeletePlayer(id);
 
-    if (index === -1) {
-      return res.status(404).json({ success: false, message: 'Player not found' });
+    if (!removed) {
+      return res.status(404).json({ success: false, message: 'Player not found in database' });
     }
 
-    const removed = store.players.splice(index, 1)[0];
-
-    emitEvent('player_updated', { action: 'delete', playerId: removed.id });
+    emitEvent('player_updated', { action: 'delete', playerId: parseInt(id, 10) });
     broadcastAuctionState();
 
-    res.json({ success: true, message: 'Player deleted', data: removed });
+    res.json({ success: true, message: 'Player permanently deleted from database', data: removed });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

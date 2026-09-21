@@ -9,7 +9,7 @@ export default function Player3DCube({ player }) {
     setImageError(false);
   }, [player?.id, player?.image_url]);
 
-  const playerImageUrl = player?.image_url || '/images/players/arjun-mehta.jpg';
+  const playerImageUrl = player?.image_url || '';
   const playerName = player?.name || 'Awaiting Player';
   const playerCategory = player?.category || 'Group A';
 
@@ -72,7 +72,7 @@ export default function Player3DCube({ player }) {
                 <img
                   src="/images/sponsors/devee-group.png"
                   alt="Devee Group"
-                  className="max-h-24 w-auto max-w-[88%] object-contain drop-shadow-sm select-none"
+                  className="max-h-24 w-auto max-w-[88%] object-contain cube-sponsor-logo select-none"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -106,7 +106,7 @@ export default function Player3DCube({ player }) {
                 <img
                   src="/images/sponsors/bhimavaram-digitals.png"
                   alt="Bhimavaram Digitals"
-                  className="max-h-20 w-auto max-w-[88%] object-contain drop-shadow-sm select-none"
+                  className="max-h-20 w-auto max-w-[88%] object-contain cube-sponsor-logo select-none"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -140,7 +140,7 @@ export default function Player3DCube({ player }) {
                 <img
                   src="/images/sponsors/pv-enterprises.png"
                   alt="PV Enterprises"
-                  className="max-h-24 w-auto max-w-[88%] object-contain drop-shadow-sm select-none"
+                  className="max-h-24 w-auto max-w-[88%] object-contain cube-sponsor-logo select-none"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}

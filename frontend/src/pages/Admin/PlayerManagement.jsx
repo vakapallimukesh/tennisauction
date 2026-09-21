@@ -33,7 +33,7 @@ export default function PlayerManagement({ onBackToControlPanel }) {
     group: 'A',
     playing_hand: 'Right Hand',
     base_price: 10000,
-    image_url: '/images/players/arjun-mehta.jpg',
+    image_url: '',
     status: 'upcoming'
   });
   const [message, setMessage] = useState(null);
@@ -64,7 +64,7 @@ export default function PlayerManagement({ onBackToControlPanel }) {
       group: 'A',
       playing_hand: 'Right Hand',
       base_price: 10000,
-      image_url: '/images/players/rohan-iyer.jpg',
+      image_url: '',
       status: 'upcoming'
     });
     setIsModalOpen(true);
@@ -79,7 +79,7 @@ export default function PlayerManagement({ onBackToControlPanel }) {
       group: player.group || 'A',
       playing_hand: player.playing_hand || 'Right Hand',
       base_price: player.base_price,
-      image_url: player.image_url || '/images/players/rohan-iyer.jpg',
+      image_url: player.image_url || '',
       status: player.status || 'upcoming'
     });
     setIsModalOpen(true);
@@ -88,13 +88,35 @@ export default function PlayerManagement({ onBackToControlPanel }) {
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 15 * 1024 * 1024) {
-        alert('File size exceeds 15MB. Please choose a smaller image.');
+      if (file.size > 20 * 1024 * 1024) {
+        alert('File size exceeds 20MB. Please choose a smaller image.');
         return;
       }
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, image_url: reader.result }));
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 800;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          setFormData(prev => ({ ...prev, image_url: compressedDataUrl }));
+        };
+        img.src = event.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -105,13 +127,13 @@ export default function PlayerManagement({ onBackToControlPanel }) {
     try {
       if (editingPlayer) {
         await api.updatePlayer(editingPlayer.id, formData);
-        setMessage({ type: 'success', text: `Player ${formData.name} updated successfully!` });
+        setMessage({ type: 'success', text: `Player ${formData.name} updated successfully in database!` });
       } else {
         await api.createPlayer(formData);
-        setMessage({ type: 'success', text: `Player ${formData.name} added to draft pool!` });
+        setMessage({ type: 'success', text: `Player ${formData.name} added to database registry!` });
       }
       setIsModalOpen(false);
-      loadPlayers();
+      await loadPlayers();
     } catch (err) {
       setMessage({ type: 'error', text: err.message || 'Operation failed' });
     }
@@ -268,11 +290,18 @@ export default function PlayerManagement({ onBackToControlPanel }) {
                   return (
                     <tr key={player.id} className="hover:bg-white/[0.02] transition-colors">
                       <td className="p-3.5 flex items-center gap-3">
-                        <img
-                          src={player.image_url}
-                          alt=""
-                          className="w-10 h-12 object-cover rounded-lg border border-white/10 bg-slate-950"
-                        />
+                        {player.image_url ? (
+                          <img
+                            src={player.image_url}
+                            alt={player.name}
+                            className="w-10 h-12 object-cover rounded-lg border border-white/10 bg-slate-950"
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-10 h-12 rounded-lg border border-white/10 bg-slate-950 flex items-center justify-center text-slate-500">
+                            <ImageIcon className="w-5 h-5 opacity-60" />
+                          </div>
+                        )}
                         <div>
                           <span className="font-bold text-white text-sm block">{player.name}</span>
                           <span className="text-[11px] text-slate-400">

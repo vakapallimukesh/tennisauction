@@ -145,6 +145,7 @@ exports.placeBid = async (req, res) => {
       bid: bidRecord
     });
 
+    db.saveStore();
     broadcastAuctionState();
 
     res.json({
@@ -205,6 +206,7 @@ exports.undoLastBid = async (req, res) => {
       timer_remaining: auction.timer_remaining
     });
 
+    db.saveStore();
     broadcastAuctionState();
 
     res.json({
@@ -248,28 +250,23 @@ exports.markSold = async (req, res) => {
 
     const player = store.players.find(p => p.id === auction.current_player_id);
     if (!player) {
-      return res.status(404).json({ success: false, message: 'Player not found' });
+      return res.status(404).json({ success: false, message: 'Current player not found in database' });
     }
 
-    const price = final_price ? parseFloat(final_price) : auction.current_bid;
-
-    // Check squad limit
-    const currentBought = store.team_players.filter(tp => tp.team_id === team.id);
-    if (currentBought.length >= team.max_players) {
-      return res.status(400).json({
-        success: false,
-        message: `${team.name} has already acquired the maximum squad size of ${team.max_players} players.`
-      });
-    }
+    const price = parseFloat(final_price !== undefined ? final_price : auction.current_bid);
 
     // Stop timer
     pauseServerTimer();
     auction.timer_running = false;
 
-    // Deduct purse from winning team
-    team.purse_remaining = Math.max(0, (parseFloat(team.purse_remaining) || 0) - price);
+    // Deduct purse & record player purchase
+    const teamPlayers = store.team_players.filter(tp => tp.team_id === team.id);
+    const totalSpentBefore = teamPlayers.reduce((sum, tp) => sum + (parseFloat(tp.purchase_price) || 0), 0);
+    const newTotalSpent = totalSpentBefore + price;
+    team.purse_remaining = Math.max(0, (parseFloat(team.total_purse) || 400000) - newTotalSpent);
+    team.players_bought = teamPlayers.length + 1;
 
-    // Record in team_players
+    // Store drafted player record
     store.team_players.push({
       id: store.team_players.length + 1,
       team_id: team.id,
@@ -330,6 +327,7 @@ exports.markSold = async (req, res) => {
       sold_at: new Date().toISOString()
     });
 
+    db.saveStore();
     broadcastAuctionState();
 
     res.json({
@@ -387,6 +385,7 @@ exports.markUnsold = async (req, res) => {
       timestamp: new Date().toISOString()
     });
 
+    db.saveStore();
     broadcastAuctionState();
 
     res.json({
@@ -432,6 +431,7 @@ exports.nextPlayer = async (req, res) => {
       current_bid: 10000.00
     });
 
+    db.saveStore();
     broadcastAuctionState();
 
     res.json({
@@ -485,6 +485,7 @@ exports.setLivePlayer = async (req, res) => {
       current_bid: 10000.00
     });
 
+    db.saveStore();
     broadcastAuctionState();
 
     res.json({
@@ -566,6 +567,7 @@ exports.controlAuction = async (req, res) => {
       auction.timer_seconds = parseInt(timer_seconds, 10);
     }
 
+    db.saveStore();
     broadcastAuctionState();
 
     res.json({

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import confetti from 'canvas-confetti';
 import { useAuction } from '../../context/AuctionContext';
 import SpinningCounter from '../../components/SpinningCounter';
 import LogoLoop from '../../components/LogoLoop';
@@ -22,6 +23,75 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
   } = useAuction();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const confettiCanvasRef = useRef(null);
+
+  // Trigger light, elegant celebration sparks and fireworks when player is sold
+  useEffect(() => {
+    if (soldCelebration) {
+      const colors = ['#22c55e', '#38bdf8', '#a855f7', '#f97316', '#eab308', '#ffffff'];
+
+      // Function to fire clean confetti on overlay canvas or full document
+      const triggerConfetti = (opts) => {
+        if (confettiCanvasRef.current) {
+          try {
+            const customConfetti = confetti.create(confettiCanvasRef.current, {
+              resize: true,
+              useWorker: true
+            });
+            customConfetti(opts);
+            return;
+          } catch (e) {
+            // fallback to global
+          }
+        }
+        confetti({ ...opts, zIndex: 999999 });
+      };
+
+      // 1. Initial Gentle Sparkle Burst
+      triggerConfetti({
+        particleCount: 65,
+        spread: 75,
+        origin: { y: 0.6 },
+        colors: colors,
+        startVelocity: 35,
+        scalar: 0.95
+      });
+
+      // 2. Light, gentle side sparkle drifts (lower frequency & count)
+      const duration = 3.5 * 1000;
+      const animationEnd = Date.now() + duration;
+
+      const frameInterval = setInterval(() => {
+        const remaining = animationEnd - Date.now();
+        if (remaining <= 0) {
+          return clearInterval(frameInterval);
+        }
+
+        // Gentle left/right floating sparks
+        triggerConfetti({
+          particleCount: 12,
+          angle: 60,
+          spread: 45,
+          origin: { x: 0.05, y: 0.75 },
+          colors: colors,
+          shapes: ['circle', 'star'],
+          scalar: 0.9
+        });
+
+        triggerConfetti({
+          particleCount: 12,
+          angle: 120,
+          spread: 45,
+          origin: { x: 0.95, y: 0.75 },
+          colors: colors,
+          shapes: ['circle', 'star'],
+          scalar: 0.9
+        });
+      }, 480);
+
+      return () => clearInterval(frameInterval);
+    }
+  }, [soldCelebration]);
 
   // Fullscreen toggle handler
   const toggleFullscreen = () => {
@@ -77,12 +147,12 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       matches: 47,
       win_percentage: 68,
       base_price: 10000,
-      image_url: '/images/players/arjun-mehta.jpg'
+      image_url: ''
     };
 
     return {
       ...base,
-      image_url: base.image_url || '/images/players/arjun-mehta.jpg'
+      image_url: base.image_url || ''
     };
   }, [currentPlayer]);
 
@@ -162,40 +232,46 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
     (soldPlayers?.length || 0) + (activePlayer?.display_order || activePlayer?.id || 1)
   ).padStart(3, '0');
 
-  // Sponsor logos for bottom scrolling bar (Devee Group, PV Enterprises, Bhimavaram Online)
+  // Sponsor logos for bottom scrolling bar (Devee Group, PV Enterprises, Bhimavaram Digitals)
   const sponsorLogos = useMemo(() => {
     const deveeLogoItem = {
       node: (
-        <img
-          src="/images/sponsors/devee-group.png"
-          alt="Devee Group"
-          className="h-10 sm:h-11 md:h-12 w-auto object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
-          onError={(e) => { e.target.style.display = 'none'; }}
-        />
+        <div className="h-11 sm:h-12 flex items-center justify-center">
+          <img
+            src="/images/sponsors/devee-group.png"
+            alt="Devee Group"
+            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
       ),
       title: "Devee Group"
     };
 
     const pvLogoItem = {
       node: (
-        <img
-          src="/images/sponsors/pv-enterprises.png"
-          alt="PV Enterprises"
-          className="h-10 sm:h-11 md:h-12 w-auto object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
-          onError={(e) => { e.target.style.display = 'none'; }}
-        />
+        <div className="h-11 sm:h-12 flex items-center justify-center">
+          <img
+            src="/images/sponsors/pv-enterprises.png"
+            alt="PV Enterprises"
+            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
       ),
       title: "PV Enterprises"
     };
 
     const bhimavaramDigitalsItem = {
       node: (
-        <img
-          src="/images/sponsors/bhimavaram-digitals.png"
-          alt="Bhimavaram Digitals"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
-          onError={(e) => { e.target.style.display = 'none'; }}
-        />
+        <div className="h-11 sm:h-12 flex items-center justify-center overflow-visible">
+          <img
+            src="/images/sponsors/bhimavaram-digitals.png"
+            alt="Bhimavaram Digitals"
+            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs scale-[1.35] origin-center"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
       ),
       title: "Bhimavaram Digitals"
     };
@@ -229,7 +305,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   src={playerIntro.image_url}
                   alt={playerIntro.name}
                   className="w-full h-full object-cover object-top"
-                  onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
+                  onError={(e) => { e.target.style.display = 'none'; }}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-slate-600">
@@ -276,36 +352,90 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
       {/* ===== SOLD CELEBRATION OVERLAY ===== */}
       {soldCelebration && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center font-montserrat-bold" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(6, 78, 59, 0.55)' }}>
-          <div className="flex flex-col items-center text-center">
-            {/* Player Photo — slides from right */}
-            <div
-              className="w-56 h-56 xl:w-64 xl:h-64 rounded-full border-[5px] border-emerald-300/90 shadow-2xl overflow-hidden mb-6 bg-slate-700"
-              style={{
-                animation: 'slideFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                boxShadow: '0 0 80px rgba(34, 197, 94, 0.4), 0 25px 50px rgba(0,0,0,0.4)'
-              }}
-            >
-              {soldCelebration.player_image ? (
-                <img
-                  src={soldCelebration.player_image}
-                  alt={soldCelebration.player_name}
-                  className="w-full h-full object-cover object-top"
-                  onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-emerald-900">
-                  <span className="text-7xl">🎾</span>
-                </div>
-              )}
+        <div className="fixed inset-0 z-[200] flex items-center justify-center font-montserrat-bold overflow-hidden" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(6, 78, 59, 0.65)' }}>
+          {/* Confetti Sparks Canvas in front of overlay backdrop */}
+          <canvas
+            ref={confettiCanvasRef}
+            className="absolute inset-0 w-full h-full pointer-events-none z-30"
+          />
+
+          {/* Background Rotating Sunburst Light Rays */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-40 flex items-center justify-center"
+            style={{
+              background: 'radial-gradient(circle at center, rgba(34, 197, 94, 0.45) 0%, rgba(250, 204, 21, 0.25) 35%, transparent 70%)',
+              animation: 'sunburstRotate 20s linear infinite'
+            }}
+          />
+
+          <div className="flex flex-col items-center text-center relative z-10">
+            {/* Sparkle Stars & Flares floating around player photo */}
+            <div className="relative">
+              {/* Pulsing Aura Ring */}
+              <div
+                className="absolute -inset-6 rounded-full opacity-70 pointer-events-none"
+                style={{
+                  background: 'radial-gradient(circle, rgba(250, 204, 21, 0.5) 0%, rgba(34, 197, 94, 0.3) 50%, transparent 70%)',
+                  animation: 'pulseBid 1.5s ease-in-out infinite'
+                }}
+              />
+
+              {/* Subtle Twinkle Spark 1 (Top Right) */}
+              <div
+                className="absolute -top-3 -right-3 text-2xl select-none z-20 pointer-events-none drop-shadow-md"
+                style={{ animation: 'sparkTwinkle 1.6s ease-in-out infinite alternate' }}
+              >
+                ✨
+              </div>
+
+              {/* Subtle Twinkle Spark 2 (Bottom Left) */}
+              <div
+                className="absolute -bottom-2 -left-3 text-2xl select-none z-20 pointer-events-none drop-shadow-md"
+                style={{ animation: 'sparkTwinkle 1.8s ease-in-out 0.4s infinite alternate' }}
+              >
+                ✨
+              </div>
+
+              {/* Player Photo — slides from right */}
+              <div
+                className="w-56 h-56 xl:w-64 xl:h-64 rounded-full border-[5px] border-emerald-300 shadow-2xl overflow-hidden mb-6 bg-slate-700 relative z-10"
+                style={{
+                  animation: 'slideFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                  boxShadow: '0 0 90px rgba(34, 197, 94, 0.6), 0 0 40px rgba(250, 204, 21, 0.5), 0 25px 50px rgba(0,0,0,0.5)'
+                }}
+              >
+                {soldCelebration.player_image ? (
+                  <img
+                    src={soldCelebration.player_image}
+                    alt={soldCelebration.player_name}
+                    className="w-full h-full object-cover object-top"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-emerald-900">
+                    <span className="text-7xl">🎾</span>
+                  </div>
+                )}
+              </div>
             </div>
-            {/* SOLD Badge */}
-            <div
-              className="px-10 py-2.5 rounded-full bg-emerald-500 shadow-lg mb-4"
-              style={{ animation: 'fadeUpIn 0.5s ease-out 0.5s both' }}
-            >
-              <h1 className="text-5xl xl:text-7xl font-black text-white uppercase tracking-wider font-montserrat-black" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>SOLD!</h1>
+
+            {/* SOLD Badge with Sparkles */}
+            <div className="relative">
+              <div
+                className="px-12 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500 shadow-2xl mb-4 border-2 border-emerald-200/60 flex items-center justify-center gap-3"
+                style={{
+                  animation: 'fadeUpIn 0.5s ease-out 0.5s both',
+                  boxShadow: '0 0 35px rgba(34, 197, 94, 0.7), 0 10px 25px rgba(0,0,0,0.3)'
+                }}
+              >
+                <span className="text-2xl animate-spin-slow">✨</span>
+                <h1 className="text-5xl xl:text-7xl font-black text-white uppercase tracking-wider font-montserrat-black" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.35)' }}>
+                  SOLD!
+                </h1>
+                <span className="text-2xl animate-spin-slow">✨</span>
+              </div>
             </div>
+
             {/* Player Name — Montserrat Black */}
             <p
               className="text-3xl xl:text-5xl font-black text-white mb-4 tracking-tight font-montserrat-black"
@@ -356,7 +486,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   src={unsoldNotice.player_image}
                   alt={unsoldNotice.player_name}
                   className="w-full h-full object-cover object-top opacity-70"
-                  onError={(e) => { e.target.onerror = null; e.target.src = '/images/players/rohan-iyer.jpg'; }}
+                  onError={(e) => { e.target.style.display = 'none'; }}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-slate-800">
@@ -509,14 +639,14 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                       </span>
                     </div>
 
-                    {/* GROUP A SECTION */}
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between px-2 py-0.5 rounded bg-blue-50 border border-blue-200">
+                    {/* GROUP A SECTION GREY BOX */}
+                    <div className="border-2 border-slate-400/80 rounded-lg p-2 bg-slate-200/50 shadow-2xs space-y-1.5">
+                      <div className="flex items-center justify-between pb-1 border-b border-slate-300">
                         <div className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-                          <span className="text-[10px] font-bold text-blue-950 uppercase tracking-wider font-montserrat-bold">GROUP A</span>
+                          <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shadow-2xs"></span>
+                          <span className="text-[11px] font-black text-slate-900 tracking-wider font-montserrat-bold">GROUP A</span>
                         </div>
-                        <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-blue-200/80 text-blue-800 font-montserrat-bold">
+                        <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-slate-300 text-slate-800 font-montserrat-bold">
                           {groupAPlayers.length}
                         </span>
                       </div>
@@ -526,13 +656,13 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                           groupAPlayers.map((p, pIdx) => (
                             <div
                               key={p.id || `ga-${pIdx}`}
-                              className={`border rounded-lg px-2.5 py-1.5 flex items-center justify-between gap-2 shadow-xs transition-colors ${isLeading
+                              className={`border rounded-md px-2 py-1 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isLeading
                                 ? 'border-emerald-300 bg-white'
                                 : 'border-slate-300 bg-white'
                                 }`}
                             >
                               {/* Player Name in Roster — Montserrat Bold */}
-                              <div className="font-bold text-slate-950 truncate text-[12px] md:text-[13px] leading-normal font-montserrat-bold min-w-0 flex-1">
+                              <div className="font-bold text-slate-950 truncate text-[11px] md:text-[12px] leading-normal font-montserrat-bold min-w-0 flex-1">
                                 {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
                               </div>
                               <div className="text-right shrink-0">
@@ -543,24 +673,21 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             </div>
                           ))
                         ) : (
-                          <div className="text-center py-1.5 text-slate-400 text-[10px] italic bg-white/60 rounded border border-dashed border-slate-300 font-montserrat-bold">
+                          <div className="text-center py-1 text-slate-400 text-[10px] italic bg-white/70 rounded border border-dashed border-slate-300 font-montserrat-bold">
                             No Group A acquired
                           </div>
                         )}
                       </div>
                     </div>
 
-                    {/* DRAW LINE BETWEEN GROUP A AND GROUP B */}
-                    <div className="my-2 border-t-2 border-dashed border-slate-400"></div>
-
-                    {/* GROUP B SECTION */}
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between px-2 py-0.5 rounded bg-amber-50 border border-amber-200">
+                    {/* GROUP B SECTION GREY BOX */}
+                    <div className="border-2 border-slate-400/80 rounded-lg p-2 bg-slate-200/50 shadow-2xs space-y-1.5">
+                      <div className="flex items-center justify-between pb-1 border-b border-slate-300">
                         <div className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-amber-600"></span>
-                          <span className="text-[10px] font-bold text-amber-950 uppercase tracking-wider font-montserrat-bold">GROUP B</span>
+                          <span className="w-2.5 h-2.5 rounded-full bg-amber-600 shadow-2xs"></span>
+                          <span className="text-[11px] font-black text-slate-900 tracking-wider font-montserrat-bold">GROUP B</span>
                         </div>
-                        <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-amber-200/80 text-amber-800 font-montserrat-bold">
+                        <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-slate-300 text-slate-800 font-montserrat-bold">
                           {groupBPlayers.length}
                         </span>
                       </div>
@@ -570,13 +697,13 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                           groupBPlayers.map((p, pIdx) => (
                             <div
                               key={p.id || `gb-${pIdx}`}
-                              className={`border rounded-lg px-2.5 py-1.5 flex items-center justify-between gap-2 shadow-xs transition-colors ${isLeading
+                              className={`border rounded-md px-2 py-1 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isLeading
                                 ? 'border-emerald-300 bg-white'
                                 : 'border-slate-300 bg-white'
                                 }`}
                             >
                               {/* Player Name in Roster — Montserrat Bold */}
-                              <div className="font-bold text-slate-950 truncate text-[12px] md:text-[13px] leading-normal font-montserrat-bold min-w-0 flex-1">
+                              <div className="font-bold text-slate-950 truncate text-[11px] md:text-[12px] leading-normal font-montserrat-bold min-w-0 flex-1">
                                 {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
                               </div>
                               <div className="text-right shrink-0">
@@ -587,7 +714,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             </div>
                           ))
                         ) : (
-                          <div className="text-center py-1.5 text-slate-400 text-[10px] italic bg-white/60 rounded border border-dashed border-slate-300 font-montserrat-bold">
+                          <div className="text-center py-1 text-slate-400 text-[10px] italic bg-white/70 rounded border border-dashed border-slate-300 font-montserrat-bold">
                             No Group B acquired
                           </div>
                         )}
@@ -695,10 +822,10 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
           <div className="flex-1 overflow-hidden min-w-0">
             <LogoLoop
               logos={sponsorLogos}
-              speed={45}
+              speed={42}
               direction="left"
-              logoHeight={44}
-              gap={48}
+              logoHeight={48}
+              gap={52}
               hoverSpeed={0}
               scaleOnHover
               fadeOut
@@ -732,6 +859,16 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         @keyframes scaleIn {
           0% { opacity: 0; transform: scale(0.7); }
           100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes sparkTwinkle {
+          0% { transform: scale(0.6) rotate(-15deg); opacity: 0.3; filter: drop-shadow(0 0 2px gold); }
+          50% { transform: scale(1.3) rotate(20deg); opacity: 1; filter: drop-shadow(0 0 12px gold); }
+          100% { transform: scale(0.9) rotate(0deg); opacity: 0.7; filter: drop-shadow(0 0 6px gold); }
+        }
+        @keyframes sunburstRotate {
+          0% { transform: rotate(0deg) scale(1); }
+          50% { transform: rotate(180deg) scale(1.1); }
+          100% { transform: rotate(360deg) scale(1); }
         }
       `}</style>
     </div>

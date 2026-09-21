@@ -246,6 +246,10 @@ export function AuctionProvider({ children }) {
       }
     };
 
+    const onPlayerUpdated = () => {
+      refreshAll();
+    };
+
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('auction_state', onAuctionState);
@@ -257,6 +261,7 @@ export function AuctionProvider({ children }) {
     socket.on('player_sold', onPlayerSold);
     socket.on('player_unsold', onPlayerUnsold);
     socket.on('player_selected', onPlayerSelected);
+    socket.on('player_updated', onPlayerUpdated);
 
     if (socket.connected) {
       setIsSocketConnected(true);
@@ -276,6 +281,7 @@ export function AuctionProvider({ children }) {
       socket.off('player_sold', onPlayerSold);
       socket.off('player_unsold', onPlayerUnsold);
       socket.off('player_selected', onPlayerSelected);
+      socket.off('player_updated', onPlayerUpdated);
     };
   }, [syncSnapshot, refreshAll]);
 

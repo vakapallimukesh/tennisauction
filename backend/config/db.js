@@ -1,21 +1,16 @@
+const fs = require('fs');
+const path = require('path');
 const mysql = require('mysql2/promise');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 dotenv.config();
 
 // Hash default passwords from environment variables (or generate random defaults for development)
-const crypto = require('crypto');
-const randomPass = () => crypto.randomBytes(16).toString('hex');
-
 const ADMIN_PASS = process.env.DEFAULT_ADMIN_PASSWORD || 'tennis2026';
 const TEAM1_PASS = process.env.DEFAULT_TEAM1_PASSWORD || 'team1@auction';
 const TEAM2_PASS = process.env.DEFAULT_TEAM2_PASSWORD || 'team2@auction';
 const TEAM3_PASS = process.env.DEFAULT_TEAM3_PASSWORD || 'team3@auction';
 const TEAM4_PASS = process.env.DEFAULT_TEAM4_PASSWORD || 'team4@auction';
-
-if (!process.env.DEFAULT_ADMIN_PASSWORD) {
-  console.warn('⚠️  DEFAULT_ADMIN_PASSWORD not set in .env — using built-in development default. Change this for production!');
-}
 
 const adminHash = bcrypt.hashSync(ADMIN_PASS, 10);
 const team1Hash = bcrypt.hashSync(TEAM1_PASS, 10);
@@ -70,7 +65,6 @@ const initialSeed = {
       id: 3,
       team_number: 3,
       name: 'Team C',
-
       owner: 'Maya Sengupta',
       total_purse: 400000.00,
       purse_remaining: 400000.00,
@@ -85,7 +79,6 @@ const initialSeed = {
       id: 4,
       team_number: 4,
       name: 'Team D',
-
       owner: 'Kabir Malhotra',
       total_purse: 400000.00,
       purse_remaining: 400000.00,
@@ -258,7 +251,6 @@ const initialSeed = {
       status: 'upcoming',
       display_order: 8
     },
-    // Remaining Players (all clean and upcoming)
     {
       id: 9,
       player_number: 'PLAYER #01',
@@ -457,7 +449,56 @@ const initialSeed = {
   auction_events: []
 };
 
-let memoryStore = JSON.parse(JSON.stringify(initialSeed));
+// Data persistence directory & store file
+const DATA_DIR = path.join(__dirname, '../data');
+const STORE_PATH = path.join(DATA_DIR, 'store.json');
+
+// Ensure data directory exists
+if (!fs.existsSync(DATA_DIR)) {
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  } catch (err) {
+    console.error('Failed to create data directory:', err.message);
+  }
+}
+
+// Load initial store from persistent file if present, else seed
+let memoryStore = null;
+
+function loadStoreFromDisk() {
+  try {
+    if (fs.existsSync(STORE_PATH)) {
+      const raw = fs.readFileSync(STORE_PATH, 'utf8');
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.players) && Array.isArray(parsed.teams)) {
+        console.log(`📁 Loaded persistent database store from ${STORE_PATH} (${parsed.players.length} players)`);
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn(`⚠️ Could not parse store.json: ${err.message}. Using initial seed.`);
+  }
+
+  const fresh = JSON.parse(JSON.stringify(initialSeed));
+  saveStoreToDisk(fresh);
+  return fresh;
+}
+
+// Atomic synchronous save to prevent corruption
+function saveStoreToDisk(storeToSave) {
+  try {
+    const data = storeToSave || memoryStore;
+    if (!data) return;
+    const tempPath = `${STORE_PATH}.tmp`;
+    fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf8');
+    fs.renameSync(tempPath, STORE_PATH);
+  } catch (err) {
+    console.error('❌ Error saving database store to disk:', err.message);
+  }
+}
+
+memoryStore = loadStoreFromDisk();
+
 let pool = null;
 let isUsingMySQL = false;
 
@@ -477,16 +518,197 @@ async function initDB() {
       });
       const conn = await pool.getConnection();
       console.log('✅ Connected to MySQL Database:', DB_NAME);
+
+      // Auto-create/migrate tables if not existing
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS \`teams\` (
+          \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+          \`team_number\` INT NOT NULL UNIQUE,
+          \`name\` VARCHAR(100) NOT NULL,
+          \`tagline\` VARCHAR(150) NULL,
+          \`owner\` VARCHAR(100) NOT NULL,
+          \`total_purse\` DECIMAL(12,2) NOT NULL DEFAULT 400000.00,
+          \`purse_remaining\` DECIMAL(12,2) NOT NULL DEFAULT 400000.00,
+          \`max_players\` INT NOT NULL DEFAULT 5,
+          \`logo_url\` VARCHAR(255) NOT NULL,
+          \`primary_color\` VARCHAR(30) NOT NULL,
+          \`accent_color\` VARCHAR(30) NOT NULL,
+          \`glow_color\` VARCHAR(50) NOT NULL,
+          \`bg_gradient\` VARCHAR(100) NOT NULL,
+          \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          \`updated_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+      `);
+
+      await conn.query(`
+        CREATE TABLE IF NOT EXISTS \`players\` (
+          \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+          \`player_number\` VARCHAR(40) NOT NULL UNIQUE,
+          \`name\` VARCHAR(120) NOT NULL,
+          \`age\` INT NOT NULL DEFAULT 22,
+          \`country\` VARCHAR(60) NOT NULL DEFAULT 'India',
+          \`country_flag\` VARCHAR(20) NOT NULL DEFAULT '🇮🇳',
+          \`category\` VARCHAR(40) NOT NULL DEFAULT 'Group A',
+          \`group\` VARCHAR(10) NOT NULL DEFAULT 'A',
+          \`playing_hand\` VARCHAR(40) NOT NULL DEFAULT 'Right Hand',
+          \`world_ranking\` INT NOT NULL DEFAULT 150,
+          \`wins\` INT NOT NULL DEFAULT 0,
+          \`aces\` INT NOT NULL DEFAULT 0,
+          \`matches\` INT NOT NULL DEFAULT 0,
+          \`win_percentage\` INT NOT NULL DEFAULT 0,
+          \`base_price\` DECIMAL(12,2) NOT NULL DEFAULT 10000.00,
+          \`image_url\` LONGTEXT NOT NULL,
+          \`status\` VARCHAR(30) NOT NULL DEFAULT 'upcoming',
+          \`display_order\` INT NOT NULL DEFAULT 0,
+          \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          \`updated_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+      `);
+
+      // Ensure image_url is LONGTEXT so large base64 or long image URLs never fail
+      try {
+        await conn.query(`ALTER TABLE \`players\` MODIFY COLUMN \`image_url\` LONGTEXT NOT NULL`);
+      } catch {
+        // ignore if already longtext
+      }
+
+      // Sync players from MySQL if populated
+      const [rows] = await conn.query('SELECT * FROM `players` ORDER BY id ASC');
+      if (rows && rows.length > 0) {
+        memoryStore.players = rows.map(r => ({
+          ...r,
+          id: Number(r.id),
+          age: Number(r.age),
+          base_price: Number(r.base_price),
+          display_order: Number(r.display_order || r.id)
+        }));
+        saveStoreToDisk(memoryStore);
+        console.log(`📥 Loaded ${rows.length} players from MySQL database.`);
+      } else {
+        // Seed MySQL with initial players
+        for (const p of memoryStore.players) {
+          await conn.query(`
+            INSERT INTO \`players\` (id, player_number, name, age, country, country_flag, category, \`group\`, playing_hand, world_ranking, wins, aces, matches, win_percentage, base_price, image_url, status, display_order)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE name=VALUES(name), base_price=VALUES(base_price), image_url=VALUES(image_url), category=VALUES(category), \`group\`=VALUES(\`group\`)
+          `, [
+            p.id, p.player_number, p.name, p.age, p.country, p.country_flag, p.category, p.group || 'A',
+            p.playing_hand, p.world_ranking, p.wins, p.aces, p.matches, p.win_percentage,
+            p.base_price, p.image_url, p.status, p.display_order
+          ]);
+        }
+        console.log(`🌱 Seeded ${memoryStore.players.length} players to MySQL.`);
+      }
+
       conn.release();
       isUsingMySQL = true;
     } catch (err) {
-      console.warn('⚠️ Could not connect to MySQL server (' + err.message + '). Using in-memory fallback store.');
+      console.warn('⚠️ Could not connect to MySQL server (' + err.message + '). Using persistent file-backed database store.');
       isUsingMySQL = false;
     }
   } else {
-    console.log('ℹ️ No MySQL environment variables defined. Using fast, resilient in-memory database store.');
+    console.log('ℹ️ MySQL not configured in environment. Using atomic persistent disk store (backend/data/store.json).');
     isUsingMySQL = false;
   }
+}
+
+// Database helper functions for persistent Player CRUD
+async function dbSavePlayer(player) {
+  // 1. Update in-memory store
+  const index = memoryStore.players.findIndex(p => p.id === player.id);
+  if (index !== -1) {
+    memoryStore.players[index] = { ...memoryStore.players[index], ...player };
+  } else {
+    memoryStore.players.push(player);
+  }
+
+  // 2. Persist to disk
+  saveStoreToDisk(memoryStore);
+
+  // 3. Persist to MySQL if active
+  if (isUsingMySQL && pool) {
+    try {
+      await pool.query(`
+        INSERT INTO \`players\` (id, player_number, name, age, country, country_flag, category, \`group\`, playing_hand, world_ranking, wins, aces, matches, win_percentage, base_price, image_url, status, display_order)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          name=VALUES(name),
+          player_number=VALUES(player_number),
+          age=VALUES(age),
+          country=VALUES(country),
+          country_flag=VALUES(country_flag),
+          category=VALUES(category),
+          \`group\`=VALUES(\`group\`),
+          playing_hand=VALUES(playing_hand),
+          world_ranking=VALUES(world_ranking),
+          wins=VALUES(wins),
+          aces=VALUES(aces),
+          matches=VALUES(matches),
+          win_percentage=VALUES(win_percentage),
+          base_price=VALUES(base_price),
+          image_url=VALUES(image_url),
+          status=VALUES(status),
+          display_order=VALUES(display_order)
+      `, [
+        player.id,
+        player.player_number,
+        player.name,
+        player.age || 22,
+        player.country || 'India',
+        player.country_flag || '🇮🇳',
+        player.category || (player.group === 'B' ? 'Group B' : 'Group A'),
+        player.group === 'B' ? 'B' : 'A',
+        player.playing_hand || 'Right Hand',
+        player.world_ranking || 150,
+        player.wins || 0,
+        player.aces || 0,
+        player.matches || 0,
+        player.win_percentage || 0,
+        player.base_price || 10000,
+        player.image_url !== undefined ? player.image_url : '',
+        player.status || 'upcoming',
+        player.display_order || player.id
+      ]);
+    } catch (err) {
+      console.error('❌ Error updating player in MySQL:', err.message);
+    }
+  }
+
+  return player;
+}
+
+async function dbDeletePlayer(playerId) {
+  const idNum = parseInt(playerId, 10);
+  const index = memoryStore.players.findIndex(p => p.id === idNum);
+  let removed = null;
+
+  if (index !== -1) {
+    removed = memoryStore.players.splice(index, 1)[0];
+  }
+
+  // Also clean up any team_players or bids associated with this player
+  memoryStore.team_players = memoryStore.team_players.filter(tp => tp.player_id !== idNum);
+  memoryStore.bids = memoryStore.bids.filter(b => b.player_id !== idNum);
+
+  if (memoryStore.auction && memoryStore.auction.current_player_id === idNum) {
+    memoryStore.auction.current_player_id = null;
+    memoryStore.auction.current_bid = 0;
+    memoryStore.auction.highest_bidder_team_id = null;
+  }
+
+  saveStoreToDisk(memoryStore);
+
+  if (isUsingMySQL && pool) {
+    try {
+      await pool.query('DELETE FROM `team_players` WHERE player_id = ?', [idNum]);
+      await pool.query('DELETE FROM `bids` WHERE player_id = ?', [idNum]);
+      await pool.query('DELETE FROM `players` WHERE id = ?', [idNum]);
+    } catch (err) {
+      console.error('❌ Error deleting player from MySQL:', err.message);
+    }
+  }
+
+  return removed;
 }
 
 initDB();
@@ -495,8 +717,12 @@ module.exports = {
   getPool: () => pool,
   isUsingMySQL: () => isUsingMySQL,
   getMemoryStore: () => memoryStore,
+  saveStore: () => saveStoreToDisk(memoryStore),
+  dbSavePlayer,
+  dbDeletePlayer,
   resetMemoryStore: () => {
     memoryStore = JSON.parse(JSON.stringify(initialSeed));
+    saveStoreToDisk(memoryStore);
     return memoryStore;
   }
 };

@@ -70,10 +70,13 @@
 .logoloop__node {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 }
 
 .logoloop__item img {
   height: var(--logoloop-logoHeight);
+  max-height: 100%;
   width: auto;
   display: block;
   object-fit: contain;
