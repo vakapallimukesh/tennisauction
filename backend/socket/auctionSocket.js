@@ -16,14 +16,24 @@ function getFullAuctionSnapshot() {
   const teams = (store.teams || []).map(t => {
     const bought = (store.team_players || []).filter(tp => tp.team_id === t.id);
     const totalSpent = bought.reduce((sum, item) => sum + (parseFloat(item.purchase_price) || 0), 0);
+    let groupACount = 0;
+    let groupBCount = 0;
     const playersBoughtList = bought.map(b => {
       const p = store.players.find(pl => pl.id === b.player_id);
+      const cat = p ? (p.category || 'Group A') : 'Group A';
+      const isGroupB = (p && p.group === 'B') || cat.toLowerCase().includes('group b');
+      if (isGroupB) {
+        groupBCount++;
+      } else {
+        groupACount++;
+      }
       return {
         ...b,
         name: p ? p.name : 'Unknown Player',
         player_name: p ? p.name : 'Unknown Player',
         player_number: p ? p.player_number : '',
-        category: p ? (p.category || 'Group A') : 'Group A',
+        category: cat,
+        group: isGroupB ? 'B' : 'A',
         world_ranking: p ? p.world_ranking : 0,
         image_url: p ? p.image_url : null,
         matches: p ? p.matches : 0,
@@ -36,7 +46,12 @@ function getFullAuctionSnapshot() {
 
     return {
       ...t,
+      max_players: t.max_players || 10,
+      max_group_a: t.max_group_a || 3,
+      max_group_b: t.max_group_b || 7,
       players_bought: bought.length,
+      group_a_count: groupACount,
+      group_b_count: groupBCount,
       total_spent: totalSpent,
       purse_remaining: remaining,
       roster: playersBoughtList
@@ -235,6 +250,65 @@ function adjustServerTimer(deltaSeconds) {
   });
 }
 
+// Helper to determine player group (Group A or Group B)
+function getPlayerGroup(player) {
+  if (!player) return 'A';
+  if (player.group === 'B') return 'B';
+  if (player.category && player.category.toLowerCase().includes('group b')) return 'B';
+  return 'A';
+}
+
+// Helper to validate team squad limits (Max 10 total, Max 3 Group A, Max 7 Group B)
+function validateTeamSquadLimits(teamId, targetPlayer, store) {
+  const team = store.teams.find(t => t.id === parseInt(teamId, 10));
+  if (!team) return { valid: false, message: 'Invalid team identification.' };
+
+  const bought = (store.team_players || []).filter(tp => tp.team_id === team.id);
+  const totalCount = bought.length;
+  const maxTotal = team.max_players || 10;
+  const maxA = team.max_group_a || 3;
+  const maxB = team.max_group_b || 7;
+
+  let groupACount = 0;
+  let groupBCount = 0;
+
+  bought.forEach(b => {
+    const p = store.players.find(pl => pl.id === b.player_id);
+    const grp = getPlayerGroup(p);
+    if (grp === 'B') {
+      groupBCount += 1;
+    } else {
+      groupACount += 1;
+    }
+  });
+
+  // 1. Total squad limit check
+  if (totalCount >= maxTotal) {
+    return {
+      valid: false,
+      message: `Team squad limit reached: Maximum ${maxTotal} players allowed.`
+    };
+  }
+
+  // 2. Group limit check for incoming player
+  const targetGroup = getPlayerGroup(targetPlayer);
+  if (targetGroup === 'A' && groupACount >= maxA) {
+    return {
+      valid: false,
+      message: `Group A limit reached: Maximum ${maxA} Group A players allowed.`
+    };
+  }
+
+  if (targetGroup === 'B' && groupBCount >= maxB) {
+    return {
+      valid: false,
+      message: `Group B limit reached: Maximum ${maxB} Group B players allowed.`
+    };
+  }
+
+  return { valid: true, groupACount, groupBCount, totalCount };
+}
+
 // Bidding Engine (Core Logic with Self-Bidding Prevention)
 function submitBid({ team_id, amount, increment }) {
   const store = db.getMemoryStore();
@@ -253,15 +327,20 @@ function submitBid({ team_id, amount, increment }) {
     throw new Error('Invalid team identification.');
   }
 
+  const player = store.players.find(p => p.id === auction.current_player_id);
+  if (!player) {
+    throw new Error('Current player not found.');
+  }
+
   // Check Self-Bidding Rule
   if (auction.highest_bidder_team_id === team.id) {
     throw new Error('Your team is already the highest bidder! You cannot bid against yourself.');
   }
 
-  // Check squad limit (max 5)
-  const boughtCount = store.team_players.filter(tp => tp.team_id === team.id).length;
-  if (boughtCount >= team.max_players) {
-    throw new Error(`${team.name} has already filled all ${team.max_players} squad positions.`);
+  // Check squad and group limits
+  const squadCheck = validateTeamSquadLimits(team.id, player, store);
+  if (!squadCheck.valid) {
+    throw new Error(squadCheck.message);
   }
 
   const currentBidVal = parseFloat(auction.current_bid || 10000);
@@ -353,6 +432,12 @@ function markPlayerSold(winning_team_id = null, final_price = null) {
 
   const player = store.players.find(p => p.id === auction.current_player_id);
   if (!player) throw new Error('Player not found.');
+
+  // Validate squad & group limits
+  const squadCheck = validateTeamSquadLimits(team.id, player, store);
+  if (!squadCheck.valid) {
+    throw new Error(squadCheck.message);
+  }
 
   const price = final_price ? parseFloat(final_price) : auction.current_bid;
 

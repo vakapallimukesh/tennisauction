@@ -163,25 +163,25 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         id: 1, team_number: 1, name: 'Team A',
         short_name: 'TEAM A', owner: 'Rohan Iyer',
         total_purse: 400000, purse_remaining: 400000, spent: 0,
-        max_players: 5, players_bought: 0, players: []
+        max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
       },
       {
         id: 2, team_number: 2, name: 'Team B',
         short_name: 'TEAM B', owner: 'Vikramaditya Roy',
         total_purse: 400000, purse_remaining: 400000, spent: 0,
-        max_players: 5, players_bought: 0, players: []
+        max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
       },
       {
         id: 3, team_number: 3, name: 'Team C',
         short_name: 'TEAM C', owner: 'Maya Sengupta',
         total_purse: 400000, purse_remaining: 400000, spent: 0,
-        max_players: 5, players_bought: 0, players: []
+        max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
       },
       {
         id: 4, team_number: 4, name: 'Team D',
         short_name: 'TEAM D', owner: 'Kabir Malhotra',
         total_purse: 400000, purse_remaining: 400000, spent: 0,
-        max_players: 5, players_bought: 0, players: []
+        max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
       }
     ];
 
@@ -582,7 +582,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             const remaining = team.purse_remaining || 0;
             const spent = Math.max(0, totalPurse - remaining);
             const squadCount = team.players_bought || team.players?.length || 0;
-            const maxSquad = team.max_players || 8;
+            const maxSquad = team.max_players || 10;
+            const maxGroupA = team.max_group_a || 3;
+            const maxGroupB = team.max_group_b || 7;
             const badge = teamBadgeColors[idx] || teamBadgeColors[0];
             const teamPlayers = team.players || [];
             const groupAPlayers = teamPlayers.filter(p => {
@@ -643,7 +645,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                           <span className="text-[11px] font-black text-slate-900 tracking-wider font-montserrat-bold">GROUP A</span>
                         </div>
                         <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-slate-300 text-slate-800 font-montserrat-bold">
-                          {groupAPlayers.length}
+                          {groupAPlayers.length}/{maxGroupA}
                         </span>
                       </div>
 
@@ -684,7 +686,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                           <span className="text-[11px] font-black text-slate-900 tracking-wider font-montserrat-bold">GROUP B</span>
                         </div>
                         <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-slate-300 text-slate-800 font-montserrat-bold">
-                          {groupBPlayers.length}
+                          {groupBPlayers.length}/{maxGroupB}
                         </span>
                       </div>
 

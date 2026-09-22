@@ -99,7 +99,7 @@ export default function TeamModal() {
                   Players Bought
                 </div>
                 <div className="text-base sm:text-lg font-black text-white mt-1 font-display">
-                  {teamData.players_bought || 0} / {teamData.max_players || 5}
+                  {teamData.players_bought || 0} / {teamData.max_players || 10}
                 </div>
               </div>
 
@@ -109,7 +109,7 @@ export default function TeamModal() {
                   Slots Open
                 </div>
                 <div className="text-base sm:text-lg font-black text-amber-300 mt-1 font-display">
-                  {Math.max(0, (teamData.max_players || 5) - (teamData.players_bought || 0))}
+                  {Math.max(0, (teamData.max_players || 10) - (teamData.players_bought || 0))}
                 </div>
               </div>
             </div>

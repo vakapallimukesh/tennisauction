@@ -7,10 +7,31 @@ exports.getTeams = async (req, res) => {
 
     const teams = store.teams.map(team => {
       const teamPlayers = store.team_players.filter(tp => tp.team_id === team.id);
+      let groupACount = 0;
+      let groupBCount = 0;
+      teamPlayers.forEach(tp => {
+        const p = store.players.find(pl => pl.id === tp.player_id);
+        const cat = p ? (p.category || 'Group A') : 'Group A';
+        const isGroupB = (p && p.group === 'B') || cat.toLowerCase().includes('group b');
+        if (isGroupB) {
+          groupBCount++;
+        } else {
+          groupACount++;
+        }
+      });
+      const maxPlayers = team.max_players || 10;
+      const maxGroupA = team.max_group_a || 3;
+      const maxGroupB = team.max_group_b || 7;
+
       return {
         ...team,
+        max_players: maxPlayers,
+        max_group_a: maxGroupA,
+        max_group_b: maxGroupB,
         players_bought: teamPlayers.length,
-        is_squad_full: teamPlayers.length >= team.max_players
+        group_a_count: groupACount,
+        group_b_count: groupBCount,
+        is_squad_full: teamPlayers.length >= maxPlayers
       };
     });
 
@@ -33,8 +54,19 @@ exports.getTeamById = async (req, res) => {
 
     const teamPlayerRecords = store.team_players.filter(tp => tp.team_id === team.id);
 
+    let groupACount = 0;
+    let groupBCount = 0;
     const purchasedPlayers = teamPlayerRecords.map(tp => {
       const player = store.players.find(p => p.id === tp.player_id);
+      if (player) {
+        const cat = player.category || 'Group A';
+        const isGroupB = player.group === 'B' || cat.toLowerCase().includes('group b');
+        if (isGroupB) {
+          groupBCount++;
+        } else {
+          groupACount++;
+        }
+      }
       return {
         ...player,
         purchase_price: tp.purchase_price,
@@ -42,11 +74,21 @@ exports.getTeamById = async (req, res) => {
       };
     }).filter(p => !!p.name);
 
+    const maxPlayers = team.max_players || 10;
+    const maxGroupA = team.max_group_a || 3;
+    const maxGroupB = team.max_group_b || 7;
+
     res.json({
       success: true,
       data: {
         ...team,
+        max_players: maxPlayers,
+        max_group_a: maxGroupA,
+        max_group_b: maxGroupB,
         players_bought: purchasedPlayers.length,
+        group_a_count: groupACount,
+        group_b_count: groupBCount,
+        is_squad_full: purchasedPlayers.length >= maxPlayers,
         purchased_players: purchasedPlayers
       }
     });

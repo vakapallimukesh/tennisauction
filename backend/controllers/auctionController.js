@@ -9,6 +9,64 @@ const {
   getFullAuctionSnapshot
 } = require('../socket/auctionSocket');
 
+// Helper to determine player group ('A' or 'B')
+function getPlayerGroup(player) {
+  if (!player) return 'A';
+  const grp = (player.group || '').toUpperCase().trim();
+  const cat = (player.category || '').toLowerCase().trim();
+  if (grp === 'B' || cat.includes('group b') || cat.includes('gruop b')) {
+    return 'B';
+  }
+  return 'A';
+}
+
+// Helper to validate team squad limits (10 total: max 3 Group A, max 7 Group B)
+function validateTeamSquadLimits(teamId, targetPlayer, store) {
+  const teamPlayerRecords = store.team_players.filter(tp => tp.team_id === teamId);
+  const totalCount = teamPlayerRecords.length;
+
+  // 1. Check total squad limit (10)
+  if (totalCount >= 10) {
+    return {
+      valid: false,
+      message: 'Team squad limit reached: Maximum 10 players allowed.'
+    };
+  }
+
+  // 2. Check group limits (max 3 Group A, max 7 Group B)
+  if (targetPlayer) {
+    const playerGroup = getPlayerGroup(targetPlayer);
+    let groupACount = 0;
+    let groupBCount = 0;
+
+    for (const tp of teamPlayerRecords) {
+      const p = store.players.find(pl => pl.id === tp.player_id);
+      const grp = getPlayerGroup(p);
+      if (grp === 'B') {
+        groupBCount++;
+      } else {
+        groupACount++;
+      }
+    }
+
+    if (playerGroup === 'A' && groupACount >= 3) {
+      return {
+        valid: false,
+        message: 'Group A limit reached: Maximum 3 Group A players allowed.'
+      };
+    }
+
+    if (playerGroup === 'B' && groupBCount >= 7) {
+      return {
+        valid: false,
+        message: 'Group B limit reached: Maximum 7 Group B players allowed.'
+      };
+    }
+  }
+
+  return { valid: true };
+}
+
 // Get current live auction state
 exports.getAuctionState = async (req, res) => {
   try {
@@ -43,6 +101,14 @@ exports.placeBid = async (req, res) => {
       });
     }
 
+    const player = store.players.find(p => p.id === auction.current_player_id);
+    if (!player) {
+      return res.status(400).json({
+        success: false,
+        message: 'No active player in draft registry.'
+      });
+    }
+
     // Find team
     const team = store.teams.find(t => t.id === parseInt(team_id, 10));
     if (!team) {
@@ -65,12 +131,12 @@ exports.placeBid = async (req, res) => {
       });
     }
 
-    // Check squad size limit (e.g. 5)
-    const teamPlayers = store.team_players.filter(tp => tp.team_id === team.id);
-    if (teamPlayers.length >= team.max_players) {
+    // Check squad size and group limits (Max 10 total: 3 Group A, 7 Group B)
+    const validation = validateTeamSquadLimits(team.id, player, store);
+    if (!validation.valid) {
       return res.status(400).json({
         success: false,
-        message: `${team.name} has already reached the maximum squad limit (${team.max_players} players).`
+        message: validation.message
       });
     }
 
@@ -251,6 +317,15 @@ exports.markSold = async (req, res) => {
     const player = store.players.find(p => p.id === auction.current_player_id);
     if (!player) {
       return res.status(404).json({ success: false, message: 'Current player not found in database' });
+    }
+
+    // Check squad size and group limits (Max 10 total: 3 Group A, 7 Group B)
+    const validation = validateTeamSquadLimits(team.id, player, store);
+    if (!validation.valid) {
+      return res.status(400).json({
+        success: false,
+        message: validation.message
+      });
     }
 
     const price = parseFloat(final_price !== undefined ? final_price : auction.current_bid);

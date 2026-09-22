@@ -78,13 +78,16 @@
       "name": "Team A",
       "owner": "Rohan Iyer",
       "total_purse": 400000,
-      "purse_remaining": 400000,
-      "max_players": 5,
+      "purse_remaining": 380000,
+      "max_players": 10,
       "logo_url": "/images/teams/team1-lion.svg",
       "primary_color": "#22c55e",
       "accent_color": "#4ade80",
       "glow_color": "rgba(34, 197, 94, 0.45)",
-      "bg_gradient": "from-emerald-950/40 to-slate-950/80"
+      "bg_gradient": "from-emerald-950/40 to-slate-950/80",
+      "players_bought": 1,
+      "max_group_a": 3,
+      "max_group_b": 7
     },
     {
       "id": 2,
@@ -93,12 +96,14 @@
       "owner": "Vikramaditya Roy",
       "total_purse": 400000,
       "purse_remaining": 400000,
-      "max_players": 5,
+      "max_players": 10,
       "logo_url": "/images/teams/team2-eagle.svg",
       "primary_color": "#0ea5e9",
       "accent_color": "#38bdf8",
       "glow_color": "rgba(14, 165, 233, 0.45)",
-      "bg_gradient": "from-sky-950/40 to-slate-950/80"
+      "bg_gradient": "from-sky-950/40 to-slate-950/80",
+      "max_group_a": 3,
+      "max_group_b": 7
     },
     {
       "id": 3,
@@ -107,12 +112,14 @@
       "owner": "Maya Sengupta",
       "total_purse": 400000,
       "purse_remaining": 400000,
-      "max_players": 5,
+      "max_players": 10,
       "logo_url": "/images/teams/team3-crown.svg",
       "primary_color": "#a855f7",
       "accent_color": "#c084fc",
       "glow_color": "rgba(168, 85, 247, 0.45)",
-      "bg_gradient": "from-purple-950/40 to-slate-950/80"
+      "bg_gradient": "from-purple-950/40 to-slate-950/80",
+      "max_group_a": 3,
+      "max_group_b": 7
     },
     {
       "id": 4,
@@ -121,12 +128,14 @@
       "owner": "Kabir Malhotra",
       "total_purse": 400000,
       "purse_remaining": 400000,
-      "max_players": 5,
+      "max_players": 10,
       "logo_url": "/images/teams/team4-flame.svg",
       "primary_color": "#f97316",
       "accent_color": "#fb923c",
       "glow_color": "rgba(249, 115, 22, 0.45)",
-      "bg_gradient": "from-orange-950/40 to-slate-950/80"
+      "bg_gradient": "from-orange-950/40 to-slate-950/80",
+      "max_group_a": 3,
+      "max_group_b": 7
     }
   ],
   "players": [
@@ -227,8 +236,10 @@
       "win_percentage": 70,
       "base_price": 10000,
       "image_url": "/images/players/vikram-desai.jpg",
-      "status": "upcoming",
-      "display_order": 5
+      "status": "sold",
+      "display_order": 5,
+      "sold_price": 20000,
+      "sold_to_team_id": 1
     },
     {
       "id": 6,
@@ -267,7 +278,7 @@
       "win_percentage": 67,
       "base_price": 10000,
       "image_url": "/images/players/mateo-silva.jpg",
-      "status": "upcoming",
+      "status": "live",
       "display_order": 7
     },
     {
@@ -507,23 +518,102 @@
       "win_percentage": 70,
       "base_price": 10000,
       "image_url": "",
-      "status": "live",
+      "status": "upcoming",
       "display_order": 19
     }
   ],
-  "team_players": [],
+  "team_players": [
+    {
+      "id": 1,
+      "team_id": 1,
+      "player_id": 5,
+      "purchase_price": 20000,
+      "purchased_at": "2026-09-21T12:16:44.355Z"
+    }
+  ],
   "auction": {
     "id": 1,
     "title": "Grand Circuit Tennis Player Auction 2026",
     "status": "live",
-    "current_player_id": 19,
-    "current_bid": 10000,
-    "highest_bidder_team_id": null,
+    "current_player_id": 1,
+    "current_bid": 12000,
+    "highest_bidder_team_id": 4,
     "bid_increment": 2000,
     "timer_seconds": 15,
     "timer_remaining": 15,
     "timer_running": true
   },
-  "bids": [],
-  "auction_events": []
+  "bids": [
+    {
+      "id": 1,
+      "auction_id": 1,
+      "player_id": 5,
+      "team_id": 3,
+      "amount": 11000,
+      "bid_time": "2026-09-21T12:16:26.270Z"
+    },
+    {
+      "id": 2,
+      "auction_id": 1,
+      "player_id": 5,
+      "team_id": 1,
+      "amount": 14000,
+      "bid_time": "2026-09-21T12:16:30.831Z"
+    },
+    {
+      "id": 3,
+      "auction_id": 1,
+      "player_id": 5,
+      "team_id": 2,
+      "amount": 18000,
+      "bid_time": "2026-09-21T12:16:35.377Z"
+    },
+    {
+      "id": 4,
+      "auction_id": 1,
+      "player_id": 5,
+      "team_id": 1,
+      "amount": 20000,
+      "bid_time": "2026-09-21T12:16:39.327Z"
+    },
+    {
+      "id": 5,
+      "auction_id": 1,
+      "player_id": 1,
+      "team_id": 4,
+      "amount": 12000,
+      "bid_time": "2026-09-22T12:13:53.181Z"
+    },
+    {
+      "id": 6,
+      "auction_id": 1,
+      "player_id": 1,
+      "team_id": 4,
+      "amount": 12000,
+      "bid_time": "2026-09-22T12:13:53.184Z"
+    },
+    {
+      "id": 7,
+      "auction_id": 1,
+      "player_id": 1,
+      "team_id": 4,
+      "amount": 12000,
+      "bid_time": "2026-09-22T12:14:42.582Z"
+    }
+  ],
+  "auction_events": [
+    {
+      "id": 1,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 5,
+      "team_id": 1,
+      "payload": {
+        "price": 20000,
+        "playerName": "Vikram Desai",
+        "teamName": "Team A"
+      },
+      "created_at": "2026-09-21T12:16:44.356Z"
+    }
+  ]
 }

@@ -153,7 +153,7 @@ export default function TeamSquadsManagement({ onNavigate }) {
             />
             <span>{team.name}</span>
             <span className="text-xs px-1.5 py-0.5 rounded-full bg-surface-container-low font-mono">
-              {team.players_bought || team.roster?.length || 0}/5
+              {team.players_bought || team.roster?.length || 0}/{team.max_players || 10}
             </span>
           </button>
         ))}
@@ -163,7 +163,11 @@ export default function TeamSquadsManagement({ onNavigate }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredTeams.map((team) => {
           const squadCount = team.players_bought || team.roster?.length || 0;
-          const maxSquad = team.max_players || 5;
+          const maxSquad = team.max_players || 10;
+          const maxGroupA = team.max_group_a || 3;
+          const maxGroupB = team.max_group_b || 7;
+          const groupACount = team.group_a_count !== undefined ? team.group_a_count : (team.roster ? team.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+          const groupBCount = team.group_b_count !== undefined ? team.group_b_count : (team.roster ? team.roster.filter(p => ((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
           const purseRemaining = team.purse_remaining !== undefined ? team.purse_remaining : 400000;
           const totalPurse = team.total_purse || 400000;
           const totalSpent = totalPurse - purseRemaining;
@@ -248,7 +252,10 @@ export default function TeamSquadsManagement({ onNavigate }) {
                   <div>
                     <span className="text-[10px] uppercase text-on-surface-variant font-bold block">Squad Slots</span>
                     <span className="text-base font-bold font-mono text-on-surface">
-                      {squadCount} / {maxSquad}
+                      {squadCount}/{maxSquad}
+                    </span>
+                    <span className="text-[10px] text-on-surface-variant block font-mono">
+                      A: {groupACount}/{maxGroupA} • B: {groupBCount}/{maxGroupB}
                     </span>
                   </div>
                 </div>
@@ -257,15 +264,15 @@ export default function TeamSquadsManagement({ onNavigate }) {
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs uppercase tracking-wider font-bold text-on-surface-variant">
-                      Acquired Athletes ({squadCount})
+                      Acquired Athletes ({squadCount}/{maxSquad})
                     </span>
                     {squadCount >= maxSquad ? (
                       <span className="text-[11px] font-bold text-yellow-500 flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> SQUAD FULL
+                        <CheckCircle2 className="w-3.5 h-3.5" /> SQUAD FULL (10/10)
                       </span>
                     ) : (
                       <span className="text-[11px] text-on-surface-variant">
-                        {maxSquad - squadCount} slot(s) remaining
+                        {maxSquad - squadCount} slot(s) remaining (A: {groupACount}/{maxGroupA}, B: {groupBCount}/{maxGroupB})
                       </span>
                     )}
                   </div>

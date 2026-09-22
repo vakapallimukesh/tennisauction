@@ -44,8 +44,17 @@ export default function BidModal() {
   };
 
   const selectedTeam = teams.find(t => t.id === selectedTeamId);
+  const maxSquad = selectedTeam?.max_players || 10;
+  const maxA = selectedTeam?.max_group_a || 3;
+  const maxB = selectedTeam?.max_group_b || 7;
   const isPurseLow = selectedTeam && selectedTeam.purse_remaining < calculatedBid;
-  const isSquadFull = selectedTeam && selectedTeam.players_bought >= selectedTeam.max_players;
+  const isSquadFull = selectedTeam && selectedTeam.players_bought >= maxSquad;
+
+  const currentPlayerCat = (currentPlayer?.category || '').toLowerCase();
+  const isPlayerGroupB = currentPlayer?.group === 'B' || currentPlayerCat.includes('group b');
+  const groupACount = selectedTeam?.group_a_count !== undefined ? selectedTeam.group_a_count : (selectedTeam?.roster ? selectedTeam.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+  const groupBCount = selectedTeam?.group_b_count !== undefined ? selectedTeam.group_b_count : (selectedTeam?.roster ? selectedTeam.roster.filter(p => ((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+  const isGroupFull = isPlayerGroupB ? groupBCount >= maxB : groupACount >= maxA;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md animate-fade-in">
@@ -221,16 +230,23 @@ export default function BidModal() {
           {isSquadFull && (
             <div className="text-xs text-rose-400 font-semibold flex items-center gap-1.5">
               <AlertTriangle className="w-4 h-4" />
-              This team has already filled all 5 roster spots!
+              Team squad limit reached: Maximum {maxSquad} players allowed.
+            </div>
+          )}
+
+          {isGroupFull && (
+            <div className="text-xs text-rose-400 font-semibold flex items-center gap-1.5">
+              <AlertTriangle className="w-4 h-4" />
+              {isPlayerGroupB ? `Group B limit reached: Maximum ${maxB} Group B players allowed.` : `Group A limit reached: Maximum ${maxA} Group A players allowed.`}
             </div>
           )}
 
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={bidding || isPurseLow || isSquadFull || calculatedBid <= currentBid}
+            disabled={bidding || isPurseLow || isSquadFull || isGroupFull || calculatedBid <= currentBid}
             className={`w-full py-3.5 px-4 rounded-xl font-black text-base uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${
-              bidding || isPurseLow || isSquadFull || calculatedBid <= currentBid
+              bidding || isPurseLow || isSquadFull || isGroupFull || calculatedBid <= currentBid
                 ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
                 : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-neon-green active:scale-[0.99]'
             }`}

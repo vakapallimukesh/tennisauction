@@ -40,7 +40,9 @@ const initialSeed = {
       owner: 'Rohan Iyer',
       total_purse: 400000.00,
       purse_remaining: 400000.00,
-      max_players: 5,
+      max_players: 10,
+      max_group_a: 3,
+      max_group_b: 7,
       logo_url: '/images/teams/team1-lion.svg',
       primary_color: '#22c55e',
       accent_color: '#4ade80',
@@ -54,7 +56,9 @@ const initialSeed = {
       owner: 'Vikramaditya Roy',
       total_purse: 400000.00,
       purse_remaining: 400000.00,
-      max_players: 5,
+      max_players: 10,
+      max_group_a: 3,
+      max_group_b: 7,
       logo_url: '/images/teams/team2-eagle.svg',
       primary_color: '#0ea5e9',
       accent_color: '#38bdf8',
@@ -68,7 +72,9 @@ const initialSeed = {
       owner: 'Maya Sengupta',
       total_purse: 400000.00,
       purse_remaining: 400000.00,
-      max_players: 5,
+      max_players: 10,
+      max_group_a: 3,
+      max_group_b: 7,
       logo_url: '/images/teams/team3-crown.svg',
       primary_color: '#a855f7',
       accent_color: '#c084fc',
@@ -82,7 +88,9 @@ const initialSeed = {
       owner: 'Kabir Malhotra',
       total_purse: 400000.00,
       purse_remaining: 400000.00,
-      max_players: 5,
+      max_players: 10,
+      max_group_a: 3,
+      max_group_b: 7,
       logo_url: '/images/teams/team4-flame.svg',
       primary_color: '#f97316',
       accent_color: '#fb923c',
@@ -471,6 +479,14 @@ function loadStoreFromDisk() {
       const raw = fs.readFileSync(STORE_PATH, 'utf8');
       const parsed = JSON.parse(raw);
       if (parsed && Array.isArray(parsed.players) && Array.isArray(parsed.teams)) {
+        // Enforce 10 players max (3 Group A, 7 Group B) on all teams
+        parsed.teams = parsed.teams.map(t => ({
+          ...t,
+          max_players: 10,
+          max_group_a: 3,
+          max_group_b: 7
+        }));
+        saveStoreToDisk(parsed);
         console.log(`📁 Loaded persistent database store from ${STORE_PATH} (${parsed.players.length} players)`);
         return parsed;
       }
@@ -529,7 +545,7 @@ async function initDB() {
           \`owner\` VARCHAR(100) NOT NULL,
           \`total_purse\` DECIMAL(12,2) NOT NULL DEFAULT 400000.00,
           \`purse_remaining\` DECIMAL(12,2) NOT NULL DEFAULT 400000.00,
-          \`max_players\` INT NOT NULL DEFAULT 5,
+          \`max_players\` INT NOT NULL DEFAULT 10,
           \`logo_url\` VARCHAR(255) NOT NULL,
           \`primary_color\` VARCHAR(30) NOT NULL,
           \`accent_color\` VARCHAR(30) NOT NULL,

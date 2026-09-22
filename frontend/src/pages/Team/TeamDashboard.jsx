@@ -48,7 +48,9 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
       total_purse: 400000,
       purse_remaining: 400000,
       players_bought: 0,
-      max_players: 5,
+      max_players: 10,
+      max_group_a: 3,
+      max_group_b: 7,
       roster: [],
       primary_color: '#22c55e',
       glow_color: 'rgba(34, 197, 94, 0.4)'
@@ -72,7 +74,18 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
   const wasOutbid = !isHighestBidder && isBiddingActive;
 
   // Squad and purse constraints
-  const squadFull = (myTeam.players_bought || 0) >= (myTeam.max_players || 5);
+  const maxSquad = myTeam.max_players || 10;
+  const maxGroupA = myTeam.max_group_a || 3;
+  const maxGroupB = myTeam.max_group_b || 7;
+  const squadFull = (myTeam.players_bought || (myTeam.roster ? myTeam.roster.length : 0)) >= maxSquad;
+
+  const groupACount = myTeam.group_a_count !== undefined ? myTeam.group_a_count : (myTeam.roster ? myTeam.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+  const groupBCount = myTeam.group_b_count !== undefined ? myTeam.group_b_count : (myTeam.roster ? myTeam.roster.filter(p => ((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+
+  const currentPlayerCat = (currentPlayer?.category || '').toLowerCase();
+  const isPlayerGroupB = currentPlayer?.group === 'B' || currentPlayerCat.includes('group b');
+  const isGroupFull = isPlayerGroupB ? groupBCount >= maxGroupB : groupACount >= maxGroupA;
+
   const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : (myTeam.total_purse || 400000);
   const nextMinBid = currentBid + 1000;
 
@@ -83,7 +96,15 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
       return;
     }
     if (squadFull) {
-      setBidError(`Your squad is full (${myTeam.max_players}/${myTeam.max_players} players).`);
+      setBidError(`Team squad limit reached: Maximum ${maxSquad} players allowed.`);
+      return;
+    }
+    if (!isPlayerGroupB && groupACount >= maxGroupA) {
+      setBidError(`Group A limit reached: Maximum ${maxGroupA} Group A players allowed.`);
+      return;
+    }
+    if (isPlayerGroupB && groupBCount >= maxGroupB) {
+      setBidError(`Group B limit reached: Maximum ${maxGroupB} Group B players allowed.`);
       return;
     }
 
@@ -175,7 +196,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
               </span>
               <span>•</span>
               <span className="font-mono text-slate-300">
-                Squad: {myTeam.players_bought || 0} / {myTeam.max_players || 5}
+                Squad: {myTeam.players_bought || 0} / {maxSquad} (A: {groupACount}/{maxGroupA}, B: {groupBCount}/{maxGroupB})
               </span>
             </div>
           </div>
@@ -598,7 +619,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                     {myTeam.name} Roster
                   </h2>
                   <p className="text-xs text-slate-400">
-                    {myTeam.players_bought || 0} of {myTeam.max_players || 5} players acquired
+                    {myTeam.players_bought || 0} of {maxSquad} players acquired (Group A: {groupACount}/{maxGroupA}, Group B: {groupBCount}/{maxGroupB})
                   </p>
                 </div>
                 <div className="text-right">

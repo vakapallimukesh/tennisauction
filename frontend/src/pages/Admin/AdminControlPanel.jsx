@@ -64,10 +64,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Fallback teams if data is loading
   const activeTeams = teams && teams.length === 4 ? teams : [
-    { id: 1, team_number: 1, name: 'Team A', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 5, primary_color: '#22c55e' },
-    { id: 2, team_number: 2, name: 'Team B', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 5, primary_color: '#0ea5e9' },
-    { id: 3, team_number: 3, name: 'Team C', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 5, primary_color: '#a855f7' },
-    { id: 4, team_number: 4, name: 'Team D', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 5, primary_color: '#f97316' }
+    { id: 1, team_number: 1, name: 'Team A', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#22c55e' },
+    { id: 2, team_number: 2, name: 'Team B', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#0ea5e9' },
+    { id: 3, team_number: 3, name: 'Team C', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#a855f7' },
+    { id: 4, team_number: 4, name: 'Team D', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#f97316' }
   ];
 
   // Base price for active player (Fixed 10,000 PTS for all players)
@@ -265,6 +265,31 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
     if (parsedAmount > (targetTeam.purse_remaining || 400000)) {
       showNotice(`${targetTeam.name} has insufficient purse balance!`, 'error');
+      return;
+    }
+
+    const maxTotal = targetTeam.max_players || 10;
+    const maxA = targetTeam.max_group_a || 3;
+    const maxB = targetTeam.max_group_b || 7;
+    const totalCount = targetTeam.players_bought !== undefined ? targetTeam.players_bought : (targetTeam.roster ? targetTeam.roster.length : 0);
+
+    if (totalCount >= maxTotal) {
+      showNotice(`Team squad limit reached: Maximum ${maxTotal} players allowed.`, 'error');
+      return;
+    }
+
+    const currentPlayerCat = (currentPlayer?.category || '').toLowerCase();
+    const isPlayerGroupB = currentPlayer?.group === 'B' || currentPlayerCat.includes('group b');
+    const groupACount = targetTeam.group_a_count !== undefined ? targetTeam.group_a_count : (targetTeam.roster ? targetTeam.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+    const groupBCount = targetTeam.group_b_count !== undefined ? targetTeam.group_b_count : (targetTeam.roster ? targetTeam.roster.filter(p => ((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+
+    if (!isPlayerGroupB && groupACount >= maxA) {
+      showNotice(`Group A limit reached: Maximum ${maxA} Group A players allowed.`, 'error');
+      return;
+    }
+
+    if (isPlayerGroupB && groupBCount >= maxB) {
+      showNotice(`Group B limit reached: Maximum ${maxB} Group B players allowed.`, 'error');
       return;
     }
 
@@ -771,7 +796,16 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                 const remaining = team.purse_remaining !== undefined ? team.purse_remaining : 400000;
                 const spent = Math.max(0, totalPurse - remaining);
                 const squadCount = team.players_bought !== undefined ? team.players_bought : 0;
-                const squadFull = squadCount >= (team.max_players || 5);
+                const maxSquad = team.max_players || 10;
+                const maxGroupA = team.max_group_a || 3;
+                const maxGroupB = team.max_group_b || 7;
+                const squadFull = squadCount >= maxSquad;
+
+                const groupACount = team.group_a_count !== undefined ? team.group_a_count : (team.roster ? team.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+                const groupBCount = team.group_b_count !== undefined ? team.group_b_count : (team.roster ? team.roster.filter(p => ((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+                const currentPlayerCat = (currentPlayer?.category || '').toLowerCase();
+                const isCurrentPlayerGroupB = currentPlayer?.group === 'B' || currentPlayerCat.includes('group b');
+                const isGroupFull = isCurrentPlayerGroupB ? groupBCount >= maxGroupB : groupACount >= maxGroupA;
 
                 const teamColorStyles = {
                   1: { border: 'hover:border-cyan-500/60', badgeBg: 'bg-blue-500/20 text-blue-400 border-blue-500/40', btn: 'bg-blue-600/30 hover:bg-blue-600 text-blue-200 border-blue-500/40' },
@@ -801,7 +835,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                               LEAD BIDDER
                             </span>
                             <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">
-                              Squad: {squadCount}/5
+                              Squad: {squadCount}/{maxSquad} (A:{groupACount}/{maxGroupA}, B:{groupBCount}/{maxGroupB})
                             </span>
                           </div>
                           <div className="text-[11px] text-slate-300 flex items-center space-x-2 mt-0.5 font-mono">
@@ -833,7 +867,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
                 // Check eligibility depending on whether bidding is active or waiting to start
                 const canAfford = remaining >= (isBiddingActive ? minRecommendedBid : playerBasePrice);
-                const isEligible = !squadFull && canAfford;
+                const isEligible = !squadFull && !isGroupFull && canAfford;
 
                 return (
                   <div
@@ -856,7 +890,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                             {team.name}
                           </span>
                           <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">
-                            Squad: {squadCount}/5
+                            Squad: {squadCount}/{maxSquad} (A:{groupACount}/{maxGroupA}, B:{groupBCount}/{maxGroupB})
                           </span>
                         </div>
                         <div className="text-[11px] text-slate-400 flex items-center space-x-2 mt-0.5 font-mono">
@@ -875,7 +909,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                         ) : isEligible ? (
                           <span className="text-cyan-300 bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/20">Ready</span>
                         ) : squadFull ? (
-                          <span className="text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Full</span>
+                          <span className="text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Full (10/10)</span>
+                        ) : isGroupFull ? (
+                          <span className="text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">{isCurrentPlayerGroupB ? 'Group B Full (7/7)' : 'Group A Full (3/3)'}</span>
                         ) : (
                           <span className="text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">Low Purse</span>
                         )}
@@ -896,7 +932,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                         }`}
                         title={
                           squadFull
-                            ? `${team.name} squad is full`
+                            ? `${team.name} squad is full (10/10)`
+                            : isGroupFull
+                            ? `${team.name} ${isCurrentPlayerGroupB ? 'Group B is full (7/7)' : 'Group A is full (3/3)'}`
                             : !canAfford
                             ? `${team.name} has insufficient purse balance`
                             : `Register ${team.name} hand raise / participation`
@@ -1091,8 +1129,18 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                     {quickBidAmounts.map((amount) => {
                       const isAffordable = teamPurseRemaining >= amount;
                       const isSelfBidding = highestBidderId === selectedTeamId;
-                      const isSquadFull = (selectedTeam?.players_bought || 0) >= (selectedTeam?.max_players || 5);
-                      const isEnabled = isAffordable && !isSelfBidding && !isSquadFull && amount > currentBid;
+                      const maxTotal = selectedTeam?.max_players || 10;
+                      const maxA = selectedTeam?.max_group_a || 3;
+                      const maxB = selectedTeam?.max_group_b || 7;
+                      const isSquadFull = (selectedTeam?.players_bought || 0) >= maxTotal;
+
+                      const groupACount = selectedTeam?.group_a_count !== undefined ? selectedTeam.group_a_count : (selectedTeam?.roster ? selectedTeam.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+                      const groupBCount = selectedTeam?.group_b_count !== undefined ? selectedTeam.group_b_count : (selectedTeam?.roster ? selectedTeam.roster.filter(p => ((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+                      const currentPlayerCat = (currentPlayer?.category || '').toLowerCase();
+                      const isCurrentPlayerGroupB = currentPlayer?.group === 'B' || currentPlayerCat.includes('group b');
+                      const isGroupFull = isCurrentPlayerGroupB ? groupBCount >= maxB : groupACount >= maxA;
+
+                      const isEnabled = isAffordable && !isSelfBidding && !isSquadFull && !isGroupFull && amount > currentBid;
                       const isPendingSelected = confirmedNextBidAmount === amount;
 
                       return (
@@ -1117,7 +1165,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                               : isSelfBidding
                               ? `${selectedTeam?.name} is already leading`
                               : isSquadFull
-                              ? `${selectedTeam?.name} squad is full`
+                              ? `${selectedTeam?.name} squad is full (10/10)`
+                              : isGroupFull
+                              ? `${selectedTeam?.name} ${isCurrentPlayerGroupB ? 'Group B is full (7/7)' : 'Group A is full (3/3)'}`
                               : `Select pending bid of ${amount.toLocaleString()} PTS for ${selectedTeam?.name} (Click Submit to Sync)`
                           }
                         >
