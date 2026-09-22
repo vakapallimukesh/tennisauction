@@ -218,6 +218,28 @@ export const api = {
     return json.data;
   },
 
+  async updateCaptain(teamId, captainData) {
+    const res = await fetch(`${API_BASE}/teams/${teamId}/captain`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(captainData)
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || 'Failed to update captain');
+    return json.data;
+  },
+
+  async updateTeam(id, teamData) {
+    const res = await fetch(`${API_BASE}/teams/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(teamData)
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || 'Failed to update team');
+    return json.data;
+  },
+
   // Sponsors
   async getSponsors() {
     const res = await fetch(`${API_BASE}/sponsors`, { headers: getHeaders() });

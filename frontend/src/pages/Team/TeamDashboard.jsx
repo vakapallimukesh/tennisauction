@@ -640,25 +640,42 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {myTeam.roster.map((p, idx) => (
-                    <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center gap-4">
-                      <img
-                        src={p.image_url || '/images/default-player.jpg'}
-                        alt={p.player_name}
-                        className="w-16 h-20 rounded-lg object-cover bg-slate-900 border border-white/10"
-                      />
-                      <div className="flex-1">
-                        <span className="text-[10px] uppercase text-emerald-400 font-bold block">
-                          {p.category || 'Group A'}
-                        </span>
-                        <h4 className="text-sm font-black text-white">{p.player_name}</h4>
-                        <p className="text-xs text-slate-400 font-mono">Rank #{p.world_ranking || '-'}</p>
-                        <p className="text-xs font-mono font-bold text-emerald-400 mt-1">
-                          ₹{(p.purchase_price || 0).toLocaleString('en-IN')}
-                        </p>
+                  {myTeam.roster.map((p, idx) => {
+                    const isCaptain = p.is_captain || p.designation === 'CAPTAIN';
+                    return (
+                      <div
+                        key={idx}
+                        className={`p-4 rounded-xl border flex items-center gap-4 relative overflow-hidden transition-all ${
+                          isCaptain
+                            ? 'bg-amber-950/20 border-amber-500/40 ring-1 ring-amber-500/20'
+                            : 'bg-white/5 border-white/10'
+                        }`}
+                      >
+                        <img
+                          src={p.image_url || '/images/default-player.jpg'}
+                          alt={p.player_name || p.name}
+                          className="w-16 h-20 rounded-lg object-cover bg-slate-900 border border-white/10"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-1.5 mb-0.5">
+                            <span className="text-[10px] uppercase text-emerald-400 font-bold block">
+                              {p.category || 'Group A'}
+                            </span>
+                            {isCaptain && (
+                              <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-400 text-amber-950 shadow-sm">
+                                👑 CAPTAIN
+                              </span>
+                            )}
+                          </div>
+                          <h4 className="text-sm font-black text-white">{p.player_name || p.name}</h4>
+                          <p className="text-xs text-slate-400 font-mono">Rank #{p.world_ranking || '-'}</p>
+                          <p className="text-xs font-mono font-bold text-emerald-400 mt-1">
+                            {isCaptain ? 'CAPTAIN' : `₹${(p.purchase_price || 0).toLocaleString('en-IN')}`}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

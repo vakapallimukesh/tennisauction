@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useAuction } from '../../context/AuctionContext';
+import { api } from '../../services/api';
 import {
   Shield,
   Users,
@@ -9,12 +10,37 @@ import {
   Sparkles,
   Trophy,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Crown,
+  Edit2,
+  Upload,
+  X,
+  Image as ImageIcon
 } from 'lucide-react';
 
 export default function TeamSquadsManagement({ onNavigate }) {
   const { teams, soldPlayers } = useAuction();
   const [selectedTeamFilter, setSelectedTeamFilter] = useState('all'); // 'all' | teamId
+
+  // Edit Captain Modal State
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingTeam, setEditingTeam] = useState(null);
+  const [captainFormData, setCaptainFormData] = useState({
+    name: '',
+    image_url: '',
+    country: 'India',
+    country_flag: '🇮🇳',
+    age: 28,
+    playing_hand: 'Right Hand',
+    world_ranking: 45,
+    matches: 65,
+    wins: 48,
+    aces: 130,
+    win_percentage: 74
+  });
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [saveNotice, setSaveNotice] = useState(null);
+  const fileInputRef = useRef(null);
 
   // Calculate totals
   const totalPurseAllocated = useMemo(() => {
@@ -39,6 +65,99 @@ export default function TeamSquadsManagement({ onNavigate }) {
     return '₹' + Number(val).toLocaleString('en-IN');
   };
 
+  const handleOpenEditCaptain = (team) => {
+    const captain = team.captain || {};
+    setEditingTeam(team);
+    setCaptainFormData({
+      name: captain.name || '',
+      image_url: captain.image_url || '',
+      country: captain.country || 'India',
+      country_flag: captain.country_flag || '🇮🇳',
+      age: captain.age || 28,
+      playing_hand: captain.playing_hand || 'Right Hand',
+      world_ranking: captain.world_ranking || 50,
+      matches: captain.matches || 60,
+      wins: captain.wins || 45,
+      aces: captain.aces || 120,
+      win_percentage: captain.win_percentage || 75
+    });
+    setSaveNotice(null);
+    setIsEditModalOpen(true);
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 20 * 1024 * 1024) {
+        alert('File size exceeds 20MB. Please choose a smaller image.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 800;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          setCaptainFormData(prev => ({ ...prev, image_url: compressedDataUrl }));
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveCaptain = async (e) => {
+    e.preventDefault();
+    if (!editingTeam) return;
+
+    if (!captainFormData.name.trim()) {
+      setSaveNotice({ type: 'error', text: 'Captain name is required.' });
+      return;
+    }
+
+    try {
+      setSaveLoading(true);
+      await api.updateCaptain(editingTeam.id, {
+        ...captainFormData,
+        category: 'Group A',
+        group: 'A',
+        is_captain: true,
+        designation: 'CAPTAIN'
+      });
+
+      // Update in local team state if needed
+      if (editingTeam.captain) {
+        Object.assign(editingTeam.captain, captainFormData);
+      }
+
+      setSaveNotice({ type: 'success', text: `Captain for ${editingTeam.name} updated successfully!` });
+      setTimeout(() => {
+        setIsEditModalOpen(false);
+        setSaveNotice(null);
+      }, 1000);
+    } catch (err) {
+      setSaveNotice({ type: 'error', text: err.message || 'Failed to update captain' });
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Header */}
@@ -58,7 +177,7 @@ export default function TeamSquadsManagement({ onNavigate }) {
                 Team Squads & Rosters
               </h1>
               <p className="text-sm text-on-surface-variant mt-0.5">
-                Real-time purse allocations, squad capacity, and player acquisitions across all 4 franchises.
+                Real-time purse allocations, fixed captains, and squad acquisitions across all 4 franchises.
               </p>
             </div>
           </div>
@@ -88,23 +207,23 @@ export default function TeamSquadsManagement({ onNavigate }) {
           <div className="text-2xl font-bold font-headline-sm text-on-surface mt-2">
             {teams?.length || 4} Teams
           </div>
-          <p className="text-xs text-on-surface-variant mt-1">5 max slots per franchise</p>
+          <p className="text-xs text-on-surface-variant mt-1">10 max slots per franchise (1 Captain + 9 Auction players)</p>
         </div>
 
         <div className="bg-surface-container rounded-xl p-5 border border-outline-variant/10">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-on-surface-variant font-bold">Players Acquired</span>
+            <span className="text-xs uppercase tracking-wider text-on-surface-variant font-bold">Players & Captains</span>
             <span className="p-2 rounded-lg bg-primary/10 text-primary">
               <Users className="w-4 h-4" />
             </span>
           </div>
           <div className="text-2xl font-bold font-headline-sm text-on-surface mt-2">
-            {totalPlayersAcquired} / 20 Slots Filled
+            {totalPlayersAcquired} / 40 Slots Filled
           </div>
           <div className="w-full bg-surface-container-highest h-2 rounded-full mt-2 overflow-hidden">
             <div
               className="bg-tertiary h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, (totalPlayersAcquired / 20) * 100)}%` }}
+              style={{ width: `${Math.min(100, (totalPlayersAcquired / 40) * 100)}%` }}
             />
           </div>
         </div>
@@ -166,12 +285,23 @@ export default function TeamSquadsManagement({ onNavigate }) {
           const maxSquad = team.max_players || 10;
           const maxGroupA = team.max_group_a || 3;
           const maxGroupB = team.max_group_b || 7;
-          const groupACount = team.group_a_count !== undefined ? team.group_a_count : (team.roster ? team.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+          const groupACount = team.group_a_count !== undefined ? team.group_a_count : (team.roster ? team.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 1);
           const groupBCount = team.group_b_count !== undefined ? team.group_b_count : (team.roster ? team.roster.filter(p => ((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
           const purseRemaining = team.purse_remaining !== undefined ? team.purse_remaining : 400000;
           const totalPurse = team.total_purse || 400000;
           const totalSpent = totalPurse - purseRemaining;
           const roster = team.roster || [];
+          const captain = team.captain || {
+            name: `Captain ${team.name}`,
+            image_url: '/images/players/arjun-mehta.jpg',
+            group: 'A',
+            category: 'Group A',
+            is_captain: true,
+            designation: 'CAPTAIN'
+          };
+
+          // Filter auction bought players (excluding the captain from general list)
+          const auctionPlayers = roster.filter(p => !p.is_captain && p.designation !== 'CAPTAIN');
 
           return (
             <div
@@ -260,11 +390,59 @@ export default function TeamSquadsManagement({ onNavigate }) {
                   </div>
                 </div>
 
+                {/* FIXED CAPTAIN SECTION */}
+                <div className="mb-5 p-3.5 rounded-xl bg-gradient-to-r from-amber-500/10 via-surface-container-low to-surface-container-low border border-amber-500/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                      <Crown className="w-4 h-4 text-amber-400" />
+                      FIXED TEAM CAPTAIN
+                    </span>
+                    <button
+                      onClick={() => handleOpenEditCaptain(team)}
+                      className="px-2.5 py-1 rounded-md bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 font-bold text-xs transition-colors flex items-center gap-1 border border-amber-500/40"
+                    >
+                      <Edit2 className="w-3 h-3" />
+                      <span>Edit Captain</span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={captain.image_url || '/images/players/arjun-mehta.jpg'}
+                        alt={captain.name}
+                        className="w-12 h-12 rounded-lg object-cover bg-slate-900 border-2 border-amber-500/40 shrink-0"
+                        onError={(e) => { e.target.src = '/images/tennis-ball-glow.svg'; }}
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-black text-white truncate">
+                            {captain.name}
+                          </h4>
+                          <span className="text-[10px] font-black px-1.5 py-0.2 rounded bg-amber-500 text-slate-950">
+                            CAPTAIN
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                            Group A
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2">
+                          <span>{captain.country} {captain.country_flag}</span>
+                          <span>•</span>
+                          <span>Rank #{captain.world_ranking || '-'}</span>
+                          <span>•</span>
+                          <span className="text-amber-300 font-bold">{captain.win_percentage || 75}% Win</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Squad Roster Section */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs uppercase tracking-wider font-bold text-on-surface-variant">
-                      Acquired Athletes ({squadCount}/{maxSquad})
+                      Acquired Auction Athletes ({auctionPlayers.length}/9)
                     </span>
                     {squadCount >= maxSquad ? (
                       <span className="text-[11px] font-bold text-yellow-500 flex items-center gap-1">
@@ -272,22 +450,22 @@ export default function TeamSquadsManagement({ onNavigate }) {
                       </span>
                     ) : (
                       <span className="text-[11px] text-on-surface-variant">
-                        {maxSquad - squadCount} slot(s) remaining (A: {groupACount}/{maxGroupA}, B: {groupBCount}/{maxGroupB})
+                        {maxSquad - squadCount} slot(s) remaining (Group A: {maxGroupA - groupACount}, Group B: {maxGroupB - groupBCount})
                       </span>
                     )}
                   </div>
 
-                  {roster.length === 0 ? (
-                    <div className="py-8 text-center rounded-lg border border-dashed border-outline-variant/20 bg-surface-container-low/50">
-                      <Users className="w-8 h-8 text-on-surface-variant/40 mx-auto mb-1.5" />
-                      <p className="text-xs font-bold text-on-surface-variant">No players acquired yet</p>
+                  {auctionPlayers.length === 0 ? (
+                    <div className="py-6 text-center rounded-lg border border-dashed border-outline-variant/20 bg-surface-container-low/50">
+                      <Users className="w-7 h-7 text-on-surface-variant/40 mx-auto mb-1.5" />
+                      <p className="text-xs font-bold text-on-surface-variant">No auction players acquired yet</p>
                       <p className="text-[11px] text-on-surface-variant/70 mt-0.5">
-                        Players won during live bidding will appear here.
+                        Players won during live auction bidding will appear here alongside the Captain.
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-2.5 max-h-64 overflow-y-auto pr-1">
-                      {roster.map((player, idx) => (
+                      {auctionPlayers.map((player, idx) => (
                         <div
                           key={player.id || idx}
                           className="p-3 rounded-lg bg-surface-container-low border border-outline-variant/10 flex items-center justify-between gap-3 hover:border-tertiary/30 transition-all"
@@ -330,6 +508,183 @@ export default function TeamSquadsManagement({ onNavigate }) {
           );
         })}
       </div>
+
+      {/* EDIT CAPTAIN MODAL */}
+      {isEditModalOpen && editingTeam && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-lg bg-[#0f172a] border border-slate-700 rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setIsEditModalOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-5 pb-3 border-b border-slate-800">
+              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                <Crown className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-white">
+                  Edit Captain — {editingTeam.name}
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Fixed Group A Captain for {editingTeam.name} (Persists permanently)
+                </p>
+              </div>
+            </div>
+
+            {saveNotice && (
+              <div className={`p-3 rounded-lg text-xs font-bold mb-4 flex items-center gap-2 ${
+                saveNotice.type === 'error'
+                  ? 'bg-rose-950/70 border border-rose-600 text-rose-300'
+                  : 'bg-emerald-950/70 border border-emerald-600 text-emerald-300'
+              }`}>
+                {saveNotice.text}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveCaptain} className="space-y-4">
+              {/* Captain Name */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                  Captain Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={captainFormData.name}
+                  onChange={(e) => setCaptainFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400"
+                  placeholder="e.g. Rohan Bopanna"
+                />
+              </div>
+
+              {/* Captain Photo Upload & Preview */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                  Captain Photo
+                </label>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-xl bg-slate-900 border-2 border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
+                    {captainFormData.image_url ? (
+                      <img
+                        src={captainFormData.image_url}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <ImageIcon className="w-6 h-6 text-slate-600" />
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-600 flex items-center justify-center gap-2"
+                    >
+                      <Upload className="w-4 h-4" />
+                      <span>Upload Photo</span>
+                    </button>
+                    <input
+                      type="text"
+                      value={captainFormData.image_url}
+                      onChange={(e) => setCaptainFormData(prev => ({ ...prev, image_url: e.target.value }))}
+                      placeholder="Or enter Image URL"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-300 focus:outline-none focus:border-amber-400"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Country & Age */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    value={captainFormData.country}
+                    onChange={(e) => setCaptainFormData(prev => ({ ...prev, country: e.target.value }))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                    Age
+                  </label>
+                  <input
+                    type="number"
+                    value={captainFormData.age}
+                    onChange={(e) => setCaptainFormData(prev => ({ ...prev, age: parseInt(e.target.value, 10) || 25 }))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              {/* Playing Hand & World Ranking */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                    Playing Hand
+                  </label>
+                  <select
+                    value={captainFormData.playing_hand}
+                    onChange={(e) => setCaptainFormData(prev => ({ ...prev, playing_hand: e.target.value }))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400"
+                  >
+                    <option value="Right Hand">Right Hand</option>
+                    <option value="Left Hand">Left Hand</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                    World Ranking
+                  </label>
+                  <input
+                    type="number"
+                    value={captainFormData.world_ranking}
+                    onChange={(e) => setCaptainFormData(prev => ({ ...prev, world_ranking: parseInt(e.target.value, 10) || 1 }))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              {/* Group Display (Fixed Group A) */}
+              <div className="p-3 rounded-lg bg-blue-950/40 border border-blue-500/30 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-300">Category / Group:</span>
+                <span className="px-2 py-0.5 rounded bg-blue-500 text-white font-black">Group A (Fixed)</span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saveLoading}
+                  className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-xs font-black text-slate-950 shadow-md transition disabled:opacity-50"
+                >
+                  {saveLoading ? 'Saving...' : 'Save Captain Details'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

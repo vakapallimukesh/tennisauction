@@ -651,25 +651,44 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
                       <div className="space-y-1 text-xs">
                         {groupAPlayers.length > 0 ? (
-                          groupAPlayers.map((p, pIdx) => (
-                            <div
-                              key={p.id || `ga-${pIdx}`}
-                              className={`border rounded-md px-2 py-1 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isLeading
-                                ? 'border-emerald-300 bg-white'
-                                : 'border-slate-300 bg-white'
+                          groupAPlayers.map((p, pIdx) => {
+                            const isCaptain = p.is_captain || p.designation === 'CAPTAIN';
+                            return (
+                              <div
+                                key={p.id || `ga-${pIdx}`}
+                                className={`border rounded-md px-2 py-1 flex items-center justify-between gap-2 shadow-2xs transition-colors ${
+                                  isCaptain
+                                    ? 'border-amber-400/80 bg-amber-50/60'
+                                    : isLeading
+                                    ? 'border-emerald-300 bg-white'
+                                    : 'border-slate-300 bg-white'
                                 }`}
-                            >
-                              {/* Player Name in Roster — Montserrat Bold */}
-                              <div className="font-bold text-slate-950 truncate text-[11px] md:text-[12px] leading-normal font-montserrat-bold min-w-0 flex-1">
-                                {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
+                              >
+                                {/* Player Name in Roster — Montserrat Bold */}
+                                <div className="font-bold text-slate-950 truncate text-[11px] md:text-[12px] leading-normal font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
+                                  <span className="truncate">
+                                    {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
+                                  </span>
+                                  {isCaptain && (
+                                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 shadow-xs shrink-0 tracking-wider">
+                                      👑 C
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-right shrink-0">
+                                  {isCaptain ? (
+                                    <span className="font-black text-amber-800 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold uppercase tracking-wider">
+                                      CAPTAIN
+                                    </span>
+                                  ) : (
+                                    <span className="font-bold text-slate-900 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold">
+                                      {formatLakhsShort(p.purchase_price || p.base_price)}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                              <div className="text-right shrink-0">
-                                <span className="font-bold text-slate-900 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold">
-                                  {formatLakhsShort(p.purchase_price || p.base_price)}
-                                </span>
-                              </div>
-                            </div>
-                          ))
+                            );
+                          })
                         ) : (
                           <div className="text-center py-1 text-slate-400 text-[10px] italic bg-white/70 rounded border border-dashed border-slate-300 font-montserrat-bold">
                             No Group A acquired

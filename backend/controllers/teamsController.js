@@ -1,13 +1,14 @@
 const db = require('../config/db');
+const auctionSocket = require('../socket/auctionSocket');
 
-// Get all teams with calculated stats
+// Get all teams with calculated stats including fixed captain
 exports.getTeams = async (req, res) => {
   try {
     const store = db.getMemoryStore();
 
     const teams = store.teams.map(team => {
       const teamPlayers = store.team_players.filter(tp => tp.team_id === team.id);
-      let groupACount = 0;
+      let groupACount = 1; // 1 for the fixed captain in Group A
       let groupBCount = 0;
       teamPlayers.forEach(tp => {
         const p = store.players.find(pl => pl.id === tp.player_id);
@@ -22,16 +23,17 @@ exports.getTeams = async (req, res) => {
       const maxPlayers = team.max_players || 10;
       const maxGroupA = team.max_group_a || 3;
       const maxGroupB = team.max_group_b || 7;
+      const totalPlayersCount = 1 + teamPlayers.length;
 
       return {
         ...team,
         max_players: maxPlayers,
         max_group_a: maxGroupA,
         max_group_b: maxGroupB,
-        players_bought: teamPlayers.length,
+        players_bought: totalPlayersCount,
         group_a_count: groupACount,
         group_b_count: groupBCount,
-        is_squad_full: teamPlayers.length >= maxPlayers
+        is_squad_full: totalPlayersCount >= maxPlayers
       };
     });
 
@@ -41,7 +43,7 @@ exports.getTeams = async (req, res) => {
   }
 };
 
-// Get single team with full roster and purchased players
+// Get single team with full roster and purchased players (including Captain)
 exports.getTeamById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -54,7 +56,7 @@ exports.getTeamById = async (req, res) => {
 
     const teamPlayerRecords = store.team_players.filter(tp => tp.team_id === team.id);
 
-    let groupACount = 0;
+    let groupACount = 1; // 1 for the fixed captain in Group A
     let groupBCount = 0;
     const purchasedPlayers = teamPlayerRecords.map(tp => {
       const player = store.players.find(p => p.id === tp.player_id);
@@ -74,9 +76,43 @@ exports.getTeamById = async (req, res) => {
       };
     }).filter(p => !!p.name);
 
+    const captain = team.captain || {
+      id: 100 + team.id,
+      name: `Captain ${team.name}`,
+      player_number: `CAPTAIN #0${team.id}`,
+      age: 28,
+      country: 'India',
+      country_flag: '🇮🇳',
+      category: 'Group A',
+      group: 'A',
+      is_captain: true,
+      designation: 'CAPTAIN',
+      playing_hand: 'Right Hand',
+      world_ranking: 50,
+      wins: 45,
+      aces: 120,
+      matches: 65,
+      win_percentage: 75,
+      image_url: '/images/players/arjun-mehta.jpg'
+    };
+
+    const fullRoster = [
+      {
+        ...captain,
+        is_captain: true,
+        designation: 'CAPTAIN',
+        category: 'Group A',
+        group: 'A',
+        purchase_price: 0,
+        purchased_at: null
+      },
+      ...purchasedPlayers
+    ];
+
     const maxPlayers = team.max_players || 10;
     const maxGroupA = team.max_group_a || 3;
     const maxGroupB = team.max_group_b || 7;
+    const totalPlayersCount = 1 + purchasedPlayers.length;
 
     res.json({
       success: true,
@@ -85,11 +121,55 @@ exports.getTeamById = async (req, res) => {
         max_players: maxPlayers,
         max_group_a: maxGroupA,
         max_group_b: maxGroupB,
-        players_bought: purchasedPlayers.length,
+        captain,
+        players_bought: totalPlayersCount,
         group_a_count: groupACount,
         group_b_count: groupBCount,
-        is_squad_full: purchasedPlayers.length >= maxPlayers,
-        purchased_players: purchasedPlayers
+        is_squad_full: totalPlayersCount >= maxPlayers,
+        purchased_players: fullRoster,
+        roster: fullRoster
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// Update Captain Details (Name, Photo, Stats)
+exports.updateCaptain = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const store = db.getMemoryStore();
+    const team = store.teams.find(t => t.id === parseInt(id, 10));
+
+    if (!team) {
+      return res.status(404).json({ success: false, message: 'Team not found' });
+    }
+
+    const currentCaptain = team.captain || {};
+    const updatedCaptain = {
+      ...currentCaptain,
+      ...req.body,
+      id: currentCaptain.id || 100 + team.id,
+      is_captain: true,
+      designation: 'CAPTAIN',
+      category: 'Group A',
+      group: 'A'
+    };
+
+    team.captain = updatedCaptain;
+    db.saveStore();
+
+    if (auctionSocket && typeof auctionSocket.broadcastAuctionState === 'function') {
+      auctionSocket.broadcastAuctionState();
+    }
+
+    res.json({
+      success: true,
+      message: 'Captain updated successfully',
+      data: {
+        team_id: team.id,
+        captain: updatedCaptain
       }
     });
   } catch (err) {
@@ -115,6 +195,10 @@ exports.updateTeam = async (req, res) => {
     };
 
     db.saveStore();
+
+    if (auctionSocket && typeof auctionSocket.broadcastAuctionState === 'function') {
+      auctionSocket.broadcastAuctionState();
+    }
 
     res.json({ success: true, message: 'Team updated successfully', data: store.teams[index] });
   } catch (err) {

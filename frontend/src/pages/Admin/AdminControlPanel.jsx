@@ -98,9 +98,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
   // Total player pool count
   const totalPoolCount = (upcomingPlayers?.length || 0) + (soldPlayers?.length || 0) + (unsoldPlayers?.length || 0) + (currentPlayer ? 1 : 0) || 124;
 
-  // Filter eligible players for selection (exclude sold players)
+  // Filter eligible players for selection (exclude sold players and captains)
   const eligiblePlayers = (upcomingPlayers || []).filter(p => {
-    if (p.status === 'sold') return false;
+    if (p.status === 'sold' || p.status === 'captain' || p.is_captain || p.designation === 'CAPTAIN') return false;
     if (!playerSearchQuery.trim()) return true;
     const q = playerSearchQuery.toLowerCase().trim();
     return (

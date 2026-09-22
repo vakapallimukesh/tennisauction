@@ -20,10 +20,17 @@ function getPlayerGroup(player) {
   return 'A';
 }
 
-// Helper to validate team squad limits (10 total: max 3 Group A, max 7 Group B)
+// Helper to validate team squad limits (10 total: max 3 Group A, max 7 Group B, with 1 fixed captain in Group A)
 function validateTeamSquadLimits(teamId, targetPlayer, store) {
+  if (targetPlayer && (targetPlayer.is_captain || targetPlayer.status === 'captain')) {
+    return {
+      valid: false,
+      message: 'Fixed captain cannot be bid on or transferred.'
+    };
+  }
+
   const teamPlayerRecords = store.team_players.filter(tp => tp.team_id === teamId);
-  const totalCount = teamPlayerRecords.length;
+  const totalCount = 1 + teamPlayerRecords.length; // 1 for fixed captain
 
   // 1. Check total squad limit (10)
   if (totalCount >= 10) {
@@ -36,7 +43,7 @@ function validateTeamSquadLimits(teamId, targetPlayer, store) {
   // 2. Check group limits (max 3 Group A, max 7 Group B)
   if (targetPlayer) {
     const playerGroup = getPlayerGroup(targetPlayer);
-    let groupACount = 0;
+    let groupACount = 1; // 1 for fixed captain in Group A
     let groupBCount = 0;
 
     for (const tp of teamPlayerRecords) {
@@ -530,6 +537,10 @@ exports.setLivePlayer = async (req, res) => {
     const player = store.players.find(p => p.id === parseInt(player_id, 10));
     if (!player) {
       return res.status(404).json({ success: false, message: 'Player not found' });
+    }
+
+    if (player.is_captain || player.status === 'captain') {
+      return res.status(400).json({ success: false, message: 'Captain cannot be placed on the auction block' });
     }
 
     if (player.status === 'sold') {

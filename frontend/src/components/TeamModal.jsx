@@ -152,14 +152,19 @@ export default function TeamModal() {
                       </div>
 
                       <div>
-                        <div className="font-bold text-white text-sm sm:text-base group-hover:text-emerald-300 transition-colors">
-                          {p.name}
+                        <div className="font-bold text-white text-sm sm:text-base group-hover:text-emerald-300 transition-colors flex items-center gap-2">
+                          <span>{p.name}</span>
+                          {(p.is_captain || p.designation === 'CAPTAIN') && (
+                            <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-amber-400 text-amber-950 shadow-xs">
+                              👑 CAPTAIN
+                            </span>
+                          )}
                         </div>
                         <div className="text-xs text-slate-400">
-                          {p.category} • Ranking: <span className="text-slate-200 font-semibold">{p.world_ranking}</span>
+                          {p.category} • Ranking: <span className="text-slate-200 font-semibold">{p.world_ranking || '-'}</span>
                         </div>
                         <div className="text-xs font-bold text-emerald-400 mt-0.5">
-                          Purchased: ₹ {Number(p.purchase_price).toLocaleString('en-IN')}
+                          {p.is_captain ? 'Designation: CAPTAIN (Group A)' : `Purchased: ₹ ${Number(p.purchase_price).toLocaleString('en-IN')}`}
                         </div>
                       </div>
                     </div>

@@ -47,7 +47,26 @@ const initialSeed = {
       primary_color: '#22c55e',
       accent_color: '#4ade80',
       glow_color: 'rgba(34, 197, 94, 0.45)',
-      bg_gradient: 'from-emerald-950/40 to-slate-950/80'
+      bg_gradient: 'from-emerald-950/40 to-slate-950/80',
+      captain: {
+        id: 101,
+        name: 'Rohan Bopanna',
+        player_number: 'CAPTAIN #01',
+        age: 28,
+        country: 'India',
+        country_flag: '🇮🇳',
+        category: 'Group A',
+        group: 'A',
+        is_captain: true,
+        designation: 'CAPTAIN',
+        playing_hand: 'Right Hand',
+        world_ranking: 42,
+        wins: 58,
+        aces: 142,
+        matches: 75,
+        win_percentage: 77,
+        image_url: '/images/players/arjun-mehta.jpg'
+      }
     },
     {
       id: 2,
@@ -63,7 +82,26 @@ const initialSeed = {
       primary_color: '#0ea5e9',
       accent_color: '#38bdf8',
       glow_color: 'rgba(14, 165, 233, 0.45)',
-      bg_gradient: 'from-sky-950/40 to-slate-950/80'
+      bg_gradient: 'from-sky-950/40 to-slate-950/80',
+      captain: {
+        id: 102,
+        name: 'Sumit Nagal',
+        player_number: 'CAPTAIN #02',
+        age: 27,
+        country: 'India',
+        country_flag: '🇮🇳',
+        category: 'Group A',
+        group: 'A',
+        is_captain: true,
+        designation: 'CAPTAIN',
+        playing_hand: 'Right Hand',
+        world_ranking: 68,
+        wins: 49,
+        aces: 120,
+        matches: 68,
+        win_percentage: 72,
+        image_url: '/images/players/liam-carter.jpg'
+      }
     },
     {
       id: 3,
@@ -79,7 +117,26 @@ const initialSeed = {
       primary_color: '#a855f7',
       accent_color: '#c084fc',
       glow_color: 'rgba(168, 85, 247, 0.45)',
-      bg_gradient: 'from-purple-950/40 to-slate-950/80'
+      bg_gradient: 'from-purple-950/40 to-slate-950/80',
+      captain: {
+        id: 103,
+        name: 'Ramkumar Ramanathan',
+        player_number: 'CAPTAIN #03',
+        age: 29,
+        country: 'India',
+        country_flag: '🇮🇳',
+        category: 'Group A',
+        group: 'A',
+        is_captain: true,
+        designation: 'CAPTAIN',
+        playing_hand: 'Right Hand',
+        world_ranking: 95,
+        wins: 44,
+        aces: 156,
+        matches: 65,
+        win_percentage: 68,
+        image_url: '/images/players/vikram-desai.jpg'
+      }
     },
     {
       id: 4,
@@ -95,7 +152,26 @@ const initialSeed = {
       primary_color: '#f97316',
       accent_color: '#fb923c',
       glow_color: 'rgba(249, 115, 22, 0.45)',
-      bg_gradient: 'from-orange-950/40 to-slate-950/80'
+      bg_gradient: 'from-orange-950/40 to-slate-950/80',
+      captain: {
+        id: 104,
+        name: 'Yuki Bhambri',
+        player_number: 'CAPTAIN #04',
+        age: 30,
+        country: 'India',
+        country_flag: '🇮🇳',
+        category: 'Group A',
+        group: 'A',
+        is_captain: true,
+        designation: 'CAPTAIN',
+        playing_hand: 'Right Hand',
+        world_ranking: 54,
+        wins: 52,
+        aces: 135,
+        matches: 70,
+        win_percentage: 74,
+        image_url: '/images/players/mateo-silva.jpg'
+      }
     }
   ],
   players: [
@@ -474,20 +550,53 @@ if (!fs.existsSync(DATA_DIR)) {
 let memoryStore = null;
 
 function loadStoreFromDisk() {
+  const seedTeams = initialSeed.teams || [];
   try {
     if (fs.existsSync(STORE_PATH)) {
       const raw = fs.readFileSync(STORE_PATH, 'utf8');
       const parsed = JSON.parse(raw);
       if (parsed && Array.isArray(parsed.players) && Array.isArray(parsed.teams)) {
-        // Enforce 10 players max (3 Group A, 7 Group B) on all teams
-        parsed.teams = parsed.teams.map(t => ({
-          ...t,
-          max_players: 10,
-          max_group_a: 3,
-          max_group_b: 7
-        }));
+        // Enforce 10 players max (3 Group A, 7 Group B) and fixed captain on all teams
+        parsed.teams = parsed.teams.map(t => {
+          const fallbackCaptain = seedTeams.find(st => st.id === t.id)?.captain || {
+            id: 100 + t.id,
+            name: `Captain ${t.name}`,
+            player_number: `CAPTAIN #0${t.id}`,
+            age: 28,
+            country: 'India',
+            country_flag: '🇮🇳',
+            category: 'Group A',
+            group: 'A',
+            is_captain: true,
+            designation: 'CAPTAIN',
+            playing_hand: 'Right Hand',
+            world_ranking: 50,
+            wins: 45,
+            aces: 120,
+            matches: 65,
+            win_percentage: 75,
+            image_url: '/images/players/arjun-mehta.jpg'
+          };
+
+          const captain = (t.captain && t.captain.name) ? {
+            ...fallbackCaptain,
+            ...t.captain,
+            category: 'Group A',
+            group: 'A',
+            is_captain: true,
+            designation: 'CAPTAIN'
+          } : fallbackCaptain;
+
+          return {
+            ...t,
+            max_players: 10,
+            max_group_a: 3,
+            max_group_b: 7,
+            captain
+          };
+        });
         saveStoreToDisk(parsed);
-        console.log(`📁 Loaded persistent database store from ${STORE_PATH} (${parsed.players.length} players)`);
+        console.log(`📁 Loaded persistent database store from ${STORE_PATH} (${parsed.players.length} players, ${parsed.teams.length} teams with captains)`);
         return parsed;
       }
     }

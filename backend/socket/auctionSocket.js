@@ -12,11 +12,11 @@ function getFullAuctionSnapshot() {
   // Resolve current player (only if currently on auction block and live)
   const currentPlayer = (auction.current_player_id && store.players.find(p => p.id === auction.current_player_id && p.status === 'live')) || null;
 
-  // Calculate teams with purse remaining and squad roster
+  // Calculate teams with purse remaining and squad roster (including Fixed Captain)
   const teams = (store.teams || []).map(t => {
     const bought = (store.team_players || []).filter(tp => tp.team_id === t.id);
     const totalSpent = bought.reduce((sum, item) => sum + (parseFloat(item.purchase_price) || 0), 0);
-    let groupACount = 0;
+    let groupACount = 1; // 1 for the fixed captain in Group A
     let groupBCount = 0;
     const playersBoughtList = bought.map(b => {
       const p = store.players.find(pl => pl.id === b.player_id);
@@ -42,19 +42,54 @@ function getFullAuctionSnapshot() {
       };
     });
 
+    const captain = t.captain || {
+      id: 100 + t.id,
+      name: `Captain ${t.name}`,
+      player_number: `CAPTAIN #0${t.id}`,
+      age: 28,
+      country: 'India',
+      country_flag: '🇮🇳',
+      category: 'Group A',
+      group: 'A',
+      is_captain: true,
+      designation: 'CAPTAIN',
+      playing_hand: 'Right Hand',
+      world_ranking: 50,
+      wins: 45,
+      aces: 120,
+      matches: 65,
+      win_percentage: 75,
+      image_url: '/images/players/arjun-mehta.jpg'
+    };
+
+    const fullRoster = [
+      {
+        ...captain,
+        is_captain: true,
+        designation: 'CAPTAIN',
+        category: 'Group A',
+        group: 'A',
+        purchase_price: 0,
+        purchased_at: null
+      },
+      ...playersBoughtList
+    ];
+
     const remaining = Math.max(0, (parseFloat(t.total_purse) || 400000) - totalSpent);
+    const totalPlayersCount = 1 + bought.length;
 
     return {
       ...t,
+      captain,
       max_players: t.max_players || 10,
       max_group_a: t.max_group_a || 3,
       max_group_b: t.max_group_b || 7,
-      players_bought: bought.length,
+      players_bought: totalPlayersCount,
       group_a_count: groupACount,
       group_b_count: groupBCount,
       total_spent: totalSpent,
       purse_remaining: remaining,
-      roster: playersBoughtList
+      roster: fullRoster
     };
   });
 
@@ -258,18 +293,25 @@ function getPlayerGroup(player) {
   return 'A';
 }
 
-// Helper to validate team squad limits (Max 10 total, Max 3 Group A, Max 7 Group B)
+// Helper to validate team squad limits (Max 10 total, Max 3 Group A, Max 7 Group B, with 1 fixed captain in Group A)
 function validateTeamSquadLimits(teamId, targetPlayer, store) {
   const team = store.teams.find(t => t.id === parseInt(teamId, 10));
   if (!team) return { valid: false, message: 'Invalid team identification.' };
 
+  if (targetPlayer && (targetPlayer.is_captain || targetPlayer.status === 'captain')) {
+    return {
+      valid: false,
+      message: 'Fixed captain cannot be bid on or transferred.'
+    };
+  }
+
   const bought = (store.team_players || []).filter(tp => tp.team_id === team.id);
-  const totalCount = bought.length;
+  const totalCount = 1 + bought.length; // 1 for the fixed captain
   const maxTotal = team.max_players || 10;
   const maxA = team.max_group_a || 3;
   const maxB = team.max_group_b || 7;
 
-  let groupACount = 0;
+  let groupACount = 1; // 1 for the fixed captain in Group A
   let groupBCount = 0;
 
   bought.forEach(b => {

@@ -120,11 +120,16 @@ export default function TeamDetailsCard() {
                 </div>
 
                 <div className="min-w-0">
-                  <div className="font-bold text-white text-xs truncate group-hover:text-emerald-300 transition-colors">
-                    {p.name}
+                  <div className="font-bold text-white text-xs truncate group-hover:text-emerald-300 transition-colors flex items-center gap-1.5">
+                    <span>{p.name}</span>
+                    {(p.is_captain || p.designation === 'CAPTAIN') && (
+                      <span className="text-[8px] font-black uppercase px-1.5 py-0.2 rounded bg-amber-400 text-amber-950 shadow-xs shrink-0">
+                        👑 CAPTAIN
+                      </span>
+                    )}
                   </div>
                   <div className="text-[10px] text-slate-400">
-                    {p.category} • <span className="font-bold text-emerald-400">₹ {Number(p.purchase_price).toLocaleString('en-IN')}</span>
+                    {p.category} • <span className="font-bold text-emerald-400">{p.is_captain ? 'CAPTAIN' : `₹ ${Number(p.purchase_price).toLocaleString('en-IN')}`}</span>
                   </div>
                 </div>
               </div>

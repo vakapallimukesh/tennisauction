@@ -87,7 +87,26 @@
       "bg_gradient": "from-emerald-950/40 to-slate-950/80",
       "players_bought": 1,
       "max_group_a": 3,
-      "max_group_b": 7
+      "max_group_b": 7,
+      "captain": {
+        "id": 101,
+        "name": "Rohan Bopanna (Updated Champion)",
+        "player_number": "CAPTAIN #01",
+        "age": 44,
+        "country": "India",
+        "country_flag": "🇮🇳",
+        "category": "Group A",
+        "group": "A",
+        "is_captain": true,
+        "designation": "CAPTAIN",
+        "playing_hand": "Right Hand",
+        "world_ranking": 42,
+        "wins": 58,
+        "aces": 142,
+        "matches": 75,
+        "win_percentage": 77,
+        "image_url": "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400"
+      }
     },
     {
       "id": 2,
@@ -103,7 +122,26 @@
       "glow_color": "rgba(14, 165, 233, 0.45)",
       "bg_gradient": "from-sky-950/40 to-slate-950/80",
       "max_group_a": 3,
-      "max_group_b": 7
+      "max_group_b": 7,
+      "captain": {
+        "id": 102,
+        "name": "Sumit Nagal",
+        "player_number": "CAPTAIN #02",
+        "age": 27,
+        "country": "India",
+        "country_flag": "🇮🇳",
+        "category": "Group A",
+        "group": "A",
+        "is_captain": true,
+        "designation": "CAPTAIN",
+        "playing_hand": "Right Hand",
+        "world_ranking": 68,
+        "wins": 49,
+        "aces": 120,
+        "matches": 68,
+        "win_percentage": 72,
+        "image_url": "/images/players/liam-carter.jpg"
+      }
     },
     {
       "id": 3,
@@ -119,7 +157,26 @@
       "glow_color": "rgba(168, 85, 247, 0.45)",
       "bg_gradient": "from-purple-950/40 to-slate-950/80",
       "max_group_a": 3,
-      "max_group_b": 7
+      "max_group_b": 7,
+      "captain": {
+        "id": 103,
+        "name": "Ramkumar Ramanathan",
+        "player_number": "CAPTAIN #03",
+        "age": 29,
+        "country": "India",
+        "country_flag": "🇮🇳",
+        "category": "Group A",
+        "group": "A",
+        "is_captain": true,
+        "designation": "CAPTAIN",
+        "playing_hand": "Right Hand",
+        "world_ranking": 95,
+        "wins": 44,
+        "aces": 156,
+        "matches": 65,
+        "win_percentage": 68,
+        "image_url": "/images/players/vikram-desai.jpg"
+      }
     },
     {
       "id": 4,
@@ -135,7 +192,26 @@
       "glow_color": "rgba(249, 115, 22, 0.45)",
       "bg_gradient": "from-orange-950/40 to-slate-950/80",
       "max_group_a": 3,
-      "max_group_b": 7
+      "max_group_b": 7,
+      "captain": {
+        "id": 104,
+        "name": "Yuki Bhambri",
+        "player_number": "CAPTAIN #04",
+        "age": 30,
+        "country": "India",
+        "country_flag": "🇮🇳",
+        "category": "Group A",
+        "group": "A",
+        "is_captain": true,
+        "designation": "CAPTAIN",
+        "playing_hand": "Right Hand",
+        "world_ranking": 54,
+        "wins": 52,
+        "aces": 135,
+        "matches": 70,
+        "win_percentage": 74,
+        "image_url": "/images/players/mateo-silva.jpg"
+      }
     }
   ],
   "players": [
@@ -599,6 +675,14 @@
       "team_id": 4,
       "amount": 12000,
       "bid_time": "2026-09-22T12:14:42.582Z"
+    },
+    {
+      "id": 8,
+      "auction_id": 1,
+      "player_id": 1,
+      "team_id": 4,
+      "amount": 12000,
+      "bid_time": "2026-09-22T12:22:01.302Z"
     }
   ],
   "auction_events": [
