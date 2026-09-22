@@ -90,7 +90,7 @@
       "max_group_b": 7,
       "captain": {
         "id": 101,
-        "name": "Rohan Bopanna (Updated Champion)",
+        "name": "Rohan Bopanna",
         "player_number": "CAPTAIN #01",
         "age": 44,
         "country": "India",
@@ -219,7 +219,7 @@
       "id": 1,
       "player_number": "PLAYER #07",
       "name": "Arjun Mehta",
-      "age": 22,
+      "age": 24,
       "country": "India",
       "country_flag": "🇮🇳",
       "category": "Group A",

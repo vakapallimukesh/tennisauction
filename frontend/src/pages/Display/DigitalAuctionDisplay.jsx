@@ -667,7 +667,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                                 {/* Player Name in Roster — Montserrat Bold */}
                                 <div className="font-bold text-slate-950 truncate text-[11px] md:text-[12px] leading-normal font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
                                   <span className="truncate">
-                                    {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
+                                    {p.name || p.player_name || ''}
                                   </span>
                                   {isCaptain && (
                                     <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 shadow-xs shrink-0 leading-none font-montserrat-bold">
@@ -717,7 +717,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             >
                               {/* Player Name in Roster — Montserrat Bold */}
                               <div className="font-bold text-slate-950 truncate text-[11px] md:text-[12px] leading-normal font-montserrat-bold min-w-0 flex-1">
-                                {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
+                                {p.name || p.player_name || ''}
                               </div>
                               <div className="text-right shrink-0">
                                 <span className="font-bold text-slate-900 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold">
