@@ -263,7 +263,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
       return;
     }
 
-    if (parsedAmount > (targetTeam.purse_remaining || 100000)) {
+    if (parsedAmount > (targetTeam.purse_remaining || 400000)) {
       showNotice(`${targetTeam.name} has insufficient purse balance!`, 'error');
       return;
     }

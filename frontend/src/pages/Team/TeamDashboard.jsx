@@ -73,7 +73,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
 
   // Squad and purse constraints
   const squadFull = (myTeam.players_bought || 0) >= (myTeam.max_players || 5);
-  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : (myTeam.total_purse || 100000);
+  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : (myTeam.total_purse || 400000);
   const nextMinBid = currentBid + 1000;
 
   // Handle Bid Execution
