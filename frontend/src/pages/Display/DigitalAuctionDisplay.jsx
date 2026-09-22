@@ -670,22 +670,18 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                                     {(p.name || p.player_name || '').split(' ').map((w, i) => i === 0 ? w[0] + '.' : w).join(' ')}
                                   </span>
                                   {isCaptain && (
-                                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 shadow-xs shrink-0 tracking-wider">
-                                      👑 C
+                                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 shadow-xs shrink-0 leading-none font-montserrat-bold">
+                                      C
                                     </span>
                                   )}
                                 </div>
-                                <div className="text-right shrink-0">
-                                  {isCaptain ? (
-                                    <span className="font-black text-amber-800 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold uppercase tracking-wider">
-                                      CAPTAIN
-                                    </span>
-                                  ) : (
+                                {!isCaptain && (
+                                  <div className="text-right shrink-0">
                                     <span className="font-bold text-slate-900 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold">
                                       {formatLakhsShort(p.purchase_price || p.base_price)}
                                     </span>
-                                  )}
-                                </div>
+                                  </div>
+                                )}
                               </div>
                             );
                           })
