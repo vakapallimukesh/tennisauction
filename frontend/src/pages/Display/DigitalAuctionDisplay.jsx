@@ -473,19 +473,19 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       {unsoldNotice && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center font-montserrat-bold" style={{ backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', backgroundColor: 'rgba(127, 29, 29, 0.45)' }}>
           <div className="flex flex-col items-center text-center">
-            {/* Player Photo — slides from right with red tint */}
+            {/* Player Photo — slides from right */}
             <div
-              className="relative w-56 h-56 xl:w-64 xl:h-64 rounded-full border-[5px] border-red-400/70 shadow-2xl overflow-hidden mb-6"
+              className="relative w-56 h-56 xl:w-64 xl:h-64 rounded-full border-[5px] border-amber-400/70 shadow-2xl overflow-hidden mb-6"
               style={{
                 animation: 'slideFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                boxShadow: '0 0 70px rgba(239, 68, 68, 0.35), 0 25px 50px rgba(0,0,0,0.4)'
+                boxShadow: '0 0 70px rgba(245, 158, 11, 0.35), 0 25px 50px rgba(0,0,0,0.4)'
               }}
             >
               {unsoldNotice.player_image ? (
                 <img
                   src={unsoldNotice.player_image}
                   alt={unsoldNotice.player_name}
-                  className="w-full h-full object-cover object-top opacity-70"
+                  className="w-full h-full object-cover object-top"
                   onError={(e) => { e.target.style.display = 'none'; }}
                 />
               ) : (
@@ -495,16 +495,12 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   </svg>
                 </div>
               )}
-              {/* Red X overlay on photo */}
-              <div className="absolute inset-0 flex items-center justify-center bg-red-900/30">
-                <span className="text-8xl font-black text-red-400 drop-shadow-lg opacity-80">✕</span>
-              </div>
             </div>
-            {/* UNSOLD label */}
+            {/* RESERVED POOL label */}
             <h1
-              className="text-5xl xl:text-7xl font-black text-red-400 uppercase tracking-wider mb-4 font-montserrat-black"
-              style={{ animation: 'fadeUpIn 0.6s ease-out 0.5s both', textShadow: '0 4px 25px rgba(239, 68, 68, 0.4)' }}
-            >UNSOLD</h1>
+              className="text-5xl xl:text-7xl font-black text-amber-400 uppercase tracking-wider mb-4 font-montserrat-black"
+              style={{ animation: 'fadeUpIn 0.6s ease-out 0.5s both', textShadow: '0 4px 25px rgba(245, 158, 11, 0.4)' }}
+            >RESERVED POOL</h1>
             {/* Player Name — Montserrat Black */}
             <p
               className="text-3xl xl:text-4xl font-black text-white/90 mb-3 font-montserrat-black"
@@ -513,7 +509,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
               {unsoldNotice.player_name || 'Player'}
             </p>
             <p
-              className="text-xl text-red-300/80 font-bold font-montserrat-bold"
+              className="text-xl text-amber-200/80 font-bold font-montserrat-bold"
               style={{ animation: 'fadeUpIn 0.5s ease-out 0.95s both' }}
             >No buyer this round</p>
           </div>
