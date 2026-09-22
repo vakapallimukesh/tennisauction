@@ -132,27 +132,29 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
   // Full comprehensive active player resolution
   const activePlayer = useMemo(() => {
-    const base = currentPlayer || {
-      id: 1,
-      player_number: 'PLAYER #07',
-      name: 'Arjun Mehta',
-      age: 22,
-      country: 'India',
-      country_flag: '🇮🇳',
-      category: 'Group A',
-      playing_hand: 'Right Hand',
-      world_ranking: 14,
-      wins: 32,
-      aces: 87,
-      matches: 47,
-      win_percentage: 68,
-      base_price: 10000,
-      image_url: ''
-    };
+    if (currentPlayer) {
+      return {
+        ...currentPlayer,
+        image_url: currentPlayer.image_url || ''
+      };
+    }
 
     return {
-      ...base,
-      image_url: base.image_url || ''
+      id: null,
+      player_number: 'PLAYER',
+      name: '',
+      age: 0,
+      country: '',
+      country_flag: '',
+      category: 'Group A',
+      playing_hand: '',
+      world_ranking: 0,
+      wins: 0,
+      aces: 0,
+      matches: 0,
+      win_percentage: 0,
+      base_price: 10000,
+      image_url: ''
     };
   }, [currentPlayer]);
 
@@ -770,7 +772,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
           {/* 2. Player Name Header — Montserrat Black */}
           <div className="text-center py-2 px-1 shrink-0">
             <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black text-slate-950 tracking-tight uppercase font-montserrat-black leading-tight">
-              {activePlayer.name || 'AWAITING PLAYER'}
+              {activePlayer.name || 'WAITING'}
             </h2>
           </div>
 

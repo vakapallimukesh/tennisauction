@@ -45,14 +45,14 @@
   z-index: 1;
 }
 
-/* The rotating 3D Cube */
+/* The rotating 3D Cube (Continuous 1-way rightward rotation) */
 .cube-3d {
   position: absolute;
   width: var(--showcase-cube-size);
   height: var(--showcase-cube-size);
   transform-style: preserve-3d;
   will-change: transform;
-  animation: cubeSportsRotateCycle 25.6s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  animation: cubeSportsRotateCycle 20s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
 /* 6 Faces of the 3D Cube (Sharp Square Corners) */
@@ -112,10 +112,10 @@
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
 }
 
-/* Back Face: Sponsor 2 (Bhimavaram Digitals) */
+/* Back Face: Current Player Photo & Details (Replaces Bhimavaram Digitals) */
 .cube-face-back {
   transform: rotateY(180deg) translateZ(var(--showcase-half-size));
-  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  background: #0f172a;
 }
 
 /* Left Face: Sponsor 3 (PV Enterprises) */
@@ -138,81 +138,57 @@
   border: 2px solid #334155;
 }
 
-/* Sports Broadcast TV Cycle (Total 25.6s loop):
-   1. Player photo visible for 4.0s
-   2. Slow smooth rotation to Sponsor 1 (1.2s)
-   3. Hold on Sponsor 1 (Devee Group) for 2.0s
-   4. Slow smooth rotation back to Player (1.2s)
-   5. Player photo visible for 4.0s
-   6. Slow smooth rotation to Sponsor 2 (1.4s)
-   7. Hold on Sponsor 2 (Bhimavaram Digitals) for 2.0s
-   8. Slow smooth rotation back to Player (1.4s)
-   9. Player photo visible for 4.0s
-   10. Slow smooth rotation to Sponsor 3 (1.2s)
-   11. Hold on Sponsor 3 (PV Enterprises) for 2.0s
-   12. Slow smooth rotation back to Player (1.2s) -> Repeats cycle seamlessly
+/* Sports Broadcast TV Cycle (Total 20s loop - Continuous Rightward Rotation Only):
+   1. Front Face: Player Photo (hold 4.0s)
+   2. Rotate right to PV Enterprises (1.0s transition)
+   3. Right Face: PV Enterprises Sponsor (hold 4.0s)
+   4. Rotate right to Back Face (Player Photo & Details) (1.0s transition)
+   5. Back Face: Player Photo & Details (hold 4.0s)
+   6. Rotate right to Devee Group (1.0s transition)
+   7. Left Face: Devee Group Sponsor (hold 4.0s)
+   8. Rotate right back to Front Face (Player Photo) (1.0s transition) -> Seamless 360deg loop
 */
 @keyframes cubeSportsRotateCycle {
-  /* --- 1. PLAYER PHOTO (4.0s) --- */
+  /* 1. FRONT FACE: PLAYER PHOTO */
   0% {
     transform: rotateY(0deg);
   }
-  15.625% {
+  20% {
     transform: rotateY(0deg);
   }
 
-  /* --- ROTATE SLOWLY TO SPONSOR 1 (1.2s) --- */
-  20.312% {
+  /* ROTATE RIGHT TO PV ENTERPRISES (1.0s) */
+  25% {
     transform: rotateY(-90deg);
   }
 
-  /* --- 2. SPONSOR 1: DEVEE GROUP (2.0s) --- */
-  28.125% {
+  /* 2. RIGHT FACE: PV ENTERPRISES SPONSOR */
+  45% {
     transform: rotateY(-90deg);
   }
 
-  /* --- ROTATE SLOWLY BACK TO PLAYER (1.2s) --- */
-  32.812% {
-    transform: rotateY(0deg);
-  }
-
-  /* --- 3. PLAYER PHOTO (4.0s) --- */
-  48.437% {
-    transform: rotateY(0deg);
-  }
-
-  /* --- ROTATE SLOWLY TO SPONSOR 2 (1.4s) --- */
-  53.906% {
+  /* ROTATE RIGHT TO BACK FACE PLAYER PHOTO (1.0s) */
+  50% {
     transform: rotateY(-180deg);
   }
 
-  /* --- 4. SPONSOR 2: BHIMAVARAM DIGITALS (2.0s) --- */
-  61.719% {
+  /* 3. BACK FACE: PLAYER PHOTO & DETAILS */
+  70% {
     transform: rotateY(-180deg);
   }
 
-  /* --- ROTATE SLOWLY BACK TO PLAYER (1.4s) --- */
-  67.187% {
-    transform: rotateY(0deg);
+  /* ROTATE RIGHT TO DEVEE GROUP (1.0s) */
+  75% {
+    transform: rotateY(-270deg);
   }
 
-  /* --- 5. PLAYER PHOTO (4.0s) --- */
-  82.812% {
-    transform: rotateY(0deg);
+  /* 4. LEFT FACE: DEVEE GROUP SPONSOR */
+  95% {
+    transform: rotateY(-270deg);
   }
 
-  /* --- ROTATE SLOWLY TO SPONSOR 3 (1.2s) --- */
-  87.500% {
-    transform: rotateY(90deg);
-  }
-
-  /* --- 6. SPONSOR 3: PV ENTERPRISES (2.0s) --- */
-  95.312% {
-    transform: rotateY(90deg);
-  }
-
-  /* --- ROTATE SLOWLY BACK TO PLAYER (1.2s) --- */
+  /* ROTATE RIGHT BACK TO FRONT FACE PLAYER PHOTO (1.0s) */
   100% {
-    transform: rotateY(0deg);
+    transform: rotateY(-360deg);
   }
 }

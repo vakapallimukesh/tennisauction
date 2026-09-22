@@ -3,7 +3,7 @@
     {
       "id": 1,
       "username": "admin",
-      "password_hash": "$2b$10$qK2qaORDMCDhMfP61Jf0HuwTh0BTPu2V97Uc5Ynnq/ZAgKGtLBqFG",
+      "password_hash": "$2b$10$IWQuF.l7Sd3FAn8c2wRE4ewuy4Jq3EWsBkLAGUfWZ3PE8QSvXwMYy",
       "full_name": "Tournament Director",
       "role": "admin",
       "team_id": null
@@ -11,7 +11,7 @@
     {
       "id": 2,
       "username": "team1",
-      "password_hash": "$2b$10$hzyS/.26rGuU02QL2MKU3uNdC1xkQ39dinh2IwUt1ejiuHl6idExW",
+      "password_hash": "$2b$10$9d.rv4moeLqRLSiJDisTaOs6oq8wI/arfxGh/5tuNfyo5YNuJceRy",
       "full_name": "Team A Captain",
       "role": "team",
       "team_id": 1
@@ -19,7 +19,7 @@
     {
       "id": 3,
       "username": "team2",
-      "password_hash": "$2b$10$1HrkSOh0Zyn1knX1XRAude6ucBdr9Op9/JdwzCv.iC6OJ8cVLxpMC",
+      "password_hash": "$2b$10$Bup47EHbclChGFt9.2qEDOp0omAq9/b11/vZOCqKrwP188i10jmqC",
       "full_name": "Team B Manager",
       "role": "team",
       "team_id": 2
@@ -27,7 +27,7 @@
     {
       "id": 4,
       "username": "team3",
-      "password_hash": "$2b$10$jobjefkKDD3vLxz0sekuQOxmqY6xWeAYyEEOfRJj2QL33bR60DY9y",
+      "password_hash": "$2b$10$yW2i1vlicsqqSuZOWq5xmOmyaUf2S3p6BQuPOOgXjkyEK6Dk9WPrW",
       "full_name": "Team C Owner",
       "role": "team",
       "team_id": 3
@@ -35,7 +35,7 @@
     {
       "id": 5,
       "username": "team4",
-      "password_hash": "$2b$10$XCvztoIDSf5SKNvPahLY9Oo1zM/F24DIU4LeQECUmtAWvaSasD1yC",
+      "password_hash": "$2b$10$pqAukhQ5Pm3R0ynj7.H7deaMb/..9/0APMurvJ6huW943CMHpOkaO",
       "full_name": "Team D Head Coach",
       "role": "team",
       "team_id": 4
@@ -78,21 +78,20 @@
       "name": "Team A",
       "owner": "Rohan Iyer",
       "total_purse": 400000,
-      "purse_remaining": 380000,
+      "purse_remaining": 400000,
       "max_players": 10,
+      "max_group_a": 3,
+      "max_group_b": 7,
       "logo_url": "/images/teams/team1-lion.svg",
       "primary_color": "#22c55e",
       "accent_color": "#4ade80",
       "glow_color": "rgba(34, 197, 94, 0.45)",
       "bg_gradient": "from-emerald-950/40 to-slate-950/80",
-      "players_bought": 1,
-      "max_group_a": 3,
-      "max_group_b": 7,
       "captain": {
         "id": 101,
         "name": "Rohan Bopanna",
         "player_number": "CAPTAIN #01",
-        "age": 44,
+        "age": 28,
         "country": "India",
         "country_flag": "🇮🇳",
         "category": "Group A",
@@ -105,7 +104,7 @@
         "aces": 142,
         "matches": 75,
         "win_percentage": 77,
-        "image_url": "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400"
+        "image_url": "/images/players/arjun-mehta.jpg"
       }
     },
     {
@@ -116,13 +115,13 @@
       "total_purse": 400000,
       "purse_remaining": 400000,
       "max_players": 10,
+      "max_group_a": 3,
+      "max_group_b": 7,
       "logo_url": "/images/teams/team2-eagle.svg",
       "primary_color": "#0ea5e9",
       "accent_color": "#38bdf8",
       "glow_color": "rgba(14, 165, 233, 0.45)",
       "bg_gradient": "from-sky-950/40 to-slate-950/80",
-      "max_group_a": 3,
-      "max_group_b": 7,
       "captain": {
         "id": 102,
         "name": "Sumit Nagal",
@@ -151,13 +150,13 @@
       "total_purse": 400000,
       "purse_remaining": 400000,
       "max_players": 10,
+      "max_group_a": 3,
+      "max_group_b": 7,
       "logo_url": "/images/teams/team3-crown.svg",
       "primary_color": "#a855f7",
       "accent_color": "#c084fc",
       "glow_color": "rgba(168, 85, 247, 0.45)",
       "bg_gradient": "from-purple-950/40 to-slate-950/80",
-      "max_group_a": 3,
-      "max_group_b": 7,
       "captain": {
         "id": 103,
         "name": "Ramkumar Ramanathan",
@@ -186,13 +185,13 @@
       "total_purse": 400000,
       "purse_remaining": 400000,
       "max_players": 10,
+      "max_group_a": 3,
+      "max_group_b": 7,
       "logo_url": "/images/teams/team4-flame.svg",
       "primary_color": "#f97316",
       "accent_color": "#fb923c",
       "glow_color": "rgba(249, 115, 22, 0.45)",
       "bg_gradient": "from-orange-950/40 to-slate-950/80",
-      "max_group_a": 3,
-      "max_group_b": 7,
       "captain": {
         "id": 104,
         "name": "Yuki Bhambri",
@@ -232,7 +231,7 @@
       "win_percentage": 68,
       "base_price": 10000,
       "image_url": "/images/players/arjun-mehta.jpg",
-      "status": "upcoming",
+      "status": "live",
       "display_order": 1
     },
     {
@@ -312,10 +311,8 @@
       "win_percentage": 70,
       "base_price": 10000,
       "image_url": "/images/players/vikram-desai.jpg",
-      "status": "sold",
-      "display_order": 5,
-      "sold_price": 20000,
-      "sold_to_team_id": 1
+      "status": "upcoming",
+      "display_order": 5
     },
     {
       "id": 6,
@@ -354,7 +351,7 @@
       "win_percentage": 67,
       "base_price": 10000,
       "image_url": "/images/players/mateo-silva.jpg",
-      "status": "live",
+      "status": "upcoming",
       "display_order": 7
     },
     {
@@ -556,148 +553,21 @@
       "image_url": "/images/players/vikram-desai.jpg",
       "status": "upcoming",
       "display_order": 17
-    },
-    {
-      "id": 18,
-      "player_number": "PLAYER #18",
-      "name": "pavan",
-      "age": 22,
-      "country": "India",
-      "country_flag": "🇮🇳",
-      "category": "Group A",
-      "group": "A",
-      "playing_hand": "Right Hand",
-      "world_ranking": 150,
-      "wins": 25,
-      "aces": 50,
-      "matches": 35,
-      "win_percentage": 70,
-      "base_price": 10000,
-      "image_url": "/images/players/rohan-iyer.jpg",
-      "status": "upcoming",
-      "display_order": 18
-    },
-    {
-      "id": 19,
-      "player_number": "PLAYER #19",
-      "name": "dfgjn",
-      "age": 22,
-      "country": "India",
-      "country_flag": "🇮🇳",
-      "category": "Group A",
-      "group": "A",
-      "playing_hand": "Right Hand",
-      "world_ranking": 150,
-      "wins": 25,
-      "aces": 50,
-      "matches": 35,
-      "win_percentage": 70,
-      "base_price": 10000,
-      "image_url": "",
-      "status": "upcoming",
-      "display_order": 19
     }
   ],
-  "team_players": [
-    {
-      "id": 1,
-      "team_id": 1,
-      "player_id": 5,
-      "purchase_price": 20000,
-      "purchased_at": "2026-09-21T12:16:44.355Z"
-    }
-  ],
+  "team_players": [],
   "auction": {
     "id": 1,
     "title": "Grand Circuit Tennis Player Auction 2026",
     "status": "live",
     "current_player_id": 1,
-    "current_bid": 12000,
-    "highest_bidder_team_id": 4,
+    "current_bid": 10000,
+    "highest_bidder_team_id": null,
     "bid_increment": 2000,
     "timer_seconds": 15,
     "timer_remaining": 15,
-    "timer_running": true
+    "timer_running": false
   },
-  "bids": [
-    {
-      "id": 1,
-      "auction_id": 1,
-      "player_id": 5,
-      "team_id": 3,
-      "amount": 11000,
-      "bid_time": "2026-09-21T12:16:26.270Z"
-    },
-    {
-      "id": 2,
-      "auction_id": 1,
-      "player_id": 5,
-      "team_id": 1,
-      "amount": 14000,
-      "bid_time": "2026-09-21T12:16:30.831Z"
-    },
-    {
-      "id": 3,
-      "auction_id": 1,
-      "player_id": 5,
-      "team_id": 2,
-      "amount": 18000,
-      "bid_time": "2026-09-21T12:16:35.377Z"
-    },
-    {
-      "id": 4,
-      "auction_id": 1,
-      "player_id": 5,
-      "team_id": 1,
-      "amount": 20000,
-      "bid_time": "2026-09-21T12:16:39.327Z"
-    },
-    {
-      "id": 5,
-      "auction_id": 1,
-      "player_id": 1,
-      "team_id": 4,
-      "amount": 12000,
-      "bid_time": "2026-09-22T12:13:53.181Z"
-    },
-    {
-      "id": 6,
-      "auction_id": 1,
-      "player_id": 1,
-      "team_id": 4,
-      "amount": 12000,
-      "bid_time": "2026-09-22T12:13:53.184Z"
-    },
-    {
-      "id": 7,
-      "auction_id": 1,
-      "player_id": 1,
-      "team_id": 4,
-      "amount": 12000,
-      "bid_time": "2026-09-22T12:14:42.582Z"
-    },
-    {
-      "id": 8,
-      "auction_id": 1,
-      "player_id": 1,
-      "team_id": 4,
-      "amount": 12000,
-      "bid_time": "2026-09-22T12:22:01.302Z"
-    }
-  ],
-  "auction_events": [
-    {
-      "id": 1,
-      "event_type": "player_sold",
-      "auction_id": 1,
-      "player_id": 5,
-      "team_id": 1,
-      "payload": {
-        "price": 20000,
-        "playerName": "Vikram Desai",
-        "teamName": "Team A"
-      },
-      "created_at": "2026-09-21T12:16:44.356Z"
-    }
-  ]
+  "bids": [],
+  "auction_events": []
 }

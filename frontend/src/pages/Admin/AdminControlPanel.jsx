@@ -659,7 +659,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                         SEED #{currentPlayer?.world_ranking ? String(currentPlayer.world_ranking).padStart(2, '0') : '148'}
                       </span>
                       <h2 className="text-lg font-black text-white leading-tight mt-0.5 tracking-wide">
-                        {currentPlayer?.name || 'Arjun Mehta'}
+                        {currentPlayer?.name || 'WAITING'}
                       </h2>
                       <div className="flex items-center text-[11px] text-slate-300 mt-0.5 space-x-1">
                         <span>{currentPlayer?.country_flag || '🇮🇳'} {currentPlayer?.country || 'India'}</span>
@@ -1005,7 +1005,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                                 {teamName}
                               </td>
                               <td className="py-2 px-2 text-slate-200">
-                                {bid.player_name || currentPlayer?.name || 'Arjun Mehta'}
+                                {bid.player_name || currentPlayer?.name || 'WAITING'}
                               </td>
                               <td className={`py-2 px-2 font-black ${isLatest ? 'text-brand-neon' : 'font-bold text-slate-300'}`}>
                                 {formatCurrency(bid.amount)}
@@ -1052,7 +1052,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   <div>
                     <span className="text-xs font-bold text-slate-200 block">Audience Big Screen Preview</span>
                     <span className="text-[11px] text-slate-400">
-                      Showing: {currentPlayer?.name || 'Arjun Mehta'} • Current Bid {formatCurrency(currentBid)} ({currentLeaderName})
+                      Showing: {currentPlayer?.name || 'WAITING'} • Current Bid {formatCurrency(currentBid)} ({currentLeaderName})
                     </span>
                   </div>
                 </div>
