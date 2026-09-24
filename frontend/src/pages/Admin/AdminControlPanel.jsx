@@ -65,10 +65,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Fallback teams if data is loading
   const activeTeams = teams && teams.length === 4 ? teams : [
-    { id: 1, team_number: 1, name: 'Team A', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#22c55e' },
-    { id: 2, team_number: 2, name: 'Team B', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#0ea5e9' },
-    { id: 3, team_number: 3, name: 'Team C', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#a855f7' },
-    { id: 4, team_number: 4, name: 'Team D', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#f97316' }
+    { id: 1, team_number: 1, name: 'Golden Eagles', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#22c55e' },
+    { id: 2, team_number: 2, name: 'Royal Tigers', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#0ea5e9' },
+    { id: 3, team_number: 3, name: 'Mighty Dragons', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#a855f7' },
+    { id: 4, team_number: 4, name: '7 Aces', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#f97316' }
   ];
 
   // Base price for active player (Fixed 10,000 PTS for all players)
@@ -504,25 +504,25 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/1'); }}
                   className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
                 >
-                  Team 1 (Team A)
+                  Team 1 (Golden Eagles)
                 </button>
                 <button
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/2'); }}
                   className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
                 >
-                  Team 2 (Team B)
+                  Team 2 (Royal Tigers)
                 </button>
                 <button
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/3'); }}
                   className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
                 >
-                  Team 3 (Team C)
+                  Team 3 (Mighty Dragons)
                 </button>
                 <button
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/4'); }}
                   className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
                 >
-                  Team 4 (Team D)
+                  Team 4 (7 Aces)
                 </button>
                 <button
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/display'); }}

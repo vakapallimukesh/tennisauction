@@ -162,26 +162,26 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
   const displayTeams = useMemo(() => {
     const baseTeams = [
       {
-        id: 1, team_number: 1, name: 'Team A',
-        short_name: 'TEAM A', owner: 'Rohan Iyer',
+        id: 1, team_number: 1, name: 'Golden Eagles',
+        short_name: 'GOLDEN EAGLES', owner: 'Rohan Iyer',
         total_purse: 400000, purse_remaining: 400000, spent: 0,
         max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
       },
       {
-        id: 2, team_number: 2, name: 'Team B',
-        short_name: 'TEAM B', owner: 'Vikramaditya Roy',
+        id: 2, team_number: 2, name: 'Royal Tigers',
+        short_name: 'ROYAL TIGERS', owner: 'Vikramaditya Roy',
         total_purse: 400000, purse_remaining: 400000, spent: 0,
         max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
       },
       {
-        id: 3, team_number: 3, name: 'Team C',
-        short_name: 'TEAM C', owner: 'Maya Sengupta',
+        id: 3, team_number: 3, name: 'Mighty Dragons',
+        short_name: 'MIGHTY DRAGONS', owner: 'Maya Sengupta',
         total_purse: 400000, purse_remaining: 400000, spent: 0,
         max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
       },
       {
-        id: 4, team_number: 4, name: 'Team D',
-        short_name: 'TEAM D', owner: 'Kabir Malhotra',
+        id: 4, team_number: 4, name: '7 Aces',
+        short_name: '7 ACES', owner: 'Kabir Malhotra',
         total_purse: 400000, purse_remaining: 400000, spent: 0,
         max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
       }
@@ -602,70 +602,68 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             return (
               <article
                 key={team.id}
-                className={`flex flex-col h-full p-4 relative ${isLeading
-                  ? 'bg-emerald-50/70 border-2 border-emerald-600'
-                  : 'bg-[#f8fafc]'
-                  }`}
+                className="flex flex-col h-full p-4 relative overflow-hidden transition-all duration-300"
+                style={{ backgroundColor: '#ffffff' }}
               >
-                {/* Team Header & Amount Box — Montserrat Bold (Strict Uniform Size) */}
-                <div className={`h-[185px] flex flex-col justify-between text-center bg-white rounded-xl p-2.5 shadow-sm border shrink-0 ${isLeading
-                  ? 'border-emerald-400 border-b-[3px] border-b-emerald-600 ring-2 ring-emerald-400/30'
-                  : 'border-slate-300 border-b-[3px] border-b-slate-700'
-                  }`}>
-                  {/* Team Logo / Badge — Uniform Size and Shape */}
-                  <div className="flex items-center justify-center shrink-0">
-                    <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs flex items-center justify-center overflow-hidden">
-                      {team.logo_url ? (
-                        <img
-                          src={team.logo_url}
-                          alt={team.name}
-                          className="w-full h-full object-contain"
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                            const fallback = e.target.parentElement?.querySelector('.team-badge-fallback');
-                            if (fallback) fallback.style.display = 'flex';
-                          }}
-                        />
-                      ) : null}
-                      <div
-                        className={`team-badge-fallback w-full h-full rounded-xl font-black text-base items-center justify-center ${
-                          isLeading ? 'bg-emerald-200 text-emerald-900' : `${badge.bg} ${badge.text}`
+                {/* Blurred team logo background — only when leading */}
+                {isLeading && team.logo_url && (
+                  <>
+                    <div
+                      className="absolute inset-0 z-0"
+                      style={{
+                        backgroundImage: `url(${team.logo_url})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        filter: 'blur(25px) saturate(1.5)',
+                        transform: 'scale(1.3)',
+                        opacity: 0.45
+                      }}
+                    />
+                    <div className="absolute inset-0 z-0 bg-white/50" />
+                  </>
+                )}
+
+                {/* Team Logo Edge-to-Edge + Points Strip */}
+                <div
+                  className="flex flex-col rounded-xl shadow-sm shrink-0 overflow-hidden relative z-10"
+                  style={{
+                    borderWidth: '2px',
+                    borderStyle: 'solid',
+                    borderColor: isLeading ? (team.primary_color || '#1e293b') : '#1e293b'
+                  }}
+                >                  {/* Edge-to-Edge Team Logo Image */}
+                  <div className="w-full h-44 bg-slate-950 overflow-hidden flex items-center justify-center relative">
+                    {team.logo_url ? (
+                      <img
+                        src={team.logo_url}
+                        alt={team.name}
+                        className="w-full h-full object-contain p-2"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          const fallback = e.target.parentElement?.querySelector('.team-badge-fallback');
+                          if (fallback) fallback.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      className={`team-badge-fallback w-full h-full font-black text-2xl items-center justify-center ${isLeading ? 'bg-emerald-200 text-emerald-900' : `${badge.bg} ${badge.text}`
                         }`}
-                        style={{ display: team.logo_url ? 'none' : 'flex' }}
-                      >
-                        {badge.label}
-                      </div>
+                      style={{ display: team.logo_url ? 'none' : 'flex' }}
+                    >
+                      {team.short_name || team.name || badge.label}
                     </div>
                   </div>
 
-                  {/* Big Prominent Full Team Name */}
-                  <div className="h-10 flex items-center justify-center px-1 shrink-0 overflow-hidden">
-                    <h2
-                      className={`font-black text-slate-950 tracking-tight font-montserrat-black uppercase leading-tight text-center ${
-                        (team.short_name || team.name).length > 14
-                          ? 'text-[15px] xl:text-[17px]'
-                          : (team.short_name || team.name).length > 9
-                          ? 'text-[17px] xl:text-[19px]'
-                          : 'text-xl xl:text-2xl'
-                      }`}
-                      title={team.name}
-                    >
-                      {team.short_name || team.name}
-                    </h2>
-                  </div>
-
-                  {/* Points & Squad Count */}
-                  <div className={`pt-1 shrink-0 ${isLeading ? 'border-t border-emerald-100' : 'border-t border-slate-200'}`}>
+                  {/* Points & Squad Count — compact strip below image */}
+                  <div className={`px-2 py-1.5 text-center ${isLeading ? 'bg-emerald-50' : 'bg-slate-50'}`}>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block leading-none mb-0.5 font-montserrat-bold">points:</span>
                     <span className="text-xl xl:text-2xl font-bold text-slate-900 font-montserrat-bold leading-tight block">{formatCurrency(remaining)}</span>
-                    <div className="flex justify-center items-center text-[11px] text-slate-500 font-bold px-1 font-montserrat-bold leading-none mt-1">
-                      <span>Squad: {squadCount}/{maxSquad}</span>
-                    </div>
+                    <span className="text-[11px] text-slate-500 font-bold font-montserrat-bold">Squad: {squadCount}/{maxSquad}</span>
                   </div>
                 </div>
 
                 {/* Confirmed Roster with Group A & Group B Separation — Montserrat Bold */}
-                <div className="flex-1 flex flex-col justify-between mt-2.5 min-h-0">
+                <div className="flex-1 flex flex-col justify-between mt-2.5 min-h-0 relative z-10">
                   <div className="flex-1 overflow-y-auto pr-0.5 space-y-2">
                     <div className="flex items-center justify-between pb-1 border-b border-slate-300">
                       <p className={`text-[10px] font-bold uppercase tracking-wider font-montserrat-bold ${isLeading ? 'text-emerald-900' : 'text-slate-700'}`}>
@@ -695,13 +693,12 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             return (
                               <div
                                 key={p.id || `ga-${pIdx}`}
-                                className={`border rounded-md px-2 py-1 flex items-center justify-between gap-2 shadow-2xs transition-colors ${
-                                  isCaptain
-                                    ? 'border-amber-400/80 bg-amber-50/60'
-                                    : isLeading
+                                className={`border rounded-md px-2 py-1 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isCaptain
+                                  ? 'border-amber-400/80 bg-amber-50/60'
+                                  : isLeading
                                     ? 'border-emerald-300 bg-white'
                                     : 'border-slate-300 bg-white'
-                                }`}
+                                  }`}
                               >
                                 {/* Player Name in Roster — Montserrat Bold */}
                                 <div className="font-bold text-slate-950 truncate text-[11px] md:text-[12px] leading-normal font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
@@ -813,51 +810,26 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             </h2>
           </div>
 
-          {/* 3. MIDDLE STRIP: [Base Price] & [Category] — Montserrat Bold */}
-          <div className="grid grid-cols-2 gap-3 shrink-0 font-montserrat-bold">
-            {/* Left: Base Price */}
-            <div className="border-2 border-slate-700 rounded-lg p-2.5 bg-slate-50 text-center shadow-xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-0.5 font-montserrat-bold">BASE PRICE:</span>
-              <span className="text-lg xl:text-xl font-bold text-slate-900 font-montserrat-bold">{formatCurrency(activePlayer.base_price)}</span>
-            </div>
-            {/* Right: Category */}
-            <div className="border-2 border-slate-700 rounded-lg p-2.5 bg-slate-50 text-center shadow-xs flex flex-col justify-center">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 block mb-0.5 font-montserrat-bold">CATEGORY:</span>
-              <span className="text-lg xl:text-xl font-bold text-slate-900 font-montserrat-bold uppercase">{activePlayer.category || 'Group A'}</span>
+
+          {/* Current Bid — Box */}
+          <div className="text-center py-5 bg-slate-50 rounded-xl border-2 border-slate-700 shadow-sm shrink-0">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1 font-montserrat-bold">CURRENT BID</span>
+            <div className="text-5xl xl:text-6xl font-black text-slate-900 tracking-tight font-montserrat-black leading-none">
+              {highestTeam && Number(currentBid) > 0 ? formatCurrency(currentBid) : 'NO BIDS YET'}
             </div>
           </div>
 
-          {/* 4. BOTTOM: Bidding Container — Montserrat Bold */}
-          <div className="border-2 border-slate-700 rounded-lg p-4 bg-[#dbe2e6] shadow-md flex flex-col justify-between shrink-0 font-montserrat-bold">
-            <div className="flex items-center justify-between border-b-2 border-slate-700/60 pb-1.5 mb-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-800 font-montserrat-bold">BIDDING</span>
-              <span className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded font-montserrat-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                LIVE AUCTION
+          {/* Bid By Team — Clean */}
+          <div className="flex items-center justify-center gap-3 py-3 shrink-0 border-t border-slate-200">
+            <span className="text-sm font-bold uppercase text-slate-400 font-montserrat-bold">BID BY:</span>
+            <span className="text-2xl xl:text-3xl font-black text-slate-900 font-montserrat-black">
+              {highestTeam ? highestTeam.short_name : '—'}
+            </span>
+            {highestTeam && (
+              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-xs font-montserrat-bold">
+                LEADING
               </span>
-            </div>
-            {/* Current Highest Bid */}
-            <div className="text-center py-2 bg-white rounded-lg border-2 border-slate-700 shadow-sm mb-2.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-montserrat-bold">CURRENT HIGHEST BID:</span>
-              <div className="text-3xl xl:text-4xl font-bold text-slate-900 tracking-tight font-montserrat-bold">
-                {highestTeam && Number(currentBid) > 0 ? formatCurrency(currentBid) : 'NO BIDS YET'}
-              </div>
-            </div>
-            {/* Team Holding Bid */}
-            <div className="flex items-center justify-between bg-white border-2 border-slate-700 rounded-lg px-4 py-2 shadow-sm">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase text-slate-500 font-montserrat-bold">TEAM:</span>
-                <span className="text-sm font-bold text-slate-900 font-montserrat-bold">
-                  {highestTeam ? highestTeam.short_name : 'NO BIDS YET'}
-                </span>
-              </div>
-              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs font-montserrat-bold ${highestTeam
-                ? 'bg-emerald-500 text-white'
-                : 'bg-slate-300 text-slate-600'
-                }`}>
-                {highestTeam ? 'LEADING' : 'WAITING'}
-              </span>
-            </div>
+            )}
           </div>
         </section>
       </main>
