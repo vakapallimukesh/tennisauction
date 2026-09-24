@@ -222,7 +222,7 @@ export function AuctionProvider({ children }) {
         setSelectedPlayer(data.player);
         setAuction(prev => prev ? {
           ...prev,
-          current_bid: Number(data.player.base_price || 10000),
+          current_bid: 0,
           highest_bidder_team_id: null
         } : prev);
         setRecentBids([]);

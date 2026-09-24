@@ -522,7 +522,7 @@ const initialSeed = {
     title: 'Grand Circuit Tennis Player Auction 2026',
     status: 'live',
     current_player_id: 1,
-    current_bid: 10000.00,
+    current_bid: 0.00,
     highest_bidder_team_id: null,
     bid_increment: 2000.00,
     timer_seconds: 15,

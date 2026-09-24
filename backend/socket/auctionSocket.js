@@ -107,6 +107,7 @@ function getFullAuctionSnapshot() {
       const team = teams.find(t => t.id === b.team_id);
       return {
         ...b,
+        status: b.status || 'valid',
         team_name: team ? team.name : `Team ${b.team_id}`,
         team_logo: team ? team.logo_url : null,
         primary_color: team ? team.primary_color : '#22c55e'
@@ -385,16 +386,27 @@ function submitBid({ team_id, amount, increment }) {
     throw new Error(squadCheck.message);
   }
 
-  const currentBidVal = parseFloat(auction.current_bid || 10000);
+  const validBids = (store.bids || []).filter(
+    b => b.player_id === auction.current_player_id && b.status !== 'undone'
+  );
+  const hasBids = validBids.length > 0;
+  const basePrice = player ? (parseFloat(player.base_price) || 10000) : 10000;
+  const currentBidVal = hasBids ? parseFloat(auction.current_bid || 0) : 0;
   const bidAmount = parseFloat(amount);
 
   if (isNaN(bidAmount) || bidAmount <= 0) {
     throw new Error('Please specify a valid numeric bid amount.');
   }
 
-  // Validation: Bid must be strictly greater than current highest bid
-  if (bidAmount <= currentBidVal) {
-    throw new Error(`Bid of ${bidAmount.toLocaleString('en-IN')} PTS must be higher than current highest bid of ${currentBidVal.toLocaleString('en-IN')} PTS.`);
+  // Validation: First bid must be >= basePrice; Subsequent bids must be strictly > current highest bid
+  if (!hasBids) {
+    if (bidAmount < basePrice) {
+      throw new Error(`First bid must be at least the base price of ${basePrice.toLocaleString('en-IN')} PTS.`);
+    }
+  } else {
+    if (bidAmount <= currentBidVal) {
+      throw new Error(`Bid of ${bidAmount.toLocaleString('en-IN')} PTS must be higher than current highest bid of ${currentBidVal.toLocaleString('en-IN')} PTS.`);
+    }
   }
 
   // Calculate actual purse remaining
@@ -423,7 +435,8 @@ function submitBid({ team_id, amount, increment }) {
     player_id: auction.current_player_id,
     team_id: team.id,
     amount: bidAmount,
-    bid_time: new Date()
+    bid_time: new Date(),
+    status: 'valid'
   };
   store.bids.push(newBid);
 
@@ -481,7 +494,7 @@ function markPlayerSold(winning_team_id = null, final_price = null) {
     throw new Error(squadCheck.message);
   }
 
-  const price = final_price ? parseFloat(final_price) : auction.current_bid;
+  const price = final_price ? parseFloat(final_price) : (auction.current_bid > 0 ? parseFloat(auction.current_bid) : (parseFloat(player.base_price) || 10000));
 
   // Deduct purse and assign player
   team.purse_remaining = Math.max(0, team.purse_remaining - price);
@@ -519,12 +532,12 @@ function markPlayerSold(winning_team_id = null, final_price = null) {
   if (nextP) {
     nextP.status = 'live';
     auction.current_player_id = nextP.id;
-    auction.current_bid = nextP.base_price;
+    auction.current_bid = 0.00;
     auction.highest_bidder_team_id = null;
     auction.timer_remaining = 15;
     auction.status = 'live';
 
-    emitEvent('player_selected', { player: nextP });
+    emitEvent('player_selected', { player: nextP, base_price: 10000.00, current_bid: 0.00 });
   } else {
     auction.current_player_id = null;
     auction.status = 'completed';
@@ -611,18 +624,18 @@ function selectNextPlayer(playerId = null) {
   target.status = 'live';
   target.base_price = 10000.00;
   auction.current_player_id = target.id;
-  auction.current_bid = 10000.00;
+  auction.current_bid = 0.00;
   auction.highest_bidder_team_id = null;
   auction.bid_increment = 2000.00;
   auction.timer_remaining = auction.timer_seconds || 15;
   auction.status = 'live';
 
-  emitEvent('player_selected', { player: target, current_bid: 10000.00 });
+  emitEvent('player_selected', { player: target, base_price: 10000.00, current_bid: 0.00 });
   emitEvent('timer_updated', {
     timer_remaining: auction.timer_remaining,
     timer_running: auction.timer_running,
     timer_seconds: auction.timer_seconds,
-    current_bid: 10000.00,
+    current_bid: 0.00,
     highest_bidder_team_id: null
   });
 

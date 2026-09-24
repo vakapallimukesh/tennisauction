@@ -147,7 +147,12 @@ exports.placeBid = async (req, res) => {
       });
     }
 
-    const currentBidVal = parseFloat(auction.current_bid || 10000);
+    const validBids = (store.bids || []).filter(
+      b => b.player_id === auction.current_player_id && b.status !== 'undone'
+    );
+    const hasBids = validBids.length > 0;
+    const basePrice = player ? (parseFloat(player.base_price) || 10000) : 10000;
+    const currentBidVal = hasBids ? parseFloat(auction.current_bid || 0) : 0;
     const bidAmount = parseFloat(amount);
 
     if (isNaN(bidAmount) || bidAmount <= 0) {
@@ -157,15 +162,25 @@ exports.placeBid = async (req, res) => {
       });
     }
 
-    // Validation: Bid must be strictly greater than current highest bid
-    if (bidAmount <= currentBidVal) {
-      return res.status(400).json({
-        success: false,
-        message: `Bid of ${bidAmount.toLocaleString('en-IN')} PTS must be higher than the current highest bid of ${currentBidVal.toLocaleString('en-IN')} PTS.`
-      });
+    // Validation: First bid must be >= basePrice; Subsequent bids must be strictly > current highest bid
+    if (!hasBids) {
+      if (bidAmount < basePrice) {
+        return res.status(400).json({
+          success: false,
+          message: `First bid must be at least the base price of ${basePrice.toLocaleString('en-IN')} PTS.`
+        });
+      }
+    } else {
+      if (bidAmount <= currentBidVal) {
+        return res.status(400).json({
+          success: false,
+          message: `Bid of ${bidAmount.toLocaleString('en-IN')} PTS must be higher than the current highest bid of ${currentBidVal.toLocaleString('en-IN')} PTS.`
+        });
+      }
     }
 
     // Calculate current purse remaining
+    const teamPlayers = store.team_players.filter(tp => tp.team_id === team.id);
     const totalSpent = teamPlayers.reduce((sum, tp) => sum + (parseFloat(tp.purchase_price) || 0), 0);
     const purseRemaining = (parseFloat(team.total_purse) || 400000) - totalSpent;
 
@@ -188,7 +203,8 @@ exports.placeBid = async (req, res) => {
       player_id: auction.current_player_id,
       team_id: team.id,
       amount: bidAmount,
-      bid_time: new Date()
+      bid_time: new Date(),
+      status: 'valid'
     };
     store.bids.push(bidRecord);
 
@@ -248,32 +264,59 @@ exports.undoLastBid = async (req, res) => {
       return res.status(400).json({ success: false, message: 'No active player in auction' });
     }
 
-    const playerBids = store.bids.filter(b => b.player_id === auction.current_player_id);
-    if (playerBids.length === 0) {
+    const validPlayerBids = (store.bids || []).filter(
+      b => b.player_id === auction.current_player_id && b.status !== 'undone'
+    );
+    if (validPlayerBids.length === 0) {
       return res.status(400).json({ success: false, message: 'No bids to undo for the current player' });
     }
 
-    // Remove the latest bid
-    const lastBidIndex = store.bids.length - 1;
-    const undoneBid = store.bids.splice(lastBidIndex, 1)[0];
+    // Mark the latest valid bid as undone (do not delete to preserve audit history)
+    const bidToUndo = validPlayerBids[validPlayerBids.length - 1];
+    bidToUndo.status = 'undone';
+    bidToUndo.undone_at = new Date();
 
-    // Re-evaluate previous bid for this player
-    const remainingPlayerBids = store.bids.filter(b => b.player_id === auction.current_player_id);
+    // Re-evaluate previous valid bid for this player
+    const remainingValidBids = (store.bids || []).filter(
+      b => b.player_id === auction.current_player_id && b.status !== 'undone'
+    );
     const currentPlayer = store.players.find(p => p.id === auction.current_player_id);
 
-    if (remainingPlayerBids.length > 0) {
-      const prevBid = remainingPlayerBids[remainingPlayerBids.length - 1];
+    if (remainingValidBids.length > 0) {
+      const prevBid = remainingValidBids[remainingValidBids.length - 1];
       auction.current_bid = prevBid.amount;
       auction.highest_bidder_team_id = prevBid.team_id;
     } else {
-      auction.current_bid = currentPlayer ? currentPlayer.base_price : 10000;
+      auction.current_bid = 0.00;
       auction.highest_bidder_team_id = null;
     }
 
     auction.timer_remaining = auction.timer_seconds || 15;
 
+    // Record audit event
+    store.auction_events.push({
+      id: store.auction_events.length + 1,
+      event_type: 'bid_undone',
+      auction_id: auction.id,
+      player_id: auction.current_player_id,
+      team_id: bidToUndo.team_id,
+      payload: {
+        undoneBidId: bidToUndo.id,
+        undoneAmount: bidToUndo.amount,
+        team_id: bidToUndo.team_id,
+        restoredBid: auction.current_bid,
+        restoredTeamId: auction.highest_bidder_team_id
+      },
+      created_at: new Date()
+    });
+
+    const undoneTeam = store.teams.find(t => t.id === bidToUndo.team_id);
+
     emitEvent('bid_undone', {
-      undone_bid: undoneBid,
+      undone_bid: {
+        ...bidToUndo,
+        team_name: undoneTeam ? undoneTeam.name : `Team ${bidToUndo.team_id}`
+      },
       current_bid: auction.current_bid,
       highest_bidder_team_id: auction.highest_bidder_team_id,
       timer_remaining: auction.timer_remaining
@@ -284,11 +327,11 @@ exports.undoLastBid = async (req, res) => {
 
     res.json({
       success: true,
-      message: `Undone last bid of ₹${undoneBid.amount.toLocaleString('en-IN')}`,
+      message: `Undone last bid of ₹${bidToUndo.amount.toLocaleString('en-IN')} placed by ${undoneTeam ? undoneTeam.name : 'team'}`,
       data: {
         current_bid: auction.current_bid,
         highest_bidder_team_id: auction.highest_bidder_team_id,
-        undone_bid: undoneBid
+        undone_bid: bidToUndo
       }
     });
   } catch (err) {
@@ -335,7 +378,7 @@ exports.markSold = async (req, res) => {
       });
     }
 
-    const price = parseFloat(final_price !== undefined ? final_price : auction.current_bid);
+    const price = parseFloat(final_price !== undefined && final_price !== null ? final_price : (auction.current_bid > 0 ? auction.current_bid : (player.base_price || 10000)));
 
     // Stop timer
     pauseServerTimer();
@@ -500,7 +543,7 @@ exports.nextPlayer = async (req, res) => {
     nextP.base_price = 10000.00;
 
     auction.current_player_id = nextP.id;
-    auction.current_bid = 10000.00;
+    auction.current_bid = 0.00;
     auction.highest_bidder_team_id = null;
     auction.bid_increment = 2000.00;
     auction.timer_remaining = auction.timer_seconds || 15;
@@ -510,7 +553,8 @@ exports.nextPlayer = async (req, res) => {
 
     emitEvent('player_selected', {
       player: nextP,
-      current_bid: 10000.00
+      base_price: 10000.00,
+      current_bid: 0.00
     });
 
     db.saveStore();
@@ -558,7 +602,7 @@ exports.setLivePlayer = async (req, res) => {
     player.status = 'live';
     player.base_price = 10000.00;
     auction.current_player_id = player.id;
-    auction.current_bid = 10000.00;
+    auction.current_bid = 0.00;
     auction.highest_bidder_team_id = null;
     auction.bid_increment = 2000.00;
     auction.timer_remaining = auction.timer_seconds || 15;
@@ -568,7 +612,8 @@ exports.setLivePlayer = async (req, res) => {
 
     emitEvent('player_selected', {
       player,
-      current_bid: 10000.00
+      base_price: 10000.00,
+      current_bid: 0.00
     });
 
     db.saveStore();

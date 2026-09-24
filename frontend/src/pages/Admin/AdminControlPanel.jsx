@@ -14,6 +14,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
     unsoldPlayers,
     selectLivePlayer,
     placeBid,
+    undoLastBid,
     markSold,
     markUnsold,
     controlAuction,
@@ -72,17 +73,22 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Base price for active player (Fixed 10,000 PTS for all players)
   const playerBasePrice = 10000;
-  const currentBid = Number(auction?.current_bid || 10000);
+  const currentBid = Number(auction?.current_bid || 0);
   const highestBidderId = auction?.highest_bidder_team_id;
   const highestTeam = highestBidderId ? (activeTeams.find(t => t.id === highestBidderId) || null) : null;
 
   // Check if bidding is actively underway for current player
-  const isBiddingActive = Boolean(highestTeam);
+  const isBiddingActive = Boolean(highestTeam && currentBid > 0);
   const currentLeaderName = highestTeam ? highestTeam.name : 'NO BIDS YET';
 
-  // 10 Dynamic absolute quick bid amounts: CURRENT HIGHEST BID + 1,000 to + 10,000
-  const quickBidAmounts = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000].map(step => currentBid + step);
-  const minRecommendedBid = currentBid + 1000;
+  // 10 Dynamic absolute quick bid amounts:
+  // When NO BIDS YET: starts from 10,000 to 19,000 PTS
+  // When bids exist: starts from CURRENT HIGHEST BID + 1,000 to + 10,000
+  const quickBidAmounts = isBiddingActive
+    ? [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000].map(step => currentBid + step)
+    : [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000].map(step => playerBasePrice + step);
+
+  const minRecommendedBid = isBiddingActive ? currentBid + 1000 : playerBasePrice;
   const parsedBidInput = bidInput.trim() !== '' ? parseFloat(String(bidInput).replace(/,/g, '')) : NaN;
   const confirmedNextBidAmount = (!isNaN(parsedBidInput) && parsedBidInput > 0)
     ? parsedBidInput
@@ -92,8 +98,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
   const teamPurseRemaining = selectedTeam?.purse_remaining ?? 400000;
   const teamPurseAfter = Math.max(0, teamPurseRemaining - confirmedNextBidAmount);
 
-  // Recent bids list
+  // Recent bids list & Undo eligibility
   const displayRecentBids = recentBids || [];
+  const validRecentBids = displayRecentBids.filter(b => b.status !== 'undone');
+  const canUndo = validRecentBids.length > 0;
 
   // Total player pool count
   const totalPoolCount = (upcomingPlayers?.length || 0) + (soldPlayers?.length || 0) + (unsoldPlayers?.length || 0) + (currentPlayer ? 1 : 0) || 124;
@@ -151,9 +159,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Synchronize default bid input whenever official currentBid or currentPlayer changes
   useEffect(() => {
-    const nextBid = (Number(auction?.current_bid) || 10000) + 1000;
+    const nextBid = isBiddingActive ? currentBid + 1000 : playerBasePrice;
     setBidInput(String(nextBid));
-  }, [auction?.current_bid, currentPlayer?.id]);
+  }, [auction?.current_bid, auction?.highest_bidder_team_id, currentPlayer?.id, isBiddingActive, currentBid]);
 
   // Master Action Handlers
   const handleToggleTimer = async () => {
@@ -182,19 +190,34 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
   };
 
   const handleMarkSold = () => {
-    if (!highestTeam) {
-      showNotice('Cannot mark SOLD: No franchise has placed a bid on this athlete yet.', 'error');
+    const targetTeam = highestTeam || selectedTeam;
+    const salePrice = isBiddingActive ? currentBid : playerBasePrice;
+
+    if (!targetTeam) {
+      showNotice('Please select a franchise before marking SOLD.', 'error');
       return;
     }
+
+    const squadCount = targetTeam.players_bought !== undefined ? targetTeam.players_bought : (targetTeam.roster?.length || 0);
+    if (squadCount >= (targetTeam.max_players || 5)) {
+      showNotice(`${targetTeam.name} has already reached maximum squad limit (${targetTeam.max_players || 5}).`, 'error');
+      return;
+    }
+
+    if (salePrice > (targetTeam.purse_remaining ?? 400000)) {
+      showNotice(`${targetTeam.name} has insufficient purse balance to buy at ${formatCurrency(salePrice)}!`, 'error');
+      return;
+    }
+
     setConfirmDialog({
       title: 'CONFIRM HAMMER FALL (SOLD)',
-      message: `Sell ${currentPlayer?.name || 'Athlete'} to ${highestTeam.name} for ${formatCurrency(currentBid)}? This will deduct the franchise purse and broadcast the celebration.`,
-      actionText: `MARK SOLD (${highestTeam.name.toUpperCase()})`,
+      message: `Sell ${currentPlayer?.name || 'Athlete'} to ${targetTeam.name} for ${formatCurrency(salePrice)}? This will deduct the franchise purse and broadcast the celebration.`,
+      actionText: `MARK SOLD (${targetTeam.name.toUpperCase()})`,
       actionColor: 'bg-emerald-600 hover:bg-emerald-500 text-slate-950',
       onConfirm: async () => {
         try {
-          await markSold(highestTeam.id, currentBid);
-          showNotice(`SOLD! ${currentPlayer?.name || 'Athlete'} sold to ${highestTeam.name}!`);
+          await markSold(targetTeam.id, salePrice);
+          showNotice(`SOLD! ${currentPlayer?.name || 'Athlete'} sold to ${targetTeam.name} for ${formatCurrency(salePrice)}!`);
           playTone(950, 0.3, 'square');
         } catch (err) {
           showNotice(err.message || 'Sale failed', 'error');
@@ -215,6 +238,67 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
           showNotice(`${currentPlayer?.name || 'Athlete'} marked as UNSOLD`);
         } catch (err) {
           showNotice(err.message || 'Failed to pass athlete', 'error');
+        }
+      }
+    });
+  };
+
+  // Undo Last Official Submitted Bid
+  const handleUndoLastBid = () => {
+    if (!canUndo || validRecentBids.length === 0) {
+      showNotice('NO BID TO UNDO: No official bids have been submitted for this athlete.', 'error');
+      return;
+    }
+
+    const lastBid = validRecentBids[0];
+    const lastTeam = activeTeams.find(t => t.id === lastBid.team_id) || { name: lastBid.team_name || `Team ${lastBid.team_id}` };
+    const prevBid = validRecentBids[1] || null;
+    const prevTeam = prevBid ? (activeTeams.find(t => t.id === prevBid.team_id) || { name: prevBid.team_name || `Team ${prevBid.team_id}` }) : null;
+
+    const restoredBidText = prevBid ? formatCurrency(prevBid.amount) : `${formatCurrency(playerBasePrice)} (Base Price)`;
+    const restoredTeamName = prevTeam ? prevTeam.name : 'NO BIDS YET';
+
+    setConfirmDialog({
+      title: 'UNDO LAST BID?',
+      customBody: (
+        <div className="space-y-3 font-sans text-left">
+          <div className="bg-[#0c1017] border border-brand-border/80 rounded-xl p-3.5 space-y-2">
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-slate-400 font-semibold uppercase">Franchise Team:</span>
+              <span className="font-bold text-white text-sm">{lastTeam.name}</span>
+            </div>
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-slate-400 font-semibold uppercase">Accidental / Last Bid:</span>
+              <span className="font-black text-amber-400 font-mono text-base">{formatCurrency(lastBid.amount)}</span>
+            </div>
+          </div>
+
+          <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-xl p-3.5 space-y-1.5">
+            <span className="text-[11px] font-black text-emerald-400 uppercase tracking-wider block">Restore previous bid:</span>
+            <div className="flex justify-between items-center text-xs pt-1">
+              <span className="text-slate-300">Restored Bid Amount:</span>
+              <span className="font-black text-emerald-300 font-mono text-sm">{restoredBidText}</span>
+            </div>
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-slate-300">Restored Leading Team:</span>
+              <span className="font-bold text-white">{restoredTeamName}</span>
+            </div>
+          </div>
+
+          <p className="text-[11px] text-amber-300/90 italic leading-snug">
+            ⚠️ This will reverse the last submitted bid, update the audit history to UNDONE, and synchronize the restored official state to the TV Display screen.
+          </p>
+        </div>
+      ),
+      actionText: '↶ UNDO LAST BID',
+      actionColor: 'bg-amber-500 hover:bg-amber-400 text-slate-950 font-black shadow-lg shadow-amber-950/50',
+      onConfirm: async () => {
+        try {
+          await undoLastBid();
+          showNotice(`↶ Reversed last bid of ${formatCurrency(lastBid.amount)} (${lastTeam.name}). Restored to ${restoredBidText}.`);
+          playTone(450, 0.2, 'sawtooth');
+        } catch (err) {
+          showNotice(err.message || 'Failed to undo last bid', 'error');
         }
       }
     });
@@ -252,13 +336,20 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
       return;
     }
 
-    if (parsedAmount <= currentBid) {
-      showNotice(`Bid of ${formatCurrency(parsedAmount)} must be higher than current highest bid of ${formatCurrency(currentBid)}.`, 'error');
-      return;
+    if (!isBiddingActive) {
+      if (parsedAmount < playerBasePrice) {
+        showNotice(`First bid must be at least the base price of ${formatCurrency(playerBasePrice)}.`, 'error');
+        return;
+      }
+    } else {
+      if (parsedAmount <= currentBid) {
+        showNotice(`Bid of ${formatCurrency(parsedAmount)} must be higher than current highest bid of ${formatCurrency(currentBid)}.`, 'error');
+        return;
+      }
     }
 
     const targetTeam = activeTeams.find(t => t.id === teamIdToBid) || activeTeams[0];
-    if (highestBidderId === targetTeam.id) {
+    if (isBiddingActive && highestBidderId === targetTeam.id) {
       showNotice(`${targetTeam.name} is already the highest bidder!`, 'error');
       return;
     }
@@ -299,7 +390,6 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
         amount: parsedAmount
       });
       showNotice(`Bid of ${formatCurrency(parsedAmount)} recorded for ${targetTeam.name}`);
-      setBidInput('');
       playTone(800, 0.1, 'sine');
     } catch (err) {
       showNotice(err.message || 'Bid submission failed', 'error');
@@ -706,9 +796,15 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                           <span className="text-[11px] uppercase tracking-wider text-emerald-400 font-bold block">
                             CURRENT HIGHEST BID
                           </span>
-                          <span className="text-2xl font-black font-mono text-brand-neon tracking-tight drop-shadow-[0_0_8px_rgba(0,230,118,0.3)]">
-                            {Number(currentBid).toLocaleString()} <span className="text-xs font-sans text-slate-300">PTS</span>
-                          </span>
+                          {isBiddingActive ? (
+                            <span className="text-2xl font-black font-mono text-brand-neon tracking-tight drop-shadow-[0_0_8px_rgba(0,230,118,0.3)]">
+                              {Number(currentBid).toLocaleString()} <span className="text-xs font-sans text-slate-300">PTS</span>
+                            </span>
+                          ) : (
+                            <span className="text-xl font-bold font-mono text-slate-400">
+                              NO BIDS YET
+                            </span>
+                          )}
                         </div>
                         <div className="text-right">
                           <span className="text-[10px] uppercase text-slate-400 font-medium block">Leading Franchise</span>
@@ -739,12 +835,28 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                 <button
                   onClick={handleMarkSold}
                   className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black py-2.5 px-3 rounded-lg text-xs uppercase tracking-wider flex items-center justify-center space-x-1.5 shadow-lg shadow-emerald-950/50 hover:brightness-110 active:scale-[0.98] transition cursor-pointer"
-                  title={highestTeam ? `Sell player to ${highestTeam.name}` : 'No bids placed yet'}
+                  title={highestTeam ? `Sell player to ${highestTeam.name}` : `Direct sale to ${selectedTeam?.name || 'Selected Team'} @ ${formatCurrency(playerBasePrice)}`}
                 >
                   <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
                   </svg>
-                  <span>MARK SOLD ({highestTeam ? highestTeam.name.toUpperCase() : 'NO BIDS YET'})</span>
+                  <span>MARK SOLD ({highestTeam ? highestTeam.name.toUpperCase() : `${(selectedTeam?.name || 'SELECT TEAM').toUpperCase()} @ ${formatCurrency(playerBasePrice)}`})</span>
+                </button>
+
+                {/* Undo Last Bid Button */}
+                <button
+                  type="button"
+                  onClick={handleUndoLastBid}
+                  disabled={!canUndo}
+                  className={`font-black py-2.5 px-3.5 rounded-lg text-xs uppercase tracking-wider flex items-center space-x-1.5 transition cursor-pointer ${
+                    !canUndo
+                      ? 'bg-amber-950/20 text-amber-500/40 border border-amber-900/30 cursor-not-allowed opacity-50'
+                      : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/40 hover:text-amber-300 shadow-lg shadow-amber-950/30 active:scale-[0.98]'
+                  }`}
+                  title={canUndo ? 'Reverse the most recent official submitted bid' : 'NO BID TO UNDO'}
+                >
+                  <span className="text-sm font-bold">↶</span>
+                  <span>{canUndo ? 'UNDO LAST BID' : 'NO BID TO UNDO'}</span>
                 </button>
 
                 {/* Mark Unsold Button */}
@@ -986,38 +1098,63 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                     <tbody className="divide-y divide-brand-border/40 font-mono text-[11px]">
                       {displayRecentBids.length > 0 ? (
                         displayRecentBids.map((bid, index) => {
-                          const isLatest = index === 0;
+                          const isUndone = bid.status === 'undone';
+                          const isCurrentLeading = !isUndone && displayRecentBids.find(b => b.status !== 'undone')?.id === bid.id;
                           const timeStr = bid.bid_time
                             ? new Date(bid.bid_time).toTimeString().split(' ')[0]
                             : '09:16:42';
 
                           const teamName = bid.team_name || (bid.team_id ? activeTeams.find(t => t.id === bid.team_id)?.name : 'Franchise Team');
-                          const isThunder = String(teamName).includes('Thunder');
-                          const isAce = String(teamName).includes('Ace');
+                          const isThunder = String(teamName).includes('Thunder') || String(teamName).includes('Team C');
+                          const isAce = String(teamName).includes('Ace') || String(teamName).includes('Team B');
 
                           return (
                             <tr
                               key={bid.id || index}
-                              className={`transition ${isLatest ? 'bg-emerald-500/5 hover:bg-emerald-500/10' : 'hover:bg-slate-800/30'}`}
+                              className={`transition ${
+                                isUndone
+                                  ? 'bg-amber-950/10 opacity-70 hover:opacity-90'
+                                  : isCurrentLeading
+                                  ? 'bg-emerald-500/10 hover:bg-emerald-500/15'
+                                  : 'hover:bg-slate-800/30'
+                              }`}
                             >
                               <td className="py-2 px-2 text-slate-400">{timeStr}</td>
-                              <td className={`py-2 px-2 font-bold ${isThunder ? 'text-purple-400' : isAce ? 'text-blue-400' : 'text-emerald-400'}`}>
+                              <td className={`py-2 px-2 font-bold ${
+                                isUndone
+                                  ? 'text-slate-400'
+                                  : isThunder
+                                  ? 'text-purple-400'
+                                  : isAce
+                                  ? 'text-blue-400'
+                                  : 'text-emerald-400'
+                              }`}>
                                 {teamName}
                               </td>
                               <td className="py-2 px-2 text-slate-200">
-                                {bid.player_name || currentPlayer?.name || 'WAITING'}
+                                {bid.player_name || currentPlayer?.name || 'Athlete'}
                               </td>
-                              <td className={`py-2 px-2 font-black ${isLatest ? 'text-brand-neon' : 'font-bold text-slate-300'}`}>
+                              <td className={`py-2 px-2 font-black ${
+                                isUndone
+                                  ? 'line-through text-slate-500 font-normal'
+                                  : isCurrentLeading
+                                  ? 'text-brand-neon'
+                                  : 'font-bold text-slate-300'
+                              }`}>
                                 {formatCurrency(bid.amount)}
                               </td>
                               <td className="py-2 px-2 text-right">
-                                {isLatest ? (
-                                  <span className="inline-flex items-center text-[10px] text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1"></span> LIVE ON TV
+                                {isUndone ? (
+                                  <span className="inline-flex items-center text-[10px] text-amber-400 bg-amber-950/60 border border-amber-800/60 px-1.5 py-0.5 rounded font-bold uppercase">
+                                    UNDONE
+                                  </span>
+                                ) : isCurrentLeading ? (
+                                  <span className="inline-flex items-center text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded font-bold uppercase">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 live-pulse"></span> CURRENT / LIVE ON TV
                                   </span>
                                 ) : (
                                   <span className="inline-flex items-center text-[10px] text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
-                                    Archived
+                                    VALID
                                   </span>
                                 )}
                               </td>
@@ -1123,12 +1260,14 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                 <div className="space-y-1.5 mb-3">
                   <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     <span>Quick Bid Amounts (Exact PTS)</span>
-                    <span className="text-[10px] font-normal text-emerald-400">Calculated from {Number(currentBid).toLocaleString()} PTS</span>
+                    <span className="text-[10px] font-normal text-emerald-400">
+                      {isBiddingActive ? `Calculated from ${Number(currentBid).toLocaleString()} PTS` : 'Starting from Base Price'}
+                    </span>
                   </div>
                   <div className="grid grid-cols-5 gap-1.5">
                     {quickBidAmounts.map((amount) => {
                       const isAffordable = teamPurseRemaining >= amount;
-                      const isSelfBidding = highestBidderId === selectedTeamId;
+                      const isSelfBidding = isBiddingActive && highestBidderId === selectedTeamId;
                       const maxTotal = selectedTeam?.max_players || 10;
                       const maxA = selectedTeam?.max_group_a || 3;
                       const maxB = selectedTeam?.max_group_b || 7;
@@ -1140,7 +1279,8 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                       const isCurrentPlayerGroupB = currentPlayer?.group === 'B' || currentPlayerCat.includes('group b');
                       const isGroupFull = isCurrentPlayerGroupB ? groupBCount >= maxB : groupACount >= maxA;
 
-                      const isEnabled = isAffordable && !isSelfBidding && !isSquadFull && !isGroupFull && amount > currentBid;
+                      const isAmountValid = isBiddingActive ? amount > currentBid : amount >= playerBasePrice;
+                      const isEnabled = isAffordable && !isSelfBidding && !isSquadFull && !isGroupFull && isAmountValid;
                       const isPendingSelected = confirmedNextBidAmount === amount;
 
                       return (
@@ -1244,12 +1384,16 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-[#111722] border border-brand-border rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
             <h3 className="text-base font-black tracking-wide text-white uppercase">{confirmDialog.title}</h3>
-            <p className="text-xs text-slate-300 leading-relaxed">{confirmDialog.message}</p>
+            {confirmDialog.customBody ? (
+              confirmDialog.customBody
+            ) : (
+              <p className="text-xs text-slate-300 leading-relaxed">{confirmDialog.message}</p>
+            )}
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setConfirmDialog(null)}
-                className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 transition-colors"
+                className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -1260,7 +1404,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   setConfirmDialog(null);
                   cb();
                 }}
-                className={`px-4 py-2 rounded-lg text-xs font-black tracking-wider uppercase transition-colors shadow-lg ${confirmDialog.actionColor || 'bg-brand-neon text-black'}`}
+                className={`px-4 py-2 rounded-lg text-xs font-black tracking-wider uppercase transition-colors shadow-lg cursor-pointer ${confirmDialog.actionColor || 'bg-brand-neon text-black'}`}
               >
                 {confirmDialog.actionText || 'Confirm Action'}
               </button>

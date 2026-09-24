@@ -840,7 +840,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             <div className="text-center py-2 bg-white rounded-lg border-2 border-slate-700 shadow-sm mb-2.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block font-montserrat-bold">CURRENT HIGHEST BID:</span>
               <div className="text-3xl xl:text-4xl font-bold text-slate-900 tracking-tight font-montserrat-bold">
-                {formatCurrency(currentBid)}
+                {highestTeam && Number(currentBid) > 0 ? formatCurrency(currentBid) : 'NO BIDS YET'}
               </div>
             </div>
             {/* Team Holding Bid */}
