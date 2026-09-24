@@ -177,7 +177,7 @@ exports.updateCaptain = async (req, res) => {
   }
 };
 
-// Update team (e.g. adjust purse or owner)
+// Update team (e.g. adjust name, logo, short_name, owner, tagline)
 exports.updateTeam = async (req, res) => {
   try {
     const { id } = req.params;
@@ -188,19 +188,35 @@ exports.updateTeam = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Team not found' });
     }
 
-    store.teams[index] = {
+    const updatedTeam = {
       ...store.teams[index],
       ...req.body,
       id: parseInt(id, 10)
     };
 
-    db.saveStore();
+    if (req.body.name) {
+      updatedTeam.name = req.body.name.trim();
+      if (!req.body.short_name) {
+        updatedTeam.short_name = req.body.name.trim().toUpperCase();
+      }
+    }
+    if (req.body.short_name) {
+      updatedTeam.short_name = req.body.short_name.trim().toUpperCase();
+    }
+    if (req.body.owner) {
+      updatedTeam.owner = req.body.owner.trim();
+    }
+    if (req.body.logo_url !== undefined) {
+      updatedTeam.logo_url = typeof req.body.logo_url === 'string' ? req.body.logo_url.trim() : '';
+    }
+
+    await db.dbSaveTeam(updatedTeam);
 
     if (auctionSocket && typeof auctionSocket.broadcastAuctionState === 'function') {
       auctionSocket.broadcastAuctionState();
     }
 
-    res.json({ success: true, message: 'Team updated successfully', data: store.teams[index] });
+    res.json({ success: true, message: 'Team updated successfully in database', data: updatedTeam });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

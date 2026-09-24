@@ -200,7 +200,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         ...bt,
         ...live,
         name: live.name || bt.name,
-        short_name: bt.short_name,
+        short_name: live.short_name || live.name || bt.short_name,
+        logo_url: live.logo_url || bt.logo_url || '',
         tagline: live.tagline || bt.tagline,
         total_purse: totalPurse,
         purse_remaining: purseLeft,
@@ -606,22 +607,58 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   : 'bg-[#f8fafc]'
                   }`}
               >
-                {/* Team Header & Amount Box — Montserrat Bold */}
-                <div className={`pb-3 text-center bg-white rounded-lg p-3 shadow-sm border ${isLeading
-                  ? 'border-emerald-300 border-b-2 border-b-emerald-500 mt-1'
-                  : 'border-slate-300 border-b-2 border-b-slate-700'
+                {/* Team Header & Amount Box — Montserrat Bold (Strict Uniform Size) */}
+                <div className={`h-[185px] flex flex-col justify-between text-center bg-white rounded-xl p-2.5 shadow-sm border shrink-0 ${isLeading
+                  ? 'border-emerald-400 border-b-[3px] border-b-emerald-600 ring-2 ring-emerald-400/30'
+                  : 'border-slate-300 border-b-[3px] border-b-slate-700'
                   }`}>
-                  <div
-                    className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs mb-1 ${isLeading ? 'bg-emerald-200 text-emerald-900' : `${badge.bg} ${badge.text}`
-                      }`}
-                  >
-                    {badge.label}
+                  {/* Team Logo / Badge — Uniform Size and Shape */}
+                  <div className="flex items-center justify-center shrink-0">
+                    <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs flex items-center justify-center overflow-hidden">
+                      {team.logo_url ? (
+                        <img
+                          src={team.logo_url}
+                          alt={team.name}
+                          className="w-full h-full object-contain"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            const fallback = e.target.parentElement?.querySelector('.team-badge-fallback');
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div
+                        className={`team-badge-fallback w-full h-full rounded-xl font-black text-base items-center justify-center ${
+                          isLeading ? 'bg-emerald-200 text-emerald-900' : `${badge.bg} ${badge.text}`
+                        }`}
+                        style={{ display: team.logo_url ? 'none' : 'flex' }}
+                      >
+                        {badge.label}
+                      </div>
+                    </div>
                   </div>
-                  <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-montserrat-bold">{team.short_name}</h2>
-                  <div className={`mt-2 pt-2 ${isLeading ? 'border-t border-emerald-100' : 'border-t border-slate-200'}`}>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block font-montserrat-bold">points:</span>
-                    <span className="text-xl xl:text-2xl font-bold text-slate-900 font-montserrat-bold">{formatCurrency(remaining)}</span>
-                    <div className="flex justify-center items-center text-[10px] text-slate-500 mt-1 font-bold px-1 font-montserrat-bold">
+
+                  {/* Big Prominent Full Team Name */}
+                  <div className="h-10 flex items-center justify-center px-1 shrink-0 overflow-hidden">
+                    <h2
+                      className={`font-black text-slate-950 tracking-tight font-montserrat-black uppercase leading-tight text-center ${
+                        (team.short_name || team.name).length > 14
+                          ? 'text-[15px] xl:text-[17px]'
+                          : (team.short_name || team.name).length > 9
+                          ? 'text-[17px] xl:text-[19px]'
+                          : 'text-xl xl:text-2xl'
+                      }`}
+                      title={team.name}
+                    >
+                      {team.short_name || team.name}
+                    </h2>
+                  </div>
+
+                  {/* Points & Squad Count */}
+                  <div className={`pt-1 shrink-0 ${isLeading ? 'border-t border-emerald-100' : 'border-t border-slate-200'}`}>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block leading-none mb-0.5 font-montserrat-bold">points:</span>
+                    <span className="text-xl xl:text-2xl font-bold text-slate-900 font-montserrat-bold leading-tight block">{formatCurrency(remaining)}</span>
+                    <div className="flex justify-center items-center text-[11px] text-slate-500 font-bold px-1 font-montserrat-bold leading-none mt-1">
                       <span>Squad: {squadCount}/{maxSquad}</span>
                     </div>
                   </div>

@@ -690,9 +690,10 @@ async function initDB() {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
       `);
 
-      // Ensure image_url is LONGTEXT so large base64 or long image URLs never fail
+      // Ensure image_url and logo_url are LONGTEXT so large base64 or long image URLs never fail
       try {
         await conn.query(`ALTER TABLE \`players\` MODIFY COLUMN \`image_url\` LONGTEXT NOT NULL`);
+        await conn.query(`ALTER TABLE \`teams\` MODIFY COLUMN \`logo_url\` LONGTEXT NOT NULL`);
       } catch {
         // ignore if already longtext
       }
@@ -802,6 +803,57 @@ async function dbSavePlayer(player) {
   return player;
 }
 
+async function dbSaveTeam(team) {
+  const idNum = parseInt(team.id, 10);
+  const index = memoryStore.teams.findIndex(t => t.id === idNum);
+  if (index !== -1) {
+    memoryStore.teams[index] = { ...memoryStore.teams[index], ...team, id: idNum };
+  } else {
+    memoryStore.teams.push({ ...team, id: idNum });
+  }
+
+  saveStoreToDisk(memoryStore);
+
+  if (isUsingMySQL && pool) {
+    try {
+      await pool.query(`
+        INSERT INTO \`teams\` (id, team_number, name, tagline, owner, total_purse, purse_remaining, max_players, logo_url, primary_color, accent_color, glow_color, bg_gradient)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          name=VALUES(name),
+          tagline=VALUES(tagline),
+          owner=VALUES(owner),
+          total_purse=VALUES(total_purse),
+          purse_remaining=VALUES(purse_remaining),
+          max_players=VALUES(max_players),
+          logo_url=VALUES(logo_url),
+          primary_color=VALUES(primary_color),
+          accent_color=VALUES(accent_color),
+          glow_color=VALUES(glow_color),
+          bg_gradient=VALUES(bg_gradient)
+      `, [
+        idNum,
+        team.team_number || idNum,
+        team.name,
+        team.tagline || '',
+        team.owner || 'Owner',
+        team.total_purse || 400000.00,
+        team.purse_remaining !== undefined ? team.purse_remaining : (team.total_purse || 400000.00),
+        team.max_players || 10,
+        team.logo_url || '',
+        team.primary_color || '#22c55e',
+        team.accent_color || '#4ade80',
+        team.glow_color || 'rgba(34, 197, 94, 0.45)',
+        team.bg_gradient || 'from-emerald-950/40 to-slate-950/80'
+      ]);
+    } catch (err) {
+      console.error('❌ Error updating team in MySQL:', err.message);
+    }
+  }
+
+  return memoryStore.teams[index !== -1 ? index : memoryStore.teams.length - 1];
+}
+
 async function dbDeletePlayer(playerId) {
   const idNum = parseInt(playerId, 10);
   const index = memoryStore.players.findIndex(p => p.id === idNum);
@@ -844,6 +896,7 @@ module.exports = {
   getMemoryStore: () => memoryStore,
   saveStore: () => saveStoreToDisk(memoryStore),
   dbSavePlayer,
+  dbSaveTeam,
   dbDeletePlayer,
   resetMemoryStore: () => {
     memoryStore = JSON.parse(JSON.stringify(initialSeed));

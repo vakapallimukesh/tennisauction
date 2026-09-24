@@ -38,6 +38,21 @@ export default function TeamSquadsManagement({ onNavigate }) {
     aces: 130,
     win_percentage: 74
   });
+
+  // Edit Team Details & Logo Modal State
+  const [isEditTeamModalOpen, setIsEditTeamModalOpen] = useState(false);
+  const [editingTeamData, setEditingTeamData] = useState(null);
+  const [teamFormData, setTeamFormData] = useState({
+    name: '',
+    short_name: '',
+    owner: '',
+    tagline: '',
+    logo_url: '',
+    primary_color: '#22c55e',
+    accent_color: '#4ade80'
+  });
+  const teamLogoInputRef = useRef(null);
+
   const [saveLoading, setSaveLoading] = useState(false);
   const [saveNotice, setSaveNotice] = useState(null);
   const fileInputRef = useRef(null);
@@ -153,6 +168,86 @@ export default function TeamSquadsManagement({ onNavigate }) {
       }, 1000);
     } catch (err) {
       setSaveNotice({ type: 'error', text: err.message || 'Failed to update captain' });
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
+  const handleOpenEditTeam = (team) => {
+    setEditingTeamData(team);
+    setTeamFormData({
+      name: team.name || '',
+      short_name: team.short_name || team.name || '',
+      owner: team.owner || '',
+      tagline: team.tagline || '',
+      logo_url: team.logo_url || '',
+      primary_color: team.primary_color || '#22c55e',
+      accent_color: team.accent_color || '#4ade80'
+    });
+    setSaveNotice(null);
+    setIsEditTeamModalOpen(true);
+  };
+
+  const handleTeamLogoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 20 * 1024 * 1024) {
+        alert('File size exceeds 20MB. Please choose a smaller image.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 400;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL('image/png', 0.92);
+          setTeamFormData(prev => ({ ...prev, logo_url: compressedDataUrl }));
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveTeam = async (e) => {
+    e.preventDefault();
+    if (!editingTeamData) return;
+
+    if (!teamFormData.name.trim()) {
+      setSaveNotice({ type: 'error', text: 'Team name is required.' });
+      return;
+    }
+
+    try {
+      setSaveLoading(true);
+      await api.updateTeam(editingTeamData.id, teamFormData);
+
+      // Update in local team object
+      Object.assign(editingTeamData, teamFormData);
+
+      setSaveNotice({ type: 'success', text: `Team ${teamFormData.name} updated successfully in database!` });
+      setTimeout(() => {
+        setIsEditTeamModalOpen(false);
+        setSaveNotice(null);
+      }, 1000);
+    } catch (err) {
+      setSaveNotice({ type: 'error', text: err.message || 'Failed to update team' });
     } finally {
       setSaveLoading(false);
     }
@@ -355,14 +450,24 @@ export default function TeamSquadsManagement({ onNavigate }) {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => onNavigate ? onNavigate(`/team/${team.id}`) : (window.location.href = `/team/${team.id}`)}
-                    className="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-tertiary border border-outline-variant/10 transition-colors flex items-center gap-1 text-xs"
-                    title="Open franchise bidding terminal"
-                  >
-                    <span>Console</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleOpenEditTeam(team)}
+                      className="px-2.5 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-white border border-outline-variant/10 transition-colors flex items-center gap-1.5 text-xs font-bold"
+                      title="Edit Team Name & Logo"
+                    >
+                      <Edit2 className="w-3.5 h-3.5 text-tertiary" />
+                      <span>Edit Team</span>
+                    </button>
+                    <button
+                      onClick={() => onNavigate ? onNavigate(`/team/${team.id}`) : (window.location.href = `/team/${team.id}`)}
+                      className="p-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant hover:text-tertiary border border-outline-variant/10 transition-colors flex items-center gap-1 text-xs"
+                      title="Open franchise bidding terminal"
+                    >
+                      <span>Console</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Financial Telemetry */}
@@ -679,6 +784,217 @@ export default function TeamSquadsManagement({ onNavigate }) {
                   className="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-xs font-black text-slate-950 shadow-md transition disabled:opacity-50"
                 >
                   {saveLoading ? 'Saving...' : 'Save Captain Details'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT TEAM NAME & LOGO MODAL */}
+      {isEditTeamModalOpen && editingTeamData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-lg bg-[#0f172a] border border-slate-700 rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setIsEditTeamModalOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-5 pb-3 border-b border-slate-800">
+              <div
+                className="p-2.5 rounded-xl border text-white flex items-center justify-center font-bold"
+                style={{
+                  backgroundColor: `${teamFormData.primary_color || '#22c55e'}25`,
+                  borderColor: teamFormData.primary_color || '#22c55e'
+                }}
+              >
+                <Shield className="w-6 h-6" style={{ color: teamFormData.primary_color || '#22c55e' }} />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-white">
+                  Edit Franchise — {editingTeamData.name}
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Updates team name and logo live on the TV display and database
+                </p>
+              </div>
+            </div>
+
+            {saveNotice && (
+              <div className={`p-3 rounded-lg text-xs font-bold mb-4 flex items-center gap-2 ${
+                saveNotice.type === 'error'
+                  ? 'bg-rose-950/70 border border-rose-600 text-rose-300'
+                  : 'bg-emerald-950/70 border border-emerald-600 text-emerald-300'
+              }`}>
+                {saveNotice.text}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveTeam} className="space-y-4">
+              {/* Team Name */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                  Team Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={teamFormData.name}
+                  onChange={(e) => setTeamFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-400"
+                  placeholder="e.g. Royal Smashers"
+                />
+              </div>
+
+              {/* Short Name / Display Abbreviation */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                  Short Name / Screen Title (for TV Screen Headers)
+                </label>
+                <input
+                  type="text"
+                  value={teamFormData.short_name}
+                  onChange={(e) => setTeamFormData(prev => ({ ...prev, short_name: e.target.value }))}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-400 font-bold"
+                  placeholder="e.g. SMASHERS or TEAM A"
+                />
+              </div>
+
+              {/* Team Logo Upload & Preview */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                  Team Logo (Displayed on TV Screen & Cards)
+                </label>
+                <div className="flex items-center gap-4">
+                  <div
+                    className="w-16 h-16 rounded-xl bg-slate-900 border-2 overflow-hidden flex items-center justify-center shrink-0 p-1"
+                    style={{ borderColor: teamFormData.primary_color || '#22c55e' }}
+                  >
+                    {teamFormData.logo_url ? (
+                      <img
+                        src={teamFormData.logo_url}
+                        alt="Logo Preview"
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <ImageIcon className="w-6 h-6 text-slate-600" />
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <input
+                      type="file"
+                      ref={teamLogoInputRef}
+                      onChange={handleTeamLogoUpload}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => teamLogoInputRef.current?.click()}
+                        className="flex-1 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white border border-slate-600 flex items-center justify-center gap-2"
+                      >
+                        <Upload className="w-4 h-4" />
+                        <span>Upload Logo</span>
+                      </button>
+                      {teamFormData.logo_url && (
+                        <button
+                          type="button"
+                          onClick={() => setTeamFormData(prev => ({ ...prev, logo_url: '' }))}
+                          className="px-3 py-2 rounded-lg bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800 text-xs font-bold"
+                          title="Remove custom logo"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      value={teamFormData.logo_url}
+                      onChange={(e) => setTeamFormData(prev => ({ ...prev, logo_url: e.target.value }))}
+                      placeholder="Or enter image URL / SVG path"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-300 focus:outline-none focus:border-emerald-400"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Owner & Tagline */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                    Owner Name
+                  </label>
+                  <input
+                    type="text"
+                    value={teamFormData.owner}
+                    onChange={(e) => setTeamFormData(prev => ({ ...prev, owner: e.target.value }))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-400"
+                    placeholder="e.g. Rohan Iyer"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                    Team Tagline
+                  </label>
+                  <input
+                    type="text"
+                    value={teamFormData.tagline}
+                    onChange={(e) => setTeamFormData(prev => ({ ...prev, tagline: e.target.value }))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-400"
+                    placeholder="e.g. Smash to Glory"
+                  />
+                </div>
+              </div>
+
+              {/* Theme Color Picker */}
+              <div>
+                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
+                  Team Color Accent
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={teamFormData.primary_color || '#22c55e'}
+                    onChange={(e) => setTeamFormData(prev => ({ ...prev, primary_color: e.target.value }))}
+                    className="w-10 h-10 rounded-lg border border-slate-700 bg-transparent cursor-pointer"
+                  />
+                  <span className="text-xs font-mono text-slate-400">{teamFormData.primary_color}</span>
+                  <div className="flex items-center gap-1.5 ml-auto">
+                    {['#22c55e', '#3b82f6', '#a855f7', '#f97316', '#eab308', '#ec4899'].map(color => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setTeamFormData(prev => ({ ...prev, primary_color: color }))}
+                        className="w-6 h-6 rounded-full border-2 border-slate-700 hover:scale-110 transition shadow-xs"
+                        style={{ backgroundColor: color }}
+                        title={color}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsEditTeamModalOpen(false)}
+                  className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saveLoading}
+                  className="px-5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-xs font-black text-slate-950 shadow-md transition disabled:opacity-50"
+                >
+                  {saveLoading ? 'Saving...' : 'Save Team Changes'}
                 </button>
               </div>
             </form>
