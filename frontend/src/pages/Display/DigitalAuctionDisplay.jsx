@@ -334,10 +334,10 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                 </div>
               )}
             </div>
-            {/* NOW ON STAGE label */}
+            {/* CURRENT PLAYER label */}
             <div className="flex items-center gap-3 mb-4" style={{ animation: 'fadeUpIn 0.6s ease-out 0.5s both' }}>
               <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
-              <span className="text-base font-black tracking-[0.35em] uppercase text-emerald-400 drop-shadow-lg font-montserrat-bold">NOW ON STAGE</span>
+              <span className="text-base font-black tracking-[0.35em] uppercase text-emerald-400 drop-shadow-lg font-montserrat-bold">CURRENT PLAYER</span>
               <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
             </div>
             {/* Player Name — Montserrat Black */}
