@@ -68,11 +68,11 @@ export default function Player3DCube({ player }) {
               </div>
 
               {/* Sponsor Logo */}
-              <div className="flex-1 flex items-center justify-center px-2 py-1 w-full">
+              <div className="flex-1 flex items-center justify-center px-2 w-full my-auto overflow-hidden">
                 <img
                   src="/images/sponsors/pv-enterprises.png"
                   alt="PV Enterprises"
-                  className="max-h-24 w-auto max-w-[88%] object-contain cube-sponsor-logo select-none"
+                  className="max-h-40 sm:max-h-48 md:max-h-52 w-auto max-w-[94%] object-contain cube-sponsor-logo select-none"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
@@ -137,11 +137,11 @@ export default function Player3DCube({ player }) {
               </div>
 
               {/* Sponsor Logo */}
-              <div className="flex-1 flex items-center justify-center px-2 py-1 w-full">
+              <div className="flex-1 flex items-center justify-center px-2 w-full my-auto overflow-hidden">
                 <img
                   src="/images/sponsors/devee-group.png"
                   alt="Devee Group"
-                  className="max-h-24 w-auto max-w-[88%] object-contain cube-sponsor-logo select-none"
+                  className="max-h-40 sm:max-h-48 md:max-h-52 w-auto max-w-[94%] object-contain cube-sponsor-logo select-none"
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
