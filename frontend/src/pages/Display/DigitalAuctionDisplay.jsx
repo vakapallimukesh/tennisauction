@@ -551,7 +551,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             <img
               src="/images/tennis-league-logo.png"
               alt="Tennis League Bhimavaram"
-              className="h-10 sm:h-11 lg:h-12 w-auto object-contain shrink-0 drop-shadow-sm scale-[1.8] origin-center"
+              className="h-9 sm:h-10 lg:h-11 w-auto object-contain shrink-0 drop-shadow-xs"
             />
             <h1 className="text-xl md:text-2xl lg:text-3xl font-black uppercase tracking-wider text-slate-900 font-montserrat-black">
               Bhimavaram Tennis League
