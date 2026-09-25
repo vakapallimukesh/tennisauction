@@ -16,8 +16,8 @@
 }
 
 :root {
-  /* Prominent TV showcase display size */
-  --showcase-cube-size: clamp(240px, 32vh, 340px);
+  /* Prominent TV showcase display size — responsive across 1080p TVs and laptops */
+  --showcase-cube-size: clamp(210px, min(30vh, 23vw), 320px);
   --showcase-half-size: calc(var(--showcase-cube-size) / 2);
 }
 

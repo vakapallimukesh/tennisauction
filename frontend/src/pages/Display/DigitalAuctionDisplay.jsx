@@ -593,8 +593,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       {/* ===== MAIN AUCTION STAGE ===== */}
       <main className="flex-1 w-full max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden bg-slate-100 border-x-2 border-slate-700 font-montserrat-bold">
 
-        {/* ===== LEFT: 4 TEAM COLUMNS (8 cols) ===== */}
-        <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-700 border-r-2 border-slate-700 bg-[#e2e8f0]">
+        {/* ===== LEFT: 4 TEAM COLUMNS (9 cols / 75% width for spacious player rosters) ===== */}
+        <div className="lg:col-span-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-700 border-r-2 border-slate-700 bg-[#e2e8f0]">
           {displayTeams.map((team, idx) => {
             const isLeading = highestTeam?.id === team.id;
             const totalPurse = team.total_purse || 500000;
@@ -618,7 +618,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             return (
               <article
                 key={team.id}
-                className="flex flex-col h-full p-4 relative overflow-hidden transition-all duration-300"
+                className="flex flex-col h-full px-2.5 py-3 xl:px-3.5 xl:py-3.5 relative overflow-hidden transition-all duration-300"
                 style={{ backgroundColor: '#ffffff' }}
               >
                 {/* Blurred team logo background — only when leading */}
@@ -687,9 +687,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                       <div className="flex items-center justify-between pb-1 border-b border-slate-300">
                         <div className="flex items-center gap-1.5">
                           <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shadow-2xs"></span>
-                          <span className="text-[11px] font-black text-slate-900 tracking-wider font-montserrat-bold">GROUP A</span>
+                          <span className="text-[12px] xl:text-[13px] font-black text-slate-900 tracking-wider font-montserrat-bold">GROUP A</span>
                         </div>
-                        <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-slate-300 text-slate-800 font-montserrat-bold">
+                        <span className="text-[11px] xl:text-[12px] font-bold px-2 py-0.5 rounded-full bg-slate-300 text-slate-800 font-montserrat-bold">
                           {groupAPlayers.length}/{maxGroupA}
                         </span>
                       </div>
@@ -701,27 +701,27 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             return (
                               <div
                                 key={p.id || `ga-${pIdx}`}
-                                className={`border rounded-md px-2 py-1 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isCaptain
+                                className={`border rounded-md px-2.5 py-1.5 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isCaptain
                                   ? 'border-amber-400/80 bg-amber-50/60'
                                   : isLeading
                                     ? 'border-emerald-300 bg-white'
                                     : 'border-slate-300 bg-white'
                                   }`}
                               >
-                                {/* Player Name in Roster — Montserrat Bold */}
-                                <div className="font-bold text-slate-950 truncate text-[11px] md:text-[12px] leading-normal font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
-                                  <span className="truncate">
+                                {/* Player Name in Roster — Montserrat Bold & Clearly Visible */}
+                                <div className="font-bold text-slate-950 text-[13px] sm:text-[13.5px] xl:text-[14.5px] 2xl:text-[15px] leading-snug font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
+                                  <span className="truncate" title={p.name || p.player_name || ''}>
                                     {p.name || p.player_name || ''}
                                   </span>
                                   {isCaptain && (
-                                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 shadow-xs shrink-0 leading-none font-montserrat-bold">
+                                    <span className="text-[10px] xl:text-[11px] font-black px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 shadow-xs shrink-0 leading-none font-montserrat-bold">
                                       C
                                     </span>
                                   )}
                                 </div>
                                 {!isCaptain && (
                                   <div className="text-right shrink-0">
-                                    <span className="font-bold text-slate-900 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold">
+                                    <span className="font-bold text-slate-900 text-[11px] xl:text-[12px] whitespace-nowrap font-montserrat-bold">
                                       {formatLakhsShort(p.purchase_price || p.base_price)}
                                     </span>
                                   </div>
@@ -730,7 +730,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             );
                           })
                         ) : (
-                          <div className="text-center py-1 text-slate-400 text-[10px] italic bg-white/70 rounded border border-dashed border-slate-300 font-montserrat-bold">
+                          <div className="text-center py-1.5 text-slate-400 text-[11px] xl:text-[12px] italic bg-white/70 rounded border border-dashed border-slate-300 font-montserrat-bold">
                             No Group A acquired
                           </div>
                         )}
@@ -742,9 +742,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                       <div className="flex items-center justify-between pb-1 border-b border-slate-300">
                         <div className="flex items-center gap-1.5">
                           <span className="w-2.5 h-2.5 rounded-full bg-amber-600 shadow-2xs"></span>
-                          <span className="text-[11px] font-black text-slate-900 tracking-wider font-montserrat-bold">GROUP B</span>
+                          <span className="text-[12px] xl:text-[13px] font-black text-slate-900 tracking-wider font-montserrat-bold">GROUP B</span>
                         </div>
-                        <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-slate-300 text-slate-800 font-montserrat-bold">
+                        <span className="text-[11px] xl:text-[12px] font-bold px-2 py-0.5 rounded-full bg-slate-300 text-slate-800 font-montserrat-bold">
                           {groupBPlayers.length}/{maxGroupB}
                         </span>
                       </div>
@@ -754,24 +754,26 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                           groupBPlayers.map((p, pIdx) => (
                             <div
                               key={p.id || `gb-${pIdx}`}
-                              className={`border rounded-md px-2 py-1 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isLeading
+                              className={`border rounded-md px-2.5 py-1.5 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isLeading
                                 ? 'border-emerald-300 bg-white'
                                 : 'border-slate-300 bg-white'
                                 }`}
                             >
-                              {/* Player Name in Roster — Montserrat Bold */}
-                              <div className="font-bold text-slate-950 truncate text-[11px] md:text-[12px] leading-normal font-montserrat-bold min-w-0 flex-1">
-                                {p.name || p.player_name || ''}
+                              {/* Player Name in Roster — Montserrat Bold & Clearly Visible */}
+                              <div className="font-bold text-slate-950 text-[13px] sm:text-[13.5px] xl:text-[14.5px] 2xl:text-[15px] leading-snug font-montserrat-bold min-w-0 flex-1">
+                                <span className="truncate block" title={p.name || p.player_name || ''}>
+                                  {p.name || p.player_name || ''}
+                                </span>
                               </div>
                               <div className="text-right shrink-0">
-                                <span className="font-bold text-slate-900 text-[10px] md:text-[11px] whitespace-nowrap font-montserrat-bold">
+                                <span className="font-bold text-slate-900 text-[11px] xl:text-[12px] whitespace-nowrap font-montserrat-bold">
                                   {formatLakhsShort(p.purchase_price || p.base_price)}
                                 </span>
                               </div>
                             </div>
                           ))
                         ) : (
-                          <div className="text-center py-1 text-slate-400 text-[10px] italic bg-white/70 rounded border border-dashed border-slate-300 font-montserrat-bold">
+                          <div className="text-center py-1.5 text-slate-400 text-[11px] xl:text-[12px] italic bg-white/70 rounded border border-dashed border-slate-300 font-montserrat-bold">
                             No Group B acquired
                           </div>
                         )}
@@ -810,37 +812,36 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
           })}
         </div>
 
-        {/* ===== RIGHT PANEL: Player Detail + Bidding (4 cols) ===== */}
-        <section className="lg:col-span-4 flex flex-col p-4 xl:p-5 bg-white space-y-3 min-h-0 overflow-hidden font-montserrat-bold">
+        {/* ===== RIGHT PANEL: Player Detail + Bidding (3 cols / 25% width) ===== */}
+        <section className="lg:col-span-3 flex flex-col p-3 xl:p-4 2xl:p-5 bg-white space-y-2.5 xl:space-y-3 min-h-0 overflow-hidden font-montserrat-bold">
           {/* 1. TOP: 3D Rotating Showcase Cube (Player Photo & Sponsors) */}
-          <div className="relative flex-1 min-h-[260px] flex items-center justify-center overflow-visible py-2">
+          <div className="relative flex-1 min-h-[220px] sm:min-h-[250px] flex items-center justify-center overflow-visible py-1 sm:py-2">
             <Player3DCube player={activePlayer} />
           </div>
 
           {/* 2. Player Name Header — Montserrat Black */}
-          <div className="text-center py-2 px-1 shrink-0">
-            <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black text-slate-950 tracking-tight uppercase font-montserrat-black leading-tight">
+          <div className="text-center py-1 sm:py-2 px-1 shrink-0">
+            <h2 className="text-xl sm:text-2xl xl:text-3xl font-black text-slate-950 tracking-tight uppercase font-montserrat-black leading-tight">
               {activePlayer.name || 'WAITING'}
             </h2>
           </div>
 
-
           {/* Current Bid — Box */}
-          <div className="text-center py-5 bg-slate-50 rounded-xl border-2 border-slate-700 shadow-sm shrink-0">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1 font-montserrat-bold">CURRENT BID</span>
-            <div className="text-5xl xl:text-6xl font-black text-slate-900 tracking-tight font-montserrat-black leading-none">
+          <div className="text-center py-3.5 xl:py-4 bg-slate-50 rounded-xl border-2 border-slate-700 shadow-sm shrink-0">
+            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1 font-montserrat-bold">CURRENT BID</span>
+            <div className="text-3xl sm:text-4xl xl:text-5xl font-black text-slate-900 tracking-tight font-montserrat-black leading-none">
               {highestTeam && Number(currentBid) > 0 ? formatCurrency(currentBid) : 'NO BIDS YET'}
             </div>
           </div>
 
           {/* Bid By Team — Clean */}
-          <div className="flex items-center justify-center gap-3 py-3 shrink-0 border-t border-slate-200">
-            <span className="text-sm font-bold uppercase text-slate-400 font-montserrat-bold">BID BY:</span>
-            <span className="text-2xl xl:text-3xl font-black text-slate-900 font-montserrat-black">
+          <div className="flex items-center justify-center gap-2.5 py-2.5 shrink-0 border-t border-slate-200">
+            <span className="text-xs sm:text-sm font-bold uppercase text-slate-400 font-montserrat-bold">BID BY:</span>
+            <span className="text-xl xl:text-2xl font-black text-slate-900 font-montserrat-black">
               {highestTeam ? highestTeam.short_name : '—'}
             </span>
             {highestTeam && (
-              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-xs font-montserrat-bold">
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500 text-white shadow-xs font-montserrat-bold">
                 LEADING
               </span>
             )}
