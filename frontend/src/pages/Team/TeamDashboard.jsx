@@ -45,12 +45,12 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
     return (teams || []).find(t => t.id === effectiveTeamId) || {
       id: effectiveTeamId,
       name: `Team ${effectiveTeamId}`,
-      total_purse: 400000,
-      purse_remaining: 400000,
+      total_purse: 500000,
+      purse_remaining: 500000,
       players_bought: 0,
-      max_players: 10,
-      max_group_a: 3,
-      max_group_b: 7,
+      max_players: 12,
+      max_group_a: 4,
+      max_group_b: 8,
       roster: [],
       primary_color: '#22c55e',
       glow_color: 'rgba(34, 197, 94, 0.4)'
@@ -74,9 +74,9 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
   const wasOutbid = !isHighestBidder && isBiddingActive;
 
   // Squad and purse constraints
-  const maxSquad = myTeam.max_players || 10;
-  const maxGroupA = myTeam.max_group_a || 3;
-  const maxGroupB = myTeam.max_group_b || 7;
+  const maxSquad = myTeam.max_players || 12;
+  const maxGroupA = myTeam.max_group_a || 4;
+  const maxGroupB = myTeam.max_group_b || 8;
   const squadFull = (myTeam.players_bought || (myTeam.roster ? myTeam.roster.length : 0)) >= maxSquad;
 
   const groupACount = myTeam.group_a_count !== undefined ? myTeam.group_a_count : (myTeam.roster ? myTeam.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
@@ -86,7 +86,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
   const isPlayerGroupB = currentPlayer?.group === 'B' || currentPlayerCat.includes('group b');
   const isGroupFull = isPlayerGroupB ? groupBCount >= maxGroupB : groupACount >= maxGroupA;
 
-  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : (myTeam.total_purse || 400000);
+  const remainingPurse = myTeam.purse_remaining !== undefined ? myTeam.purse_remaining : (myTeam.total_purse || 500000);
   const nextMinBid = currentBid + 1000;
 
   // Handle Bid Execution
@@ -500,7 +500,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                   <div className="flex justify-between text-xs">
                     <span className="text-slate-400">Purse Utilization</span>
                     <span className="font-mono font-bold text-slate-200">
-                      ₹{(myTeam.total_spent || 0).toLocaleString('en-IN')} / ₹{(myTeam.total_purse || 400000).toLocaleString('en-IN')}
+                      ₹{(myTeam.total_spent || 0).toLocaleString('en-IN')} / ₹{(myTeam.total_purse || 500000).toLocaleString('en-IN')}
                     </span>
                   </div>
                   {/* Progress bar */}
@@ -508,7 +508,7 @@ export default function TeamDashboard({ teamId: routeTeamId, onNavigate }) {
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
-                        width: `${Math.min(100, ((myTeam.total_spent || 0) / (myTeam.total_purse || 400000)) * 100)}%`,
+                        width: `${Math.min(100, ((myTeam.total_spent || 0) / (myTeam.total_purse || 500000)) * 100)}%`,
                         backgroundColor: myTeam.primary_color || '#22c55e'
                       }}
                     />

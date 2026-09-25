@@ -164,26 +164,26 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       {
         id: 1, team_number: 1, name: 'Golden Eagles',
         short_name: 'GOLDEN EAGLES', owner: 'Rohan Iyer',
-        total_purse: 400000, purse_remaining: 400000, spent: 0,
-        max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
+        total_purse: 500000, purse_remaining: 500000, spent: 0,
+        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
       },
       {
         id: 2, team_number: 2, name: 'Royal Tigers',
         short_name: 'ROYAL TIGERS', owner: 'Vikramaditya Roy',
-        total_purse: 400000, purse_remaining: 400000, spent: 0,
-        max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
+        total_purse: 500000, purse_remaining: 500000, spent: 0,
+        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
       },
       {
         id: 3, team_number: 3, name: 'Mighty Dragons',
         short_name: 'MIGHTY DRAGONS', owner: 'Maya Sengupta',
-        total_purse: 400000, purse_remaining: 400000, spent: 0,
-        max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
+        total_purse: 500000, purse_remaining: 500000, spent: 0,
+        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
       },
       {
         id: 4, team_number: 4, name: '7 Aces',
         short_name: '7 ACES', owner: 'Kabir Malhotra',
-        total_purse: 400000, purse_remaining: 400000, spent: 0,
-        max_players: 10, max_group_a: 3, max_group_b: 7, players_bought: 0, players: []
+        total_purse: 500000, purse_remaining: 500000, spent: 0,
+        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
       }
     ];
 
@@ -533,9 +533,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
           {/* Middle: Big Prominent League Title with Tennis Ball Logo — Montserrat Black */}
           <div className="flex-1 flex items-center justify-center gap-2.5 sm:gap-3 px-4">
             <img
-              src="/images/tennis-ball-glow.svg"
-              alt="Tennis Ball Logo"
-              className="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 shrink-0 drop-shadow-sm"
+              src="/images/tennis-league-logo.png"
+              alt="Tennis League Bhimavaram"
+              className="h-10 sm:h-11 lg:h-12 w-auto object-contain shrink-0 drop-shadow-sm scale-[1.8] origin-center"
             />
             <h1 className="text-xl md:text-2xl lg:text-3xl font-black uppercase tracking-wider text-slate-900 font-montserrat-black">
               Bhimavaram Tennis League
@@ -581,13 +581,13 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x-2 divide-slate-700 border-r-2 border-slate-700 bg-[#e2e8f0]">
           {displayTeams.map((team, idx) => {
             const isLeading = highestTeam?.id === team.id;
-            const totalPurse = team.total_purse || 400000;
+            const totalPurse = team.total_purse || 500000;
             const remaining = team.purse_remaining || 0;
             const spent = Math.max(0, totalPurse - remaining);
             const squadCount = team.players_bought || team.players?.length || 0;
-            const maxSquad = team.max_players || 10;
-            const maxGroupA = team.max_group_a || 3;
-            const maxGroupB = team.max_group_b || 7;
+            const maxSquad = team.max_players || 12;
+            const maxGroupA = team.max_group_a || 4;
+            const maxGroupB = team.max_group_b || 8;
             const badge = teamBadgeColors[idx] || teamBadgeColors[0];
             const teamPlayers = team.players || [];
             const groupAPlayers = teamPlayers.filter(p => {

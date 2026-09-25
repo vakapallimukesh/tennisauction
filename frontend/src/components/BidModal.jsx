@@ -44,9 +44,9 @@ export default function BidModal() {
   };
 
   const selectedTeam = teams.find(t => t.id === selectedTeamId);
-  const maxSquad = selectedTeam?.max_players || 10;
-  const maxA = selectedTeam?.max_group_a || 3;
-  const maxB = selectedTeam?.max_group_b || 7;
+  const maxSquad = selectedTeam?.max_players || 12;
+  const maxA = selectedTeam?.max_group_a || 4;
+  const maxB = selectedTeam?.max_group_b || 8;
   const isPurseLow = selectedTeam && selectedTeam.purse_remaining < calculatedBid;
   const isSquadFull = selectedTeam && selectedTeam.players_bought >= maxSquad;
 

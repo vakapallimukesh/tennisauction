@@ -95,7 +95,7 @@ export default function TeamSection() {
                     <span className="text-[10px]">Players</span>
                   </div>
                   <span className="font-bold text-white text-xs">
-                    {team.players_bought || 0} / {team.max_players || 10}
+                    {team.players_bought || 0} / {team.max_players || 12}
                   </span>
                 </div>
               </div>

@@ -82,7 +82,7 @@ export default function TeamDetailsCard() {
         <div className="bg-[#0b1328]/90 px-2 py-1 rounded-lg border border-slate-800 flex items-center justify-between">
           <span className="text-[10px] text-slate-400">Total Players Bought</span>
           <span className="font-bold font-display text-white text-xs">
-            {teamData.players_bought || 0} / {teamData.max_players || 10}
+            {teamData.players_bought || 0} / {teamData.max_players || 12}
           </span>
         </div>
       </div>

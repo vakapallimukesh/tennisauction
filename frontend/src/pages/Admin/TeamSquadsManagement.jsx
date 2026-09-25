@@ -59,11 +59,11 @@ export default function TeamSquadsManagement({ onNavigate }) {
 
   // Calculate totals
   const totalPurseAllocated = useMemo(() => {
-    return (teams || []).reduce((sum, t) => sum + (t.total_purse || 400000), 0);
+    return (teams || []).reduce((sum, t) => sum + (t.total_purse || 500000), 0);
   }, [teams]);
 
   const totalPurseSpent = useMemo(() => {
-    return (teams || []).reduce((sum, t) => sum + ((t.total_purse || 400000) - (t.purse_remaining !== undefined ? t.purse_remaining : 400000)), 0);
+    return (teams || []).reduce((sum, t) => sum + ((t.total_purse || 500000) - (t.purse_remaining !== undefined ? t.purse_remaining : 500000)), 0);
   }, [teams]);
 
   const totalPlayersAcquired = useMemo(() => {
@@ -367,7 +367,7 @@ export default function TeamSquadsManagement({ onNavigate }) {
             />
             <span>{team.name}</span>
             <span className="text-xs px-1.5 py-0.5 rounded-full bg-surface-container-low font-mono">
-              {team.players_bought || team.roster?.length || 0}/{team.max_players || 10}
+              {team.players_bought || team.roster?.length || 0}/{team.max_players || 12}
             </span>
           </button>
         ))}
@@ -377,13 +377,13 @@ export default function TeamSquadsManagement({ onNavigate }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredTeams.map((team) => {
           const squadCount = team.players_bought || team.roster?.length || 0;
-          const maxSquad = team.max_players || 10;
-          const maxGroupA = team.max_group_a || 3;
-          const maxGroupB = team.max_group_b || 7;
+          const maxSquad = team.max_players || 12;
+          const maxGroupA = team.max_group_a || 4;
+          const maxGroupB = team.max_group_b || 8;
           const groupACount = team.group_a_count !== undefined ? team.group_a_count : (team.roster ? team.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 1);
           const groupBCount = team.group_b_count !== undefined ? team.group_b_count : (team.roster ? team.roster.filter(p => ((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
-          const purseRemaining = team.purse_remaining !== undefined ? team.purse_remaining : 400000;
-          const totalPurse = team.total_purse || 400000;
+          const purseRemaining = team.purse_remaining !== undefined ? team.purse_remaining : 500000;
+          const totalPurse = team.total_purse || 500000;
           const totalSpent = totalPurse - purseRemaining;
           const roster = team.roster || [];
           const captain = team.captain || {

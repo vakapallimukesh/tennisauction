@@ -65,10 +65,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Fallback teams if data is loading
   const activeTeams = teams && teams.length === 4 ? teams : [
-    { id: 1, team_number: 1, name: 'Golden Eagles', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#22c55e' },
-    { id: 2, team_number: 2, name: 'Royal Tigers', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#0ea5e9' },
-    { id: 3, team_number: 3, name: 'Mighty Dragons', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#a855f7' },
-    { id: 4, team_number: 4, name: '7 Aces', total_purse: 400000, purse_remaining: 400000, players_bought: 0, max_players: 10, max_group_a: 3, max_group_b: 7, primary_color: '#f97316' }
+    { id: 1, team_number: 1, name: 'Golden Eagles', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#22c55e' },
+    { id: 2, team_number: 2, name: 'Royal Tigers', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#0ea5e9' },
+    { id: 3, team_number: 3, name: 'Mighty Dragons', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#a855f7' },
+    { id: 4, team_number: 4, name: '7 Aces', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#f97316' }
   ];
 
   // Base price for active player (Fixed 10,000 PTS for all players)
@@ -95,7 +95,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
     : minRecommendedBid;
 
   const selectedTeam = activeTeams.find(t => t.id === selectedTeamId) || activeTeams[0];
-  const teamPurseRemaining = selectedTeam?.purse_remaining ?? 400000;
+  const teamPurseRemaining = selectedTeam?.purse_remaining ?? 500000;
   const teamPurseAfter = Math.max(0, teamPurseRemaining - confirmedNextBidAmount);
 
   // Recent bids list & Undo eligibility
@@ -204,7 +204,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
       return;
     }
 
-    if (salePrice > (targetTeam.purse_remaining ?? 400000)) {
+    if (salePrice > (targetTeam.purse_remaining ?? 500000)) {
       showNotice(`${targetTeam.name} has insufficient purse balance to buy at ${formatCurrency(salePrice)}!`, 'error');
       return;
     }
@@ -354,14 +354,14 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
       return;
     }
 
-    if (parsedAmount > (targetTeam.purse_remaining || 400000)) {
+    if (parsedAmount > (targetTeam.purse_remaining || 500000)) {
       showNotice(`${targetTeam.name} has insufficient purse balance!`, 'error');
       return;
     }
 
-    const maxTotal = targetTeam.max_players || 10;
-    const maxA = targetTeam.max_group_a || 3;
-    const maxB = targetTeam.max_group_b || 7;
+    const maxTotal = targetTeam.max_players || 12;
+    const maxA = targetTeam.max_group_a || 4;
+    const maxB = targetTeam.max_group_b || 8;
     const totalCount = targetTeam.players_bought !== undefined ? targetTeam.players_bought : (targetTeam.roster ? targetTeam.roster.length : 0);
 
     if (totalCount >= maxTotal) {
@@ -904,13 +904,13 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                 const teamNum = idx + 1;
                 const isLeading = isBiddingActive && highestTeam && highestTeam.id === team.id;
                 const isSelected = selectedTeamId === team.id;
-                const totalPurse = team.total_purse || 400000;
-                const remaining = team.purse_remaining !== undefined ? team.purse_remaining : 400000;
+                const totalPurse = team.total_purse || 500000;
+                const remaining = team.purse_remaining !== undefined ? team.purse_remaining : 500000;
                 const spent = Math.max(0, totalPurse - remaining);
                 const squadCount = team.players_bought !== undefined ? team.players_bought : 0;
-                const maxSquad = team.max_players || 10;
-                const maxGroupA = team.max_group_a || 3;
-                const maxGroupB = team.max_group_b || 7;
+                const maxSquad = team.max_players || 12;
+                const maxGroupA = team.max_group_a || 4;
+                const maxGroupB = team.max_group_b || 8;
                 const squadFull = squadCount >= maxSquad;
 
                 const groupACount = team.group_a_count !== undefined ? team.group_a_count : (team.roster ? team.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
@@ -1268,9 +1268,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                     {quickBidAmounts.map((amount) => {
                       const isAffordable = teamPurseRemaining >= amount;
                       const isSelfBidding = isBiddingActive && highestBidderId === selectedTeamId;
-                      const maxTotal = selectedTeam?.max_players || 10;
-                      const maxA = selectedTeam?.max_group_a || 3;
-                      const maxB = selectedTeam?.max_group_b || 7;
+                      const maxTotal = selectedTeam?.max_players || 12;
+                      const maxA = selectedTeam?.max_group_a || 4;
+                      const maxB = selectedTeam?.max_group_b || 8;
                       const isSquadFull = (selectedTeam?.players_bought || 0) >= maxTotal;
 
                       const groupACount = selectedTeam?.group_a_count !== undefined ? selectedTeam.group_a_count : (selectedTeam?.roster ? selectedTeam.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
