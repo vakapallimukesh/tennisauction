@@ -49,10 +49,10 @@ const initialSeed = {
       glow_color: 'rgba(249, 115, 22, 0.45)',
       bg_gradient: 'from-orange-950/40 to-slate-950/80',
       captain: {
-        id: 104,
-        name: 'Yuki Bhambri',
+        id: 5,
+        name: 'Janaki Rama Raju Mantena',
         player_number: 'CAPTAIN #01',
-        age: 30,
+        age: 35,
         country: 'India',
         country_flag: '🇮🇳',
         category: 'Group A',
@@ -60,12 +60,11 @@ const initialSeed = {
         is_captain: true,
         designation: 'CAPTAIN',
         playing_hand: 'Right Hand',
-        world_ranking: 54,
-        wins: 52,
-        aces: 135,
-        matches: 70,
-        win_percentage: 74,
-        image_url: '/images/players/mateo-silva.jpg'
+        backhand_style: 'Single handed',
+        jersey_name: 'Janaki',
+        jersey_number: '',
+        base_price: 10000,
+        image_url: 'https://drive.google.com/thumbnail?id=1LoefRM0tqpo5V_vhrbfWYFCj8Mq3Eapg&sz=w400'
       }
     },
     {
@@ -84,10 +83,10 @@ const initialSeed = {
       glow_color: 'rgba(14, 165, 233, 0.45)',
       bg_gradient: 'from-sky-950/40 to-slate-950/80',
       captain: {
-        id: 102,
-        name: 'Sumit Nagal',
+        id: 3,
+        name: 'Goutham Chakravarthy Vegesna',
         player_number: 'CAPTAIN #02',
-        age: 27,
+        age: 47,
         country: 'India',
         country_flag: '🇮🇳',
         category: 'Group A',
@@ -95,12 +94,11 @@ const initialSeed = {
         is_captain: true,
         designation: 'CAPTAIN',
         playing_hand: 'Right Hand',
-        world_ranking: 68,
-        wins: 49,
-        aces: 120,
-        matches: 68,
-        win_percentage: 72,
-        image_url: '/images/players/liam-carter.jpg'
+        backhand_style: 'Two handed',
+        jersey_name: 'Goutham',
+        jersey_number: '9',
+        base_price: 10000,
+        image_url: 'https://drive.google.com/thumbnail?id=1rZXOFJj09vOmFI2u9558EQD_z2hBZ3g-&sz=w400'
       }
     },
     {
@@ -119,10 +117,10 @@ const initialSeed = {
       glow_color: 'rgba(168, 85, 247, 0.45)',
       bg_gradient: 'from-purple-950/40 to-slate-950/80',
       captain: {
-        id: 103,
-        name: 'Ramkumar Ramanathan',
+        id: 6,
+        name: 'K Ravi Kumar',
         player_number: 'CAPTAIN #03',
-        age: 29,
+        age: 42,
         country: 'India',
         country_flag: '🇮🇳',
         category: 'Group A',
@@ -130,12 +128,11 @@ const initialSeed = {
         is_captain: true,
         designation: 'CAPTAIN',
         playing_hand: 'Right Hand',
-        world_ranking: 95,
-        wins: 44,
-        aces: 156,
-        matches: 65,
-        win_percentage: 68,
-        image_url: '/images/players/vikram-desai.jpg'
+        backhand_style: 'Two handed',
+        jersey_name: 'Ravi',
+        jersey_number: '',
+        base_price: 10000,
+        image_url: 'https://drive.google.com/thumbnail?id=1ydIkbubZwsyMy46PTLakkazj7eCAaBd3&sz=w400'
       }
     },
     {
@@ -154,10 +151,10 @@ const initialSeed = {
       glow_color: 'rgba(34, 197, 94, 0.45)',
       bg_gradient: 'from-emerald-950/40 to-slate-950/80',
       captain: {
-        id: 101,
-        name: 'Rohan Bopanna',
+        id: 1,
+        name: 'Anunag Varma',
         player_number: 'CAPTAIN #04',
-        age: 28,
+        age: 27,
         country: 'India',
         country_flag: '🇮🇳',
         category: 'Group A',
@@ -165,26 +162,16 @@ const initialSeed = {
         is_captain: true,
         designation: 'CAPTAIN',
         playing_hand: 'Right Hand',
-        world_ranking: 42,
-        wins: 58,
-        aces: 142,
-        matches: 75,
-        win_percentage: 77,
-        image_url: '/images/players/arjun-mehta.jpg'
+        backhand_style: 'Two handed',
+        jersey_name: 'ANU',
+        jersey_number: '18',
+        base_price: 10000,
+        image_url: 'https://drive.google.com/thumbnail?id=1dleY-nWWJvjD69UJTx-i85w6LccrRKp7&sz=w400'
       }
     }
   ],
   players: [
-    // ===== GROUP A PLAYERS (16 players) =====
-    {
-      id: 1, player_number: 'PLAYER #01', name: 'Anunag Varma',
-      age: 27, country: 'India', country_flag: '🇮🇳',
-      category: 'Group A', group: 'A', playing_hand: 'Right Hand',
-      backhand_style: 'Two handed', jersey_name: 'ANU', jersey_number: '18',
-      base_price: 10000.00,
-      image_url: 'https://drive.google.com/thumbnail?id=1dleY-nWWJvjD69UJTx-i85w6LccrRKp7&sz=w400',
-      status: 'live', display_order: 1
-    },
+    // ===== GROUP A PLAYERS =====
     {
       id: 2, player_number: 'PLAYER #02', name: 'Dr Kiran',
       age: 39, country: 'India', country_flag: '🇮🇳',
@@ -195,15 +182,6 @@ const initialSeed = {
       status: 'upcoming', display_order: 2
     },
     {
-      id: 3, player_number: 'PLAYER #03', name: 'Goutham Chakravarthy Vegesna',
-      age: 47, country: 'India', country_flag: '🇮🇳',
-      category: 'Group A', group: 'A', playing_hand: 'Right Hand',
-      backhand_style: 'Two handed', jersey_name: 'Goutham', jersey_number: '9',
-      base_price: 10000.00,
-      image_url: 'https://drive.google.com/thumbnail?id=1rZXOFJj09vOmFI2u9558EQD_z2hBZ3g-&sz=w400',
-      status: 'upcoming', display_order: 3
-    },
-    {
       id: 4, player_number: 'PLAYER #04', name: 'I Prakash',
       age: 41, country: 'India', country_flag: '🇮🇳',
       category: 'Group A', group: 'A', playing_hand: 'Right Hand',
@@ -211,24 +189,6 @@ const initialSeed = {
       base_price: 10000.00,
       image_url: 'https://drive.google.com/thumbnail?id=15LjctR0R_ecAdtKKPDw79hIKKAKaV12z&sz=w400',
       status: 'upcoming', display_order: 4
-    },
-    {
-      id: 5, player_number: 'PLAYER #05', name: 'Janaki Rama Raju Mantena',
-      age: 35, country: 'India', country_flag: '🇮🇳',
-      category: 'Group A', group: 'A', playing_hand: 'Right Hand',
-      backhand_style: 'Single handed', jersey_name: 'Janaki', jersey_number: '',
-      base_price: 10000.00,
-      image_url: 'https://drive.google.com/thumbnail?id=1LoefRM0tqpo5V_vhrbfWYFCj8Mq3Eapg&sz=w400',
-      status: 'upcoming', display_order: 5
-    },
-    {
-      id: 6, player_number: 'PLAYER #06', name: 'K Ravi Kumar',
-      age: 42, country: 'India', country_flag: '🇮🇳',
-      category: 'Group A', group: 'A', playing_hand: 'Right Hand',
-      backhand_style: 'Two handed', jersey_name: 'Ravi', jersey_number: '',
-      base_price: 10000.00,
-      image_url: 'https://drive.google.com/thumbnail?id=1ydIkbubZwsyMy46PTLakkazj7eCAaBd3&sz=w400',
-      status: 'upcoming', display_order: 6
     },
     {
       id: 7, player_number: 'PLAYER #07', name: 'K Satyanarayana Raju',
