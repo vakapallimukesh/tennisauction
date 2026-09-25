@@ -14,7 +14,7 @@ function AppRouter() {
   // Parse path and query parameters
   const parseCurrentRoute = () => {
     const path = window.location.pathname.toLowerCase();
-    
+
     if (path === '/' || path === '/login' || path.startsWith('/admin/login')) {
       return { view: 'login', teamId: null };
     }
@@ -30,7 +30,7 @@ function AppRouter() {
     if (path === '/display') {
       return { view: 'display', teamId: null };
     }
-    
+
     // Match /team/:id
     const teamMatch = path.match(/^\/team\/([1-4])/);
     if (teamMatch) {
@@ -61,9 +61,9 @@ function AppRouter() {
     return (
       <div className="h-screen bg-surface flex flex-col items-center justify-center text-on-surface">
         <div className="w-14 h-14 relative mb-4">
-          <img 
-            src="/images/tennis-ball-glow.svg" 
-            alt="Loading..." 
+          <img
+            src="/images/tennis-ball-glow.svg"
+            alt="Loading..."
             className="w-full h-full animate-tennis-spin"
           />
         </div>
@@ -84,9 +84,9 @@ function AppRouter() {
 
   if (route.view === 'team') {
     return (
-      <TeamDashboard 
-        teamId={route.teamId} 
-        onNavigate={navigateTo} 
+      <TeamDashboard
+        teamId={route.teamId}
+        onNavigate={navigateTo}
       />
     );
   }
@@ -96,13 +96,13 @@ function AppRouter() {
       return <LoginPage onNavigate={navigateTo} />;
     }
     return (
-      <AppLayout 
-        activeNav="player-pool" 
+      <AppLayout
+        activeNav="player-pool"
         onNavigate={navigateTo}
         currentRole="admin"
       >
-        <PlayerManagement 
-          onBackToControlPanel={() => navigateTo('/admin')} 
+        <PlayerManagement
+          onBackToControlPanel={() => navigateTo('/admin')}
         />
       </AppLayout>
     );
@@ -110,13 +110,13 @@ function AppRouter() {
 
   if (route.view === 'squads') {
     return (
-      <AppLayout 
-        activeNav="team-squads" 
+      <AppLayout
+        activeNav="team-squads"
         onNavigate={navigateTo}
         currentRole="admin"
       >
-        <TeamSquadsManagement 
-          onNavigate={navigateTo} 
+        <TeamSquadsManagement
+          onNavigate={navigateTo}
         />
       </AppLayout>
     );
@@ -127,7 +127,7 @@ function AppRouter() {
       return <LoginPage onNavigate={navigateTo} />;
     }
     return (
-      <AdminControlPanel 
+      <AdminControlPanel
         onNavigate={navigateTo}
         onNavigateToPlayers={() => navigateTo('/admin/players')}
         onOpenDisplay={() => window.open('/display', '_blank')}
