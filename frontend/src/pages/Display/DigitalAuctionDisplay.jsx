@@ -679,18 +679,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   </div>
                 </div>
 
-                {/* Confirmed Roster with Group A & Group B Separation — Montserrat Bold */}
+                {/* Group A & Group B Separation — Montserrat Bold */}
                 <div className="flex-1 flex flex-col justify-between mt-2.5 min-h-0 relative z-10">
                   <div className="flex-1 overflow-y-auto pr-0.5 space-y-2">
-                    <div className="flex items-center justify-between pb-1 border-b border-slate-300">
-                      <p className={`text-[10px] font-bold uppercase tracking-wider font-montserrat-bold ${isLeading ? 'text-emerald-900' : 'text-slate-700'}`}>
-                        CONFIRMED ROSTER
-                      </p>
-                      <span className="text-[9px] font-bold text-slate-500 font-montserrat-bold">
-                        {teamPlayers.length}/{maxSquad}
-                      </span>
-                    </div>
-
                     {/* GROUP A SECTION GREY BOX */}
                     <div className="border-2 border-slate-400/80 rounded-lg p-2 bg-slate-200/50 shadow-2xs space-y-1.5">
                       <div className="flex items-center justify-between pb-1 border-b border-slate-300">
