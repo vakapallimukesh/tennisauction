@@ -279,7 +279,7 @@
       "jersey_number": "11",
       "base_price": 10000,
       "image_url": "/images/players2/M%20V%20Shiva%20Kumar%20raju.png",
-      "status": "upcoming",
+      "status": "live",
       "display_order": 4
     },
     {
@@ -657,7 +657,7 @@
       "jersey_number": "",
       "base_price": 10000,
       "image_url": "/images/players2/G%20V%20Kiran%20Kumar%20Raju.png",
-      "status": "live",
+      "status": "upcoming",
       "display_order": 25
     },
     {
@@ -1008,7 +1008,7 @@
     "id": 1,
     "title": "Grand Circuit Tennis Player Auction 2026",
     "status": "live",
-    "current_player_id": 25,
+    "current_player_id": 4,
     "current_bid": 0,
     "highest_bidder_team_id": null,
     "bid_increment": 2000,
@@ -1016,6 +1016,43 @@
     "timer_remaining": 15,
     "timer_running": true
   },
-  "bids": [],
+  "bids": [
+    {
+      "id": 1,
+      "auction_id": 1,
+      "player_id": 25,
+      "team_id": 2,
+      "amount": 12000,
+      "bid_time": "2026-09-25T09:37:00.897Z",
+      "status": "valid"
+    },
+    {
+      "id": 2,
+      "auction_id": 1,
+      "player_id": 25,
+      "team_id": 3,
+      "amount": 13000,
+      "bid_time": "2026-09-25T09:37:22.692Z",
+      "status": "valid"
+    },
+    {
+      "id": 3,
+      "auction_id": 1,
+      "player_id": 25,
+      "team_id": 4,
+      "amount": 14000,
+      "bid_time": "2026-09-25T09:37:32.692Z",
+      "status": "valid"
+    },
+    {
+      "id": 4,
+      "auction_id": 1,
+      "player_id": 25,
+      "team_id": 1,
+      "amount": 15000,
+      "bid_time": "2026-09-25T09:37:46.945Z",
+      "status": "valid"
+    }
+  ],
   "auction_events": []
 }
