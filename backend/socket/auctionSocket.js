@@ -82,8 +82,8 @@ function getFullAuctionSnapshot() {
       ...t,
       captain,
       max_players: t.max_players || 10,
-      max_group_a: t.max_group_a || 3,
-      max_group_b: t.max_group_b || 7,
+      max_group_a: t.max_group_a || 4,
+      max_group_b: t.max_group_b || 8,
       players_bought: totalPlayersCount,
       group_a_count: groupACount,
       group_b_count: groupBCount,
@@ -309,8 +309,8 @@ function validateTeamSquadLimits(teamId, targetPlayer, store) {
   const bought = (store.team_players || []).filter(tp => tp.team_id === team.id);
   const totalCount = 1 + bought.length; // 1 for the fixed captain
   const maxTotal = team.max_players || 10;
-  const maxA = team.max_group_a || 3;
-  const maxB = team.max_group_b || 7;
+  const maxA = team.max_group_a || 4;
+  const maxB = team.max_group_b || 8;
 
   let groupACount = 1; // 1 for the fixed captain in Group A
   let groupBCount = 0;

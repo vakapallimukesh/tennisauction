@@ -3,7 +3,7 @@
     {
       "id": 1,
       "username": "admin",
-      "password_hash": "$2b$10$CCOjPqhMvva8RQMvaUqFqeOa3NLoCqZbvH0PsCjpUkcFJmIoHD1lC",
+      "password_hash": "$2b$10$D1UnN6.gQjvWxeQyWk0tY.9g/Fg/7YOJ17qm3nXzuwwgWU.0rio6K",
       "full_name": "Tournament Director",
       "role": "admin",
       "team_id": null
@@ -11,7 +11,7 @@
     {
       "id": 2,
       "username": "team1",
-      "password_hash": "$2b$10$k2fLTshgFuby89U4MEl0YujoNm2NE4kJ8skvSjSIvMnfz.FQRFNYi",
+      "password_hash": "$2b$10$M.QFb1LU5kVZJdi094k1Te7wSH7RBqBDscnTIiJVJBxa1aVjHXkyG",
       "full_name": "7 Aces Head Coach",
       "role": "team",
       "team_id": 1
@@ -19,7 +19,7 @@
     {
       "id": 3,
       "username": "team2",
-      "password_hash": "$2b$10$IrNE6qMT/4UYaVT44hO81OFxdm5OcG5aHNOSoUbkYDoTMgXTa.TUW",
+      "password_hash": "$2b$10$1jd0kuKXxjy/1X2k5By7Me4rJzXCvA0DEPq/2AeOQWePBvFgTwszu",
       "full_name": "Royal Tigers Manager",
       "role": "team",
       "team_id": 2
@@ -27,7 +27,7 @@
     {
       "id": 4,
       "username": "team3",
-      "password_hash": "$2b$10$4wQ4VSYzHsHAbkn8ouC04eYiy.jifRlln.55XGO7IJs4gmJtfbRQa",
+      "password_hash": "$2b$10$WinUKQ5kwHnjXz57LHfKfOpXWAu2F6KL19GRfSD0l.N2dO5cV5rXO",
       "full_name": "Mighty Dragons Owner",
       "role": "team",
       "team_id": 3
@@ -35,7 +35,7 @@
     {
       "id": 5,
       "username": "team4",
-      "password_hash": "$2b$10$imjxe514lODQxEDVrZ6OoOSNdFDY73mA99F0U3VwYb4SzqvsRTIS2",
+      "password_hash": "$2b$10$.GIe3Jlo.Aebv497r2coo.luaYLtra2qINXpHomefIl4fq/0Ud2ri",
       "full_name": "Golden Eagles Captain",
       "role": "team",
       "team_id": 4

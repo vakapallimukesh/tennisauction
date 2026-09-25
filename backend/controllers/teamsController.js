@@ -21,8 +21,8 @@ exports.getTeams = async (req, res) => {
         }
       });
       const maxPlayers = team.max_players || 10;
-      const maxGroupA = team.max_group_a || 3;
-      const maxGroupB = team.max_group_b || 7;
+      const maxGroupA = team.max_group_a || 4;
+      const maxGroupB = team.max_group_b || 8;
       const totalPlayersCount = 1 + teamPlayers.length;
 
       return {
@@ -110,8 +110,8 @@ exports.getTeamById = async (req, res) => {
     ];
 
     const maxPlayers = team.max_players || 10;
-    const maxGroupA = team.max_group_a || 3;
-    const maxGroupB = team.max_group_b || 7;
+    const maxGroupA = team.max_group_a || 4;
+    const maxGroupB = team.max_group_b || 8;
     const totalPlayersCount = 1 + purchasedPlayers.length;
 
     res.json({

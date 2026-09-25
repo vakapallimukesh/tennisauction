@@ -665,9 +665,9 @@ function loadStoreFromDisk() {
 
           return {
             ...t,
-            max_players: 10,
-            max_group_a: 3,
-            max_group_b: 7,
+            max_players: 12,
+            max_group_a: 4,
+            max_group_b: 8,
             captain
           };
         });
