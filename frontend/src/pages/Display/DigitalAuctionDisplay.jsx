@@ -116,18 +116,18 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
   // Format points helpers
   const formatCurrency = (val) => {
-    if (val === undefined || val === null) return '0 pts';
-    return Number(val).toLocaleString('en-IN') + ' pts';
+    if (val === undefined || val === null) return '0';
+    return Number(val).toLocaleString('en-IN');
   };
 
   const formatLakhs = (val) => {
-    if (val === undefined || val === null) return '0 pts';
-    return Number(val).toLocaleString('en-IN') + ' pts';
+    if (val === undefined || val === null) return '0';
+    return Number(val).toLocaleString('en-IN');
   };
 
   const formatLakhsShort = (val) => {
-    if (val === undefined || val === null) return '0 pts';
-    return Number(val).toLocaleString('en-IN') + ' pts';
+    if (val === undefined || val === null) return '0';
+    return Number(val).toLocaleString('en-IN');
   };
 
   // Full comprehensive active player resolution
@@ -673,7 +673,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
                   {/* Points & Squad Count — compact strip below image */}
                   <div className={`px-2 py-1.5 text-center ${isLeading ? 'bg-slate-100' : 'bg-slate-50'}`}>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block leading-none mb-0.5 font-montserrat-bold">points:</span>
+
                     <span className="text-xl xl:text-2xl font-bold text-slate-900 font-montserrat-bold leading-tight block">{formatCurrency(remaining)}</span>
                     <span className="text-[11px] text-slate-500 font-bold font-montserrat-bold">Squad: {squadCount}/{maxSquad}</span>
                   </div>
@@ -701,15 +701,11 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                             return (
                               <div
                                 key={p.id || `ga-${pIdx}`}
-                                className={`border rounded-md px-2.5 py-1.5 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isCaptain
-                                  ? 'border-amber-400/80 bg-amber-50/60'
-                                  : isLeading
-                                    ? 'border-emerald-300 bg-white'
-                                    : 'border-slate-300 bg-white'
-                                  }`}
+                                className="flex items-center justify-between gap-2 py-1 px-1 transition-colors border-b border-slate-300/40 last:border-b-0"
                               >
-                                {/* Player Name in Roster — Montserrat Bold & Clearly Visible */}
-                                <div className="font-bold text-slate-950 text-[13px] sm:text-[13.5px] xl:text-[14.5px] 2xl:text-[15px] leading-snug font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
+                                {/* Player Name in Roster with Bullet Point */}
+                                <div className="font-extrabold text-slate-950 text-[13.5px] sm:text-[14px] xl:text-[14.5px] 2xl:text-[15px] leading-snug font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-950 shrink-0 inline-block"></span>
                                   <span className="truncate" title={p.name || p.player_name || ''}>
                                     {p.name || p.player_name || ''}
                                   </span>
@@ -754,13 +750,11 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                           groupBPlayers.map((p, pIdx) => (
                             <div
                               key={p.id || `gb-${pIdx}`}
-                              className={`border rounded-md px-2.5 py-1.5 flex items-center justify-between gap-2 shadow-2xs transition-colors ${isLeading
-                                ? 'border-emerald-300 bg-white'
-                                : 'border-slate-300 bg-white'
-                                }`}
+                              className="flex items-center justify-between gap-2 py-1 px-1 transition-colors border-b border-slate-300/40 last:border-b-0"
                             >
-                              {/* Player Name in Roster — Montserrat Bold & Clearly Visible */}
-                              <div className="font-bold text-slate-950 text-[13px] sm:text-[13.5px] xl:text-[14.5px] 2xl:text-[15px] leading-snug font-montserrat-bold min-w-0 flex-1">
+                              {/* Player Name in Roster with Bullet Point */}
+                              <div className="font-extrabold text-slate-950 text-[13.5px] sm:text-[14px] xl:text-[14.5px] 2xl:text-[15px] leading-snug font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-slate-950 shrink-0 inline-block"></span>
                                 <span className="truncate block" title={p.name || p.player_name || ''}>
                                   {p.name || p.player_name || ''}
                                 </span>
