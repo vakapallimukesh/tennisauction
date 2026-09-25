@@ -112,10 +112,10 @@
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
 }
 
-/* Back Face: Current Player Photo & Details (Replaces Bhimavaram Digitals) */
+/* Back Face: Sponsor 2 (Devee Group) */
 .cube-face-back {
   transform: rotateY(180deg) translateZ(var(--showcase-half-size));
-  background: #0f172a;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
 }
 
 /* Left Face: Sponsor 3 (PV Enterprises) */
