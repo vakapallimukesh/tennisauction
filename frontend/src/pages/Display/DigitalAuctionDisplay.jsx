@@ -255,11 +255,12 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
   const sponsorLogos = useMemo(() => {
     const deveeLogoItem = {
       node: (
-        <div className="h-11 sm:h-12 flex items-center justify-center">
+        <div className="h-11 sm:h-12 flex items-center justify-center overflow-visible px-3">
           <img
             src="/images/sponsors/devee-group.png"
             alt="Devee Group"
-            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-110 drop-shadow-sm scale-[1.45] origin-center"
+            style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.18))' }}
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         </div>
@@ -269,11 +270,12 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
     const pvLogoItem = {
       node: (
-        <div className="h-11 sm:h-12 flex items-center justify-center">
+        <div className="h-11 sm:h-12 flex items-center justify-center overflow-visible px-3">
           <img
             src="/images/sponsors/pv-enterprises.png"
             alt="PV Enterprises"
-            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-110 drop-shadow-sm scale-[1.45] origin-center"
+            style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.18))' }}
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         </div>
@@ -283,11 +285,11 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
     const bhimavaramDigitalsItem = {
       node: (
-        <div className="h-11 sm:h-12 flex items-center justify-center overflow-visible">
+        <div className="h-11 sm:h-12 flex items-center justify-center overflow-visible px-3">
           <img
             src="/images/sponsors/bhimavaram-digitals.png"
             alt="Bhimavaram Digitals"
-            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs scale-[1.35] origin-center"
+            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-110 drop-shadow-sm scale-[1.35] origin-center"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         </div>

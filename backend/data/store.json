@@ -279,7 +279,7 @@
       "jersey_number": "11",
       "base_price": 10000,
       "image_url": "/images/players2/M%20V%20Shiva%20Kumar%20raju.png",
-      "status": "live",
+      "status": "upcoming",
       "display_order": 4
     },
     {
@@ -315,7 +315,7 @@
       "jersey_number": "63",
       "base_price": 10000,
       "image_url": "/images/players2/Mantena%20Atchyuth%20varma.png",
-      "status": "upcoming",
+      "status": "live",
       "display_order": 6
     },
     {
@@ -1008,7 +1008,7 @@
     "id": 1,
     "title": "Grand Circuit Tennis Player Auction 2026",
     "status": "live",
-    "current_player_id": 4,
+    "current_player_id": 6,
     "current_bid": 0,
     "highest_bidder_team_id": null,
     "bid_increment": 2000,
