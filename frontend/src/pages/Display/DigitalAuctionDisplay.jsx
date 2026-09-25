@@ -255,12 +255,11 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
   const sponsorLogos = useMemo(() => {
     const deveeLogoItem = {
       node: (
-        <div className="h-11 sm:h-12 flex items-center justify-center overflow-visible px-3">
+        <div className="h-10 flex items-center justify-center px-2">
           <img
             src="/images/sponsors/devee-group.png"
             alt="Devee Group"
-            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-110 drop-shadow-sm scale-[1.45] origin-center"
-            style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.18))' }}
+            className="h-9 w-auto max-h-9 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         </div>
@@ -270,12 +269,11 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
     const pvLogoItem = {
       node: (
-        <div className="h-11 sm:h-12 flex items-center justify-center overflow-visible px-3">
+        <div className="h-10 flex items-center justify-center px-2">
           <img
             src="/images/sponsors/pv-enterprises.png"
             alt="PV Enterprises"
-            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-110 drop-shadow-sm scale-[1.45] origin-center"
-            style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.18))' }}
+            className="h-9 w-auto max-h-9 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         </div>
@@ -285,11 +283,11 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
     const bhimavaramDigitalsItem = {
       node: (
-        <div className="h-11 sm:h-12 flex items-center justify-center overflow-visible px-3">
+        <div className="h-10 flex items-center justify-center px-2">
           <img
             src="/images/sponsors/bhimavaram-digitals.png"
             alt="Bhimavaram Digitals"
-            className="h-full w-auto max-h-12 object-contain select-none transition-transform hover:scale-110 drop-shadow-sm scale-[1.35] origin-center"
+            className="h-9 w-auto max-h-9 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         </div>
@@ -860,7 +858,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       </main>
 
       {/* ===== BOTTOM SPONSORS BAR WITH LOGO LOOP ===== */}
-      <footer className="w-full bg-[#dbe2e6] border-t-2 border-slate-700/80 py-0.5 px-4 shadow-inner shrink-0 font-montserrat-bold">
+      <footer className="w-full bg-[#dbe2e6] border-t-2 border-slate-700/80 py-1 px-4 shadow-inner shrink-0 font-montserrat-bold">
         <div className="max-w-[1920px] mx-auto flex items-center justify-between gap-3">
           {/* Left: Sponsors Label */}
           <div className="flex items-center gap-1 shrink-0 bg-white/70 px-2 py-0.5 rounded border border-slate-400/60 shadow-xs">
@@ -873,8 +871,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
               logos={sponsorLogos}
               speed={42}
               direction="left"
-              logoHeight={48}
-              gap={52}
+              logoHeight={42}
+              gap={54}
               hoverSpeed={0}
               scaleOnHover
               fadeOut
