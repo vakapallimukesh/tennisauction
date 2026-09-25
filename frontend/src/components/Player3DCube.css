@@ -19,7 +19,6 @@
   /* Prominent TV showcase display size — responsive across 1080p TVs and laptops */
   --showcase-cube-size: clamp(210px, min(30vh, 23vw), 320px);
   --showcase-half-size: calc(var(--showcase-cube-size) / 2);
-  --showcase-prism-radius: calc(var(--showcase-cube-size) * 0.866025);
 }
 
 .cube-3d-wrapper {
@@ -32,11 +31,11 @@
   justify-content: center;
 }
 
-/* Floor Shadow plane underneath the rotating 3D showcase */
+/* Floor Shadow plane underneath the rotating 3D cube */
 .cube-floor-shadow {
   position: absolute;
-  width: calc(var(--showcase-cube-size) * 1.22);
-  height: calc(var(--showcase-cube-size) * 0.4);
+  width: calc(var(--showcase-cube-size) * 1.15);
+  height: calc(var(--showcase-cube-size) * 0.38);
   bottom: -28px;
   left: 50%;
   transform: translateX(-50%) rotateX(85deg);
@@ -46,17 +45,16 @@
   z-index: 1;
 }
 
-/* The rotating 3D Showcase (Continuous 1-way rightward rotation) */
+/* The rotating 3D Cube */
 .cube-3d {
   position: absolute;
   width: var(--showcase-cube-size);
   height: var(--showcase-cube-size);
   transform-style: preserve-3d;
   will-change: transform;
-  animation: cubeSportsRotateCycle 30s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
 }
 
-/* Faces of the 3D Showcase (Sharp Square Corners) */
+/* 6 Faces of the Proper 3D Cube (Sharp 90-degree Square Corners) */
 .cube-face {
   position: absolute;
   width: var(--showcase-cube-size);
@@ -101,105 +99,37 @@
   -webkit-backface-visibility: hidden;
 }
 
-/* 6 Faces Positioned in Sequential Order:
-   1: Player (0deg)
-   2: PV Enterprises (60deg)
-   3: Player (120deg)
-   4: Devee Group (180deg)
-   5: Player (240deg)
-   6: Bhimavaram Tennis League Tournament (300deg)
-*/
-.cube-face-1 {
-  transform: rotateY(0deg) translateZ(var(--showcase-prism-radius));
+/* 4 Vertical Faces of the Proper Cube (Exact 90-degree 3D Cube geometry) */
+.cube-face-front {
+  transform: rotateY(0deg) translateZ(var(--showcase-half-size));
   background: #0f172a;
 }
 
-.cube-face-2 {
-  transform: rotateY(60deg) translateZ(var(--showcase-prism-radius));
+.cube-face-right {
+  transform: rotateY(90deg) translateZ(var(--showcase-half-size));
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
 }
 
-.cube-face-3 {
-  transform: rotateY(120deg) translateZ(var(--showcase-prism-radius));
+.cube-face-back {
+  transform: rotateY(180deg) translateZ(var(--showcase-half-size));
   background: #0f172a;
 }
 
-.cube-face-4 {
-  transform: rotateY(180deg) translateZ(var(--showcase-prism-radius));
+.cube-face-left {
+  transform: rotateY(-90deg) translateZ(var(--showcase-half-size));
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
 }
 
-.cube-face-5 {
-  transform: rotateY(240deg) translateZ(var(--showcase-prism-radius));
-  background: #0f172a;
-}
-
-.cube-face-6 {
-  transform: rotateY(300deg) translateZ(var(--showcase-prism-radius));
-  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-}
-
-/* Top Face: Sleek Metallic Plate */
+/* Top Face: Square Metallic Cap */
 .cube-face-top {
   transform: rotateX(90deg) translateZ(var(--showcase-half-size));
   background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #94a3b8 100%);
   border: 2px solid #475569;
 }
 
-/* Bottom Face: Sleek Dark Metallic Plate */
+/* Bottom Face: Square Dark Metallic Cap */
 .cube-face-bottom {
   transform: rotateX(-90deg) translateZ(var(--showcase-half-size));
   background: linear-gradient(135deg, #475569 0%, #334155 50%, #1e293b 100%);
   border: 2px solid #334155;
-}
-
-/* Sports Broadcast TV Cycle (Total 30s loop - Exact 4.0s hold + 1.0s transition per face):
-   1. Face 1: Player (hold 4.0s)
-   2. Rotate right to PV Enterprises (1.0s transition)
-   3. Face 2: PV Enterprises (hold 4.0s)
-   4. Rotate right to Player (1.0s transition)
-   5. Face 3: Player (hold 4.0s)
-   6. Rotate right to Devee Group (1.0s transition)
-   7. Face 4: Devee Group (hold 4.0s)
-   8. Rotate right to Player (1.0s transition)
-   9. Face 5: Player (hold 4.0s)
-   10. Rotate right to Bhimavaram Tennis League (1.0s transition)
-   11. Face 6: Bhimavaram Tennis League Tournament (hold 4.0s)
-   12. Rotate right back to Face 1 Player (1.0s transition) -> Seamless 360deg loop
-*/
-@keyframes cubeSportsRotateCycle {
-  /* 1. FACE 1: PLAYER PHOTO */
-  0%, 13.33% {
-    transform: rotateY(0deg);
-  }
-
-  /* ROTATE RIGHT TO PV ENTERPRISES (1.0s) */
-  16.66%, 30.00% {
-    transform: rotateY(-60deg);
-  }
-
-  /* ROTATE RIGHT TO PLAYER PHOTO (1.0s) */
-  33.33%, 46.66% {
-    transform: rotateY(-120deg);
-  }
-
-  /* ROTATE RIGHT TO DEVEE GROUP (1.0s) */
-  50.00%, 63.33% {
-    transform: rotateY(-180deg);
-  }
-
-  /* ROTATE RIGHT TO PLAYER PHOTO (1.0s) */
-  66.66%, 80.00% {
-    transform: rotateY(-240deg);
-  }
-
-  /* ROTATE RIGHT TO TOURNAMENT LOGO (1.0s) */
-  83.33%, 96.66% {
-    transform: rotateY(-300deg);
-  }
-
-  /* ROTATE RIGHT BACK TO PLAYER PHOTO (1.0s) */
-  100% {
-    transform: rotateY(-360deg);
-  }
 }
