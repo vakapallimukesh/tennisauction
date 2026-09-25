@@ -65,10 +65,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Fallback teams if data is loading
   const activeTeams = teams && teams.length === 4 ? teams : [
-    { id: 1, team_number: 1, name: '7 Aces', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#f97316' },
-    { id: 2, team_number: 2, name: 'Royal Tigers', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#0ea5e9' },
-    { id: 3, team_number: 3, name: 'Mighty Dragons', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#a855f7' },
-    { id: 4, team_number: 4, name: 'Golden Eagles', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#22c55e' }
+    { id: 1, team_number: 1, name: '7 Aces', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#374151' },
+    { id: 2, team_number: 2, name: 'Royal Tigers', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#16a34a' },
+    { id: 3, team_number: 3, name: 'Mighty Dragons', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#2563eb' },
+    { id: 4, team_number: 4, name: 'Golden Eagles', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#dc2626' }
   ];
 
   // Base price for active player (Fixed 10,000 PTS for all players)

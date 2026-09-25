@@ -165,25 +165,29 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         id: 1, team_number: 1, name: '7 Aces',
         short_name: '7 ACES', owner: 'Kabir Malhotra',
         total_purse: 500000, purse_remaining: 500000, spent: 0,
-        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
+        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: [],
+        primary_color: '#374151'
       },
       {
         id: 2, team_number: 2, name: 'Royal Tigers',
         short_name: 'ROYAL TIGERS', owner: 'Vikramaditya Roy',
         total_purse: 500000, purse_remaining: 500000, spent: 0,
-        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
+        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: [],
+        primary_color: '#16a34a'
       },
       {
         id: 3, team_number: 3, name: 'Mighty Dragons',
         short_name: 'MIGHTY DRAGONS', owner: 'Maya Sengupta',
         total_purse: 500000, purse_remaining: 500000, spent: 0,
-        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
+        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: [],
+        primary_color: '#2563eb'
       },
       {
         id: 4, team_number: 4, name: 'Golden Eagles',
         short_name: 'GOLDEN EAGLES', owner: 'Rohan Iyer',
         total_purse: 500000, purse_remaining: 500000, spent: 0,
-        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
+        max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: [],
+        primary_color: '#dc2626'
       }
     ];
 
@@ -203,6 +207,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         short_name: live.short_name || live.name || bt.short_name,
         logo_url: live.logo_url || bt.logo_url || '',
         tagline: live.tagline || bt.tagline,
+        primary_color: live.primary_color || bt.primary_color,
         total_purse: totalPurse,
         purse_remaining: purseLeft,
         spent: spent,
@@ -212,6 +217,17 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       };
     });
   }, [teams]);
+
+  // Team boundary colors for live bidding: 7 aces: dark grey, royal tigers: green, mighty dragons: blue, golden eagles: red
+  const getTeamBoundaryColor = (team) => {
+    const id = team?.id || team?.team_number;
+    const name = (team?.name || '').toLowerCase();
+    if (id === 1 || name.includes('7 aces') || name.includes('aces')) return '#374151'; // dark grey
+    if (id === 2 || name.includes('royal') || name.includes('tiger')) return '#16a34a'; // green
+    if (id === 3 || name.includes('dragon')) return '#2563eb'; // blue
+    if (id === 4 || name.includes('eagle')) return '#dc2626'; // red
+    return team?.primary_color || '#374151';
+  };
 
   // Leading franchise resolution
   const highestBidderId = auction?.highest_bidder_team_id;
@@ -625,11 +641,12 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
                 {/* Team Logo Edge-to-Edge + Points Strip */}
                 <div
-                  className="flex flex-col rounded-xl shadow-sm shrink-0 overflow-hidden relative z-10"
+                  className="flex flex-col rounded-xl shadow-sm shrink-0 overflow-hidden relative z-10 transition-all duration-300"
                   style={{
-                    borderWidth: '2px',
+                    borderWidth: isLeading ? '3px' : '2px',
                     borderStyle: 'solid',
-                    borderColor: isLeading ? (team.primary_color || '#1e293b') : '#1e293b'
+                    borderColor: isLeading ? getTeamBoundaryColor(team) : '#1e293b',
+                    boxShadow: isLeading ? `0 0 16px ${getTeamBoundaryColor(team)}66` : undefined
                   }}
                 >                  {/* Edge-to-Edge Team Logo Image */}
                   <div className="w-full h-44 bg-slate-950 overflow-hidden flex items-center justify-center relative">
@@ -646,7 +663,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                       />
                     ) : null}
                     <div
-                      className={`team-badge-fallback w-full h-full font-black text-2xl items-center justify-center ${isLeading ? 'bg-emerald-200 text-emerald-900' : `${badge.bg} ${badge.text}`
+                      className={`team-badge-fallback w-full h-full font-black text-2xl items-center justify-center ${isLeading ? 'bg-slate-200 text-slate-900' : `${badge.bg} ${badge.text}`
                         }`}
                       style={{ display: team.logo_url ? 'none' : 'flex' }}
                     >
@@ -655,7 +672,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   </div>
 
                   {/* Points & Squad Count — compact strip below image */}
-                  <div className={`px-2 py-1.5 text-center ${isLeading ? 'bg-emerald-50' : 'bg-slate-50'}`}>
+                  <div className={`px-2 py-1.5 text-center ${isLeading ? 'bg-slate-100' : 'bg-slate-50'}`}>
                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block leading-none mb-0.5 font-montserrat-bold">points:</span>
                     <span className="text-xl xl:text-2xl font-bold text-slate-900 font-montserrat-bold leading-tight block">{formatCurrency(remaining)}</span>
                     <span className="text-[11px] text-slate-500 font-bold font-montserrat-bold">Squad: {squadCount}/{maxSquad}</span>
@@ -773,11 +790,17 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
 
                   {/* Team Footer Status - only shown when leading bidder */}
                   {isLeading && (
-                    <div className="mt-2 pt-2 border-t border-emerald-300 shrink-0 font-montserrat-bold">
+                    <div
+                      className="mt-2 pt-2 shrink-0 font-montserrat-bold"
+                      style={{ borderTop: `1px solid ${getTeamBoundaryColor(team)}50` }}
+                    >
                       <div className="flex flex-col items-center justify-center">
                         <div
-                          className="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-md"
-                          style={{ animation: 'pulseBid 2s infinite ease-in-out' }}
+                          className="w-8 h-8 rounded-full text-white flex items-center justify-center shadow-md"
+                          style={{
+                            animation: 'pulseBid 2s infinite ease-in-out',
+                            backgroundColor: getTeamBoundaryColor(team)
+                          }}
                           title="Holding Current Bid"
                         >
                           <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
