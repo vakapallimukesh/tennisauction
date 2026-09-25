@@ -162,8 +162,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
   const displayTeams = useMemo(() => {
     const baseTeams = [
       {
-        id: 1, team_number: 1, name: 'Golden Eagles',
-        short_name: 'GOLDEN EAGLES', owner: 'Rohan Iyer',
+        id: 1, team_number: 1, name: '7 Aces',
+        short_name: '7 ACES', owner: 'Kabir Malhotra',
         total_purse: 500000, purse_remaining: 500000, spent: 0,
         max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
       },
@@ -180,8 +180,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
       },
       {
-        id: 4, team_number: 4, name: '7 Aces',
-        short_name: '7 ACES', owner: 'Kabir Malhotra',
+        id: 4, team_number: 4, name: 'Golden Eagles',
+        short_name: 'GOLDEN EAGLES', owner: 'Rohan Iyer',
         total_purse: 500000, purse_remaining: 500000, spent: 0,
         max_players: 12, max_group_a: 4, max_group_b: 8, players_bought: 0, players: []
       }

@@ -3,7 +3,7 @@
     {
       "id": 1,
       "username": "admin",
-      "password_hash": "$2b$10$VYBApRcd/5qM.16D/Gt1..fBFjQhKknhlpNCwFWsMDxg7RSBS5yQ.",
+      "password_hash": "$2b$10$CCOjPqhMvva8RQMvaUqFqeOa3NLoCqZbvH0PsCjpUkcFJmIoHD1lC",
       "full_name": "Tournament Director",
       "role": "admin",
       "team_id": null
@@ -11,15 +11,15 @@
     {
       "id": 2,
       "username": "team1",
-      "password_hash": "$2b$10$d10FX1jMjQ1NXhL25Xw7mepNqk52bCi0UY9ZDbOny7D.q1kfXSxCu",
-      "full_name": "Golden Eagles Captain",
+      "password_hash": "$2b$10$k2fLTshgFuby89U4MEl0YujoNm2NE4kJ8skvSjSIvMnfz.FQRFNYi",
+      "full_name": "7 Aces Head Coach",
       "role": "team",
       "team_id": 1
     },
     {
       "id": 3,
       "username": "team2",
-      "password_hash": "$2b$10$q8b/Z8AA0agXNszH7cOjBOT.7HOut9i5WWyuVqv7F6BhReECmUmOO",
+      "password_hash": "$2b$10$IrNE6qMT/4UYaVT44hO81OFxdm5OcG5aHNOSoUbkYDoTMgXTa.TUW",
       "full_name": "Royal Tigers Manager",
       "role": "team",
       "team_id": 2
@@ -27,7 +27,7 @@
     {
       "id": 4,
       "username": "team3",
-      "password_hash": "$2b$10$ViAEvm3IptY0fNkbLfSx5eNk8JFeoZ/HE1qPQ5e/YyWhbSHvDsFOO",
+      "password_hash": "$2b$10$4wQ4VSYzHsHAbkn8ouC04eYiy.jifRlln.55XGO7IJs4gmJtfbRQa",
       "full_name": "Mighty Dragons Owner",
       "role": "team",
       "team_id": 3
@@ -35,8 +35,8 @@
     {
       "id": 5,
       "username": "team4",
-      "password_hash": "$2b$10$M7zcuBz8qaEZ/qgxa5gaV.iVeL2HwDMBY.ACdjz3uT0WFOyao8jmC",
-      "full_name": "7 Aces Head Coach",
+      "password_hash": "$2b$10$imjxe514lODQxEDVrZ6OoOSNdFDY73mA99F0U3VwYb4SzqvsRTIS2",
+      "full_name": "Golden Eagles Captain",
       "role": "team",
       "team_id": 4
     }
@@ -75,23 +75,23 @@
     {
       "id": 1,
       "team_number": 1,
-      "name": "Golden Eagles",
-      "owner": "Rohan Iyer",
-      "total_purse": 400000,
-      "purse_remaining": 400000,
-      "max_players": 10,
-      "max_group_a": 3,
-      "max_group_b": 7,
-      "logo_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuBQeoxuTZ3iayx2RwJLsG91g0YwfC2I5IeoIwDh-ZP-ZZb1h1MOOnJK67d4gdtEqqO472JZko3QwbUXEWCY1a-qFon4Z5Ym9c8cDVod8vXbb2AKUaqxH4_nKFtH2e6GiWfzdGe1UAC_CHyMgCh3uQfYG0Bem5BTqixZagJ9Mi3c2TEF0PxBk5CJTxJv4E9uu1wfDmKHdYruXgVdpr6zjQGu3PsiUjhW_Hl_8WDF9U1V_J92mp8KO9JVfLg7CO_zlvQhLg",
-      "primary_color": "#22c55e",
-      "accent_color": "#4ade80",
-      "glow_color": "rgba(34, 197, 94, 0.45)",
-      "bg_gradient": "from-emerald-950/40 to-slate-950/80",
+      "name": "7 Aces",
+      "owner": "Kabir Malhotra",
+      "total_purse": 500000,
+      "purse_remaining": 500000,
+      "max_players": 12,
+      "max_group_a": 4,
+      "max_group_b": 8,
+      "logo_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuCoCr66Ky_NQMY8L4GsOV6Ctid7kvarVtvp9UPeTASATYUU-cRXvfPH09AaZq40EFw8myY0InSoLw7TA-o3yEtPY-GePH5FqOnioAwD8sBRIdmvrV-Hp5dQRQRSCchXpKj73bxN4zGVPwro9YF0XeiaDt6-nhnnWYpxmdFNOiE8Dn1-gM1pS7dUx34BhSpJ0wqDSlvxAnYtqpfSf-l5YjSGUy2Xk8vHCaQ1XPqRzJ9UIhvsygilngXxzMajI0wcMPZAXw",
+      "primary_color": "#f97316",
+      "accent_color": "#fb923c",
+      "glow_color": "rgba(249, 115, 22, 0.45)",
+      "bg_gradient": "from-orange-950/40 to-slate-950/80",
       "captain": {
-        "id": 101,
-        "name": "Rohan Bopanna",
+        "id": 104,
+        "name": "Yuki Bhambri",
         "player_number": "CAPTAIN #01",
-        "age": 28,
+        "age": 30,
         "country": "India",
         "country_flag": "🇮🇳",
         "category": "Group A",
@@ -99,12 +99,12 @@
         "is_captain": true,
         "designation": "CAPTAIN",
         "playing_hand": "Right Hand",
-        "world_ranking": 42,
-        "wins": 58,
-        "aces": 142,
-        "matches": 75,
-        "win_percentage": 77,
-        "image_url": "/images/players/arjun-mehta.jpg"
+        "world_ranking": 54,
+        "wins": 52,
+        "aces": 135,
+        "matches": 70,
+        "win_percentage": 74,
+        "image_url": "/images/players/mateo-silva.jpg"
       }
     },
     {
@@ -112,11 +112,11 @@
       "team_number": 2,
       "name": "Royal Tigers",
       "owner": "Vikramaditya Roy",
-      "total_purse": 400000,
-      "purse_remaining": 400000,
-      "max_players": 10,
-      "max_group_a": 3,
-      "max_group_b": 7,
+      "total_purse": 500000,
+      "purse_remaining": 500000,
+      "max_players": 12,
+      "max_group_a": 4,
+      "max_group_b": 8,
       "logo_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuBzlPpsatteW3k07dJDMBs5epKPAFny0ZiYdq-LtsL2H65BvfKsGLAdek30S4p63lTedtEc66sqQUNDY2zsf5g_FAG8Cne45q39e7eIvGaR5X90S1oUc2G8m88PioKEfwrq1q7198GKRElA8YFulNGf5Q9yiSRPOBF4yG4180hCy_Lam6VV9WPAlHdAQApiJu9E1-amSiUVdy3FkXBNRcJxVvNs-yMDshhNQA5RcwujLqsTrLUwBhs2-CMAz8HDPmLDcg",
       "primary_color": "#0ea5e9",
       "accent_color": "#38bdf8",
@@ -147,11 +147,11 @@
       "team_number": 3,
       "name": "Mighty Dragons",
       "owner": "Maya Sengupta",
-      "total_purse": 400000,
-      "purse_remaining": 389000,
-      "max_players": 10,
-      "max_group_a": 3,
-      "max_group_b": 7,
+      "total_purse": 500000,
+      "purse_remaining": 500000,
+      "max_players": 12,
+      "max_group_a": 4,
+      "max_group_b": 8,
       "logo_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuD4itoiytm74zFszspckrs3m2_7VmkcUg3AJ4jJZaKtWzMfSxDfwB9q-GEoD0oUXrA4UfipYKjtXnmooJPr7L_Ae69YTm-FUc97hxg9otx0WPcVis-Fn5tBhB21fdBTycoiMdwsFQfkqHoG5UFNymMau-5xgOj61A_KawQnGw37fYe4k9BwHeBuACpi1lMwotohhc9JDPAp3HUqLnF7VYA5VZ6w6k4ELLeA1HWrs6th-w0cnN_1vfG-vC8vs6g6T8--Pg",
       "primary_color": "#a855f7",
       "accent_color": "#c084fc",
@@ -175,29 +175,28 @@
         "matches": 65,
         "win_percentage": 68,
         "image_url": "/images/players/vikram-desai.jpg"
-      },
-      "players_bought": 1
+      }
     },
     {
       "id": 4,
       "team_number": 4,
-      "name": "7 Aces",
-      "owner": "Kabir Malhotra",
-      "total_purse": 400000,
-      "purse_remaining": 400000,
-      "max_players": 10,
-      "max_group_a": 3,
-      "max_group_b": 7,
-      "logo_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuCoCr66Ky_NQMY8L4GsOV6Ctid7kvarVtvp9UPeTASATYUU-cRXvfPH09AaZq40EFw8myY0InSoLw7TA-o3yEtPY-GePH5FqOnioAwD8sBRIdmvrV-Hp5dQRQRSCchXpKj73bxN4zGVPwro9YF0XeiaDt6-nhnnWYpxmdFNOiE8Dn1-gM1pS7dUx34BhSpJ0wqDSlvxAnYtqpfSf-l5YjSGUy2Xk8vHCaQ1XPqRzJ9UIhvsygilngXxzMajI0wcMPZAXw",
-      "primary_color": "#f97316",
-      "accent_color": "#fb923c",
-      "glow_color": "rgba(249, 115, 22, 0.45)",
-      "bg_gradient": "from-orange-950/40 to-slate-950/80",
+      "name": "Golden Eagles",
+      "owner": "Rohan Iyer",
+      "total_purse": 500000,
+      "purse_remaining": 500000,
+      "max_players": 12,
+      "max_group_a": 4,
+      "max_group_b": 8,
+      "logo_url": "https://lh3.googleusercontent.com/aida-public/AB6AXuBQeoxuTZ3iayx2RwJLsG91g0YwfC2I5IeoIwDh-ZP-ZZb1h1MOOnJK67d4gdtEqqO472JZko3QwbUXEWCY1a-qFon4Z5Ym9c8cDVod8vXbb2AKUaqxH4_nKFtH2e6GiWfzdGe1UAC_CHyMgCh3uQfYG0Bem5BTqixZagJ9Mi3c2TEF0PxBk5CJTxJv4E9uu1wfDmKHdYruXgVdpr6zjQGu3PsiUjhW_Hl_8WDF9U1V_J92mp8KO9JVfLg7CO_zlvQhLg",
+      "primary_color": "#22c55e",
+      "accent_color": "#4ade80",
+      "glow_color": "rgba(34, 197, 94, 0.45)",
+      "bg_gradient": "from-emerald-950/40 to-slate-950/80",
       "captain": {
-        "id": 104,
-        "name": "Yuki Bhambri",
+        "id": 101,
+        "name": "Rohan Bopanna",
         "player_number": "CAPTAIN #04",
-        "age": 30,
+        "age": 28,
         "country": "India",
         "country_flag": "🇮🇳",
         "category": "Group A",
@@ -205,12 +204,12 @@
         "is_captain": true,
         "designation": "CAPTAIN",
         "playing_hand": "Right Hand",
-        "world_ranking": 54,
-        "wins": 52,
-        "aces": 135,
-        "matches": 70,
-        "win_percentage": 74,
-        "image_url": "/images/players/mateo-silva.jpg"
+        "world_ranking": 42,
+        "wins": 58,
+        "aces": 142,
+        "matches": 75,
+        "win_percentage": 77,
+        "image_url": "/images/players/arjun-mehta.jpg"
       }
     }
   ],
@@ -230,7 +229,7 @@
       "jersey_number": "18",
       "base_price": 10000,
       "image_url": "https://drive.google.com/thumbnail?id=1dleY-nWWJvjD69UJTx-i85w6LccrRKp7&sz=w400",
-      "status": "upcoming",
+      "status": "live",
       "display_order": 1
     },
     {
@@ -968,7 +967,7 @@
       "jersey_number": "7",
       "base_price": 10000,
       "image_url": "https://drive.google.com/thumbnail?id=1BXICR8St8kpjn2LEPc63mMG19MwypWh9&sz=w400",
-      "status": "live",
+      "status": "upcoming",
       "display_order": 42
     },
     {
@@ -1049,57 +1048,14 @@
     "id": 1,
     "title": "Grand Circuit Tennis Player Auction 2026",
     "status": "live",
-    "current_player_id": 42,
+    "current_player_id": 1,
     "current_bid": 0,
     "highest_bidder_team_id": null,
     "bid_increment": 2000,
     "timer_seconds": 15,
     "timer_remaining": 15,
-    "timer_running": true
+    "timer_running": false
   },
-  "bids": [
-    {
-      "id": 1,
-      "auction_id": 1,
-      "player_id": 1,
-      "team_id": 2,
-      "amount": 10000,
-      "bid_time": "2026-09-24T13:10:17.767Z",
-      "status": "valid"
-    },
-    {
-      "id": 2,
-      "auction_id": 1,
-      "player_id": 1,
-      "team_id": 3,
-      "amount": 11000,
-      "bid_time": "2026-09-24T13:16:22.333Z",
-      "status": "valid"
-    }
-  ],
-  "auction_events": [
-    {
-      "id": 1,
-      "event_type": "player_unsold",
-      "auction_id": 1,
-      "player_id": 1,
-      "payload": {
-        "playerName": "Arjun Mehta"
-      },
-      "created_at": "2026-09-24T13:05:13.905Z"
-    },
-    {
-      "id": 2,
-      "event_type": "player_sold",
-      "auction_id": 1,
-      "player_id": 1,
-      "team_id": 3,
-      "payload": {
-        "price": 11000,
-        "playerName": "Arjun Mehta",
-        "teamName": "Mighty Dragons"
-      },
-      "created_at": "2026-09-24T13:18:50.903Z"
-    }
-  ]
+  "bids": [],
+  "auction_events": []
 }

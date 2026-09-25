@@ -65,10 +65,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Fallback teams if data is loading
   const activeTeams = teams && teams.length === 4 ? teams : [
-    { id: 1, team_number: 1, name: 'Golden Eagles', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#22c55e' },
+    { id: 1, team_number: 1, name: '7 Aces', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#f97316' },
     { id: 2, team_number: 2, name: 'Royal Tigers', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#0ea5e9' },
     { id: 3, team_number: 3, name: 'Mighty Dragons', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#a855f7' },
-    { id: 4, team_number: 4, name: '7 Aces', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#f97316' }
+    { id: 4, team_number: 4, name: 'Golden Eagles', total_purse: 500000, purse_remaining: 500000, players_bought: 0, max_players: 12, max_group_a: 4, max_group_b: 8, primary_color: '#22c55e' }
   ];
 
   // Base price for active player (Fixed 10,000 PTS for all players)
@@ -504,7 +504,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/1'); }}
                   className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
                 >
-                  Team 1 (Golden Eagles)
+                  Team 1 (7 Aces)
                 </button>
                 <button
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/2'); }}
@@ -522,7 +522,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/team/4'); }}
                   className="w-full text-left px-3 py-2 text-slate-300 hover:bg-slate-800"
                 >
-                  Team 4 (7 Aces)
+                  Team 4 (Golden Eagles)
                 </button>
                 <button
                   onClick={() => { setShowRoleMenu(false); onNavigate && onNavigate('/display'); }}

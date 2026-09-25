@@ -15,13 +15,13 @@ export default function AppLayout({
     const selected = e.target.value;
     if (selected === 'Admin Control') {
       onNavigate('/admin');
-    } else if (selected === 'Team 1 (Eagles)') {
+    } else if (selected === 'Team 1 (7 Aces)') {
       onNavigate('/team/1');
-    } else if (selected === 'Team 2 (Falcons)') {
+    } else if (selected === 'Team 2 (Royal Tigers)') {
       onNavigate('/team/2');
-    } else if (selected === 'Team 3 (Vipers)') {
+    } else if (selected === 'Team 3 (Mighty Dragons)') {
       onNavigate('/team/3');
-    } else if (selected === 'Team 4 (Strikers)') {
+    } else if (selected === 'Team 4 (Golden Eagles)') {
       onNavigate('/team/4');
     } else if (selected === 'Digital TV LED Display') {
       onNavigate('/display');
@@ -30,10 +30,10 @@ export default function AppLayout({
 
   const getRoleDropdownValue = () => {
     if (currentRole === 'admin') return 'Admin Control';
-    if (currentRole === 'team1') return 'Golden Eagles';
+    if (currentRole === 'team1') return '7 Aces';
     if (currentRole === 'team2') return 'Royal Tigers';
     if (currentRole === 'team3') return 'Mighty Dragons';
-    if (currentRole === 'team4') return '7 Aces';
+    if (currentRole === 'team4') return 'Golden Eagles';
     if (currentRole === 'display') return 'Digital TV LED Display';
     return 'Admin Control';
   };
