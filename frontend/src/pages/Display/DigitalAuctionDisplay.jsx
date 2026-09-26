@@ -229,6 +229,19 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
     return team?.primary_color || '#374151';
   };
 
+  // Team logo box background colors:
+  // Royal Tigers: #002800, Golden Eagles: #FF2800, 7 Aces: #FFFFFF, Mighty Dragons: #123456
+  const getTeamLogoBgColor = (team) => {
+    if (team?.logo_bg_color) return team.logo_bg_color;
+    const id = team?.id || team?.team_number;
+    const name = (team?.name || team?.short_name || '').toLowerCase();
+    if (id === 1 || name.includes('7 aces') || name.includes('aces')) return '#FFFFFF';
+    if (id === 2 || name.includes('royal') || name.includes('tiger')) return '#002800';
+    if (id === 3 || name.includes('mighty') || name.includes('dragon')) return '#123456';
+    if (id === 4 || name.includes('golden') || name.includes('eagle')) return '#FF2800';
+    return '#000000';
+  };
+
   // Leading franchise resolution
   const highestBidderId = auction?.highest_bidder_team_id;
   const highestTeam = highestBidderId
@@ -648,13 +661,16 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   }}
                 >
                   {/* Edge-to-Edge Team Logo Image */}
-                  <div className="w-full h-44 xl:h-48 bg-black overflow-hidden flex items-center justify-center relative" style={{ backgroundColor: '#000000' }}>
+                  <div
+                    className="w-full h-44 xl:h-48 overflow-hidden flex items-center justify-center relative transition-colors duration-200"
+                    style={{ backgroundColor: getTeamLogoBgColor(team) }}
+                  >
                     {team.logo_url ? (
                       <img
                         src={team.logo_url}
                         alt={team.name}
                         className="w-full h-full object-contain p-1"
-                        style={{ backgroundColor: '#000000' }}
+                        style={{ backgroundColor: getTeamLogoBgColor(team) }}
                         onError={(e) => {
                           e.target.style.display = 'none';
                           const fallback = e.target.parentElement?.querySelector('.team-badge-fallback');
@@ -665,7 +681,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                     <div
                       className={`team-badge-fallback w-full h-full font-black text-2xl items-center justify-center ${isLeading ? 'bg-slate-200 text-slate-900' : `${badge.bg} ${badge.text}`
                         }`}
-                      style={{ display: team.logo_url ? 'none' : 'flex' }}
+                      style={{ display: team.logo_url ? 'none' : 'flex', backgroundColor: getTeamLogoBgColor(team) }}
                     >
                       {team.short_name || team.name || badge.label}
                     </div>
