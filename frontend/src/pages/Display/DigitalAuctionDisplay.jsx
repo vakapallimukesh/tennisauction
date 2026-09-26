@@ -818,29 +818,29 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         </div>
 
         {/* ===== RIGHT PANEL: Player Detail + Bidding (3 cols / 25% width) ===== */}
-        <section className="lg:col-span-3 flex flex-col p-3 xl:p-4 2xl:p-5 bg-white space-y-2.5 xl:space-y-3 min-h-0 overflow-hidden font-montserrat-bold">
+        <section className="lg:col-span-3 flex flex-col p-2.5 xl:p-3.5 2xl:p-4 bg-white space-y-1.5 xl:space-y-2 min-h-0 overflow-hidden font-montserrat-bold justify-between">
           {/* 1. TOP: 3D Rotating Showcase Cube (Player Photo & Sponsors) */}
-          <div className="relative flex-1 min-h-[220px] sm:min-h-[250px] flex items-center justify-center overflow-visible py-1 sm:py-2">
+          <div className="relative flex-1 min-h-[200px] sm:min-h-[230px] flex items-center justify-center overflow-visible py-0.5 sm:py-1">
             <Player3DCube player={activePlayer} />
           </div>
 
           {/* 2. Player Name Header — Montserrat Black */}
-          <div className="text-center py-1 sm:py-2 px-1 shrink-0">
+          <div className="text-center py-0.5 px-1 shrink-0">
             <h2 className="text-xl sm:text-2xl xl:text-3xl font-black text-slate-950 tracking-tight uppercase font-montserrat-black leading-tight">
               {activePlayer.name || 'WAITING'}
             </h2>
           </div>
 
           {/* Current Bid — Box */}
-          <div className="text-center py-3.5 xl:py-4 bg-slate-50 rounded-xl border-2 border-slate-700 shadow-sm shrink-0">
-            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1 font-montserrat-bold">CURRENT BID</span>
+          <div className="text-center py-2.5 xl:py-3 bg-slate-50 rounded-xl border-2 border-slate-700 shadow-sm shrink-0">
+            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 block mb-0.5 font-montserrat-bold">CURRENT BID</span>
             <div className="text-3xl sm:text-4xl xl:text-5xl font-black text-slate-900 tracking-tight font-montserrat-black leading-none">
               {highestTeam && Number(currentBid) > 0 ? formatCurrency(currentBid) : 'NO BIDS YET'}
             </div>
           </div>
 
-          {/* Bid By Team — Clean */}
-          <div className="flex items-center justify-center gap-2.5 py-2.5 shrink-0 border-t border-slate-200">
+          {/* Bid By Team — Clean & Moved Up */}
+          <div className="flex items-center justify-center gap-2.5 pt-1.5 pb-1 shrink-0 border-t border-slate-200">
             <span className="text-xs sm:text-sm font-bold uppercase text-slate-400 font-montserrat-bold">BID BY:</span>
             <span className="text-xl xl:text-2xl font-black text-slate-900 font-montserrat-black">
               {highestTeam ? highestTeam.short_name : '—'}
