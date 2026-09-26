@@ -4,8 +4,9 @@ const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-
 dotenv.config();
+dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const playersRouter = require('./routes/players');
 const teamsRouter = require('./routes/teams');

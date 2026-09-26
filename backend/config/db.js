@@ -201,13 +201,13 @@ const initialSeed = {
       status: 'upcoming', display_order: 3
     },
     {
-      id: 6, player_number: 'PLAYER #06', name: 'M V Siva Kumar Raju',
-      age: 53, country: 'India', country_flag: '🇮🇳',
+      id: 4, player_number: 'PLAYER #04', name: 'Mantena Atchyuth varma',
+      age: 25, country: 'India', country_flag: '🇮🇳',
       category: 'Group A', group: 'A', playing_hand: 'Right hand',
-      backhand_style: 'One handed', jersey_name: 'Siva', jersey_number: '11',
+      backhand_style: 'Double handed', jersey_name: 'Atchyuth', jersey_number: '63',
       base_price: 10000.00,
-      image_url: '/images/players2/M%20V%20Shiva%20Kumar%20raju.png',
-      status: 'upcoming', display_order: 6
+      image_url: '/images/players2/Mantena%20Atchyuth%20varma.png',
+      status: 'upcoming', display_order: 4
     },
     {
       id: 5, player_number: 'PLAYER #05', name: 'M Vamsi krishna',
@@ -219,13 +219,13 @@ const initialSeed = {
       status: 'upcoming', display_order: 5
     },
     {
-      id: 4, player_number: 'PLAYER #04', name: 'Mantena Atchyuth varma',
-      age: 25, country: 'India', country_flag: '🇮🇳',
+      id: 6, player_number: 'PLAYER #06', name: 'M V Siva Kumar Raju',
+      age: 53, country: 'India', country_flag: '🇮🇳',
       category: 'Group A', group: 'A', playing_hand: 'Right hand',
-      backhand_style: 'Double handed', jersey_name: 'Atchyuth', jersey_number: '63',
+      backhand_style: 'One handed', jersey_name: 'Siva', jersey_number: '11',
       base_price: 10000.00,
-      image_url: '/images/players2/Mantena%20Atchyuth%20varma.png',
-      status: 'upcoming', display_order: 4
+      image_url: '/images/players2/M%20V%20Shiva%20Kumar%20raju.png',
+      status: 'upcoming', display_order: 6
     },
     {
       id: 7, player_number: 'PLAYER #07', name: 'P Muralidhar',
@@ -301,10 +301,10 @@ const initialSeed = {
       status: 'upcoming', display_order: 14
     },
     {
-      id: 15, player_number: 'PLAYER #15', name: 'Bangar raju',
+      id: 15, player_number: 'PLAYER #15', name: 'CH Bangar raju',
       age: 30, country: 'India', country_flag: '🇮🇳',
       category: 'Group B', group: 'B', playing_hand: 'Right hand',
-      backhand_style: 'Single handed', jersey_name: 'Bangar raju', jersey_number: '1',
+      backhand_style: 'Single handed', jersey_name: 'CH Bangar raju', jersey_number: '1',
       base_price: 10000.00,
       image_url: '/images/players2/Bangar%20raju.png',
       status: 'upcoming', display_order: 15
@@ -337,10 +337,10 @@ const initialSeed = {
       status: 'upcoming', display_order: 18
     },
     {
-      id: 19, player_number: 'PLAYER #19', name: 'CHEKURI BANGARRAJU',
+      id: 19, player_number: 'PLAYER #19', name: 'V Bangar raju',
       age: 54, country: 'India', country_flag: '🇮🇳',
       category: 'Group B', group: 'B', playing_hand: 'Right hand',
-      backhand_style: 'Single handed', jersey_name: 'BANGARAM CH', jersey_number: '11',
+      backhand_style: 'Single handed', jersey_name: 'V Bangar raju', jersey_number: '11',
       base_price: 10000.00,
       image_url: '/images/players2/Bangar%20raju.png',
       status: 'upcoming', display_order: 19
