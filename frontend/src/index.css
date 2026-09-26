@@ -132,6 +132,27 @@
   background: rgba(56, 189, 248, 0.5);
 }
 
+/* Continuous smooth vertical auto-scroll for Group B squad list */
+@keyframes autoScrollVertical {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.group-b-autoscroll {
+  display: flex;
+  flex-direction: column;
+  animation: autoScrollVertical var(--scroll-duration, 14s) linear infinite;
+  will-change: transform;
+}
+
+.group-b-autoscroll:hover {
+  animation-play-state: paused;
+}
+
 /* Pulse and Paddle Glow Indicators */
 @keyframes liveGlow {
 

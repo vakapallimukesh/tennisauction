@@ -85,20 +85,12 @@ export default function Player3DCube({ player }) {
       case 'pv':
         return (
           <div className="relative w-full h-full flex flex-col items-center justify-between p-4 bg-gradient-to-b from-white via-slate-50 to-slate-100">
-            {/* Header Badge */}
-            <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-300 px-2.5 py-0.5 rounded-full shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-900 font-montserrat-bold">
-                OFFICIAL SPONSOR
-              </span>
-            </div>
-
             {/* Sponsor Logo */}
             <div className="flex-1 flex items-center justify-center px-2 w-full my-auto overflow-hidden">
               <img
                 src="/images/sponsors/pv-enterprises.png"
                 alt="PV Enterprises"
-                className="max-h-40 sm:max-h-48 md:max-h-52 w-auto max-w-[94%] object-contain cube-sponsor-logo select-none"
+                className="max-h-44 sm:max-h-52 md:max-h-56 w-auto max-w-[94%] object-contain cube-sponsor-logo select-none"
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}
@@ -119,20 +111,12 @@ export default function Player3DCube({ player }) {
       case 'devee':
         return (
           <div className="relative w-full h-full flex flex-col items-center justify-between p-4 bg-gradient-to-b from-white via-slate-50 to-slate-100">
-            {/* Header Badge */}
-            <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-300 px-2.5 py-0.5 rounded-full shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-900 font-montserrat-bold">
-                OFFICIAL SPONSOR
-              </span>
-            </div>
-
             {/* Sponsor Logo */}
             <div className="flex-1 flex items-center justify-center px-2 w-full my-auto overflow-hidden">
               <img
                 src="/images/sponsors/devee-group.png"
                 alt="Devee Group"
-                className="max-h-40 sm:max-h-48 md:max-h-52 w-auto max-w-[94%] object-contain cube-sponsor-logo select-none"
+                className="max-h-44 sm:max-h-52 md:max-h-56 w-auto max-w-[94%] object-contain cube-sponsor-logo select-none"
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}
@@ -152,35 +136,18 @@ export default function Player3DCube({ player }) {
 
       case 'tournament':
         return (
-          <div className="relative w-full h-full flex flex-col items-center justify-between p-3.5 bg-gradient-to-b from-white via-slate-50 to-slate-100">
-            {/* Header Badge */}
-            <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-300 px-2.5 py-0.5 rounded-full shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-blue-900 font-montserrat-bold">
-                OFFICIAL TOURNAMENT
-              </span>
-            </div>
-
+          <div className="relative w-full h-full flex items-center justify-center p-3 sm:p-4 bg-gradient-to-b from-white via-slate-50 to-slate-100 overflow-hidden">
             {/* Tournament Logo */}
-            <div className="flex-1 flex items-center justify-center px-1.5 w-full my-auto overflow-hidden">
-              <img
-                src="/images/tennis-league-logo.png"
-                alt="Bhimavaram Tennis League"
-                className="max-h-40 sm:max-h-48 md:max-h-52 w-auto max-w-[94%] object-contain cube-sponsor-logo select-none"
-                onError={(e) => {
-                  e.target.src = '/images/bhimavaram-tennis-league.png';
-                }}
-                loading="eager"
-                decoding="sync"
-              />
-            </div>
-
-            {/* Footer */}
-            <div className="w-full text-center border-t border-slate-200 pt-1.5">
-              <span className="text-[10px] font-black uppercase text-slate-800 tracking-wider font-montserrat-bold">
-                BHIMAVARAM TENNIS LEAGUE
-              </span>
-            </div>
+            <img
+              src="/images/tennis-league-logo.png"
+              alt="Bhimavaram Tennis League"
+              className="max-h-52 sm:max-h-60 md:max-h-64 w-auto max-w-[94%] object-contain cube-sponsor-logo select-none"
+              onError={(e) => {
+                e.target.src = '/images/bhimavaram-tennis-league.png';
+              }}
+              loading="eager"
+              decoding="sync"
+            />
           </div>
         );
 

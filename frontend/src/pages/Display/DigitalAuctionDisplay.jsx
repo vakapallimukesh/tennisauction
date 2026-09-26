@@ -536,24 +536,24 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       )}
 
       {/* ===== TOP BAR ===== */}
-      <header className="w-full bg-[#dbe2e6] border-b-2 border-slate-700/80 py-2.5 px-6 shadow-sm shrink-0 font-montserrat-bold">
+      <header className="w-full bg-[#dbe2e6] border-b-2 border-slate-700/80 py-1.5 px-4 shadow-sm shrink-0 font-montserrat-bold">
         <div className="max-w-[1920px] mx-auto flex items-center justify-between">
           {/* Left: Live Status & Stadium Arena */}
-          <div className="flex items-center gap-3 shrink-0">
-            <span className={`inline-block w-3 h-3 rounded-full ${isSocketConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
-            <span className="hidden sm:inline-block text-xs font-bold px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 tracking-wider font-montserrat-bold">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <span className={`inline-block w-2.5 h-2.5 rounded-full ${isSocketConnected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
+            <span className="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 tracking-wider font-montserrat-bold">
               LIVE STADIUM ARENA
             </span>
           </div>
 
           {/* Middle: Big Prominent League Title with Tennis Ball Logo — Montserrat Black */}
-          <div className="flex-1 flex items-center justify-center gap-2.5 sm:gap-3 px-4">
+          <div className="flex-1 flex items-center justify-center gap-2 px-3">
             <img
               src="/images/tennis-league-logo.png"
               alt="Tennis League Bhimavaram"
-              className="h-9 sm:h-10 lg:h-11 w-auto object-contain shrink-0 drop-shadow-xs"
+              className="h-7 sm:h-8 lg:h-9 w-auto object-contain shrink-0 drop-shadow-xs"
             />
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-black uppercase tracking-wider text-slate-900 font-montserrat-black">
+            <h1 className="text-lg md:text-xl lg:text-2xl font-black uppercase tracking-wider text-slate-900 font-montserrat-black">
               Bhimavaram Tennis League
             </h1>
           </div>
@@ -618,7 +618,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
             return (
               <article
                 key={team.id}
-                className="flex flex-col h-full px-2.5 py-3 xl:px-3.5 xl:py-3.5 relative overflow-hidden transition-all duration-300"
+                className="flex flex-col h-full p-0 relative overflow-hidden transition-all duration-300"
                 style={{ backgroundColor: '#ffffff' }}
               >
                 {/* Blurred team logo background — only when leading */}
@@ -639,22 +639,22 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                   </>
                 )}
 
-                {/* Team Logo Edge-to-Edge + Points Strip */}
+                {/* Team Logo Edge-to-Edge at Top + Points Strip */}
                 <div
-                  className="flex flex-col rounded-xl shadow-sm shrink-0 overflow-hidden relative z-10 transition-all duration-300"
+                  className="flex flex-col w-full shrink-0 overflow-hidden relative z-10 transition-all duration-300 border-b-2"
                   style={{
-                    borderWidth: isLeading ? '3px' : '2px',
-                    borderStyle: 'solid',
                     borderColor: isLeading ? getTeamBoundaryColor(team) : '#1e293b',
-                    boxShadow: isLeading ? `0 0 16px ${getTeamBoundaryColor(team)}66` : undefined
+                    boxShadow: isLeading ? `0 4px 16px ${getTeamBoundaryColor(team)}66` : undefined
                   }}
-                >                  {/* Edge-to-Edge Team Logo Image */}
-                  <div className="w-full h-44 bg-slate-950 overflow-hidden flex items-center justify-center relative">
+                >
+                  {/* Edge-to-Edge Team Logo Image */}
+                  <div className="w-full h-44 xl:h-48 bg-black overflow-hidden flex items-center justify-center relative" style={{ backgroundColor: '#000000' }}>
                     {team.logo_url ? (
                       <img
                         src={team.logo_url}
                         alt={team.name}
-                        className="w-full h-full object-contain p-2"
+                        className="w-full h-full object-contain p-1"
+                        style={{ backgroundColor: '#000000' }}
                         onError={(e) => {
                           e.target.style.display = 'none';
                           const fallback = e.target.parentElement?.querySelector('.team-badge-fallback');
@@ -671,19 +671,22 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                     </div>
                   </div>
 
-                  {/* Points & Squad Count — compact strip below image */}
-                  <div className={`px-2 py-1.5 text-center ${isLeading ? 'bg-slate-100' : 'bg-slate-50'}`}>
-
-                    <span className="text-xl xl:text-2xl font-bold text-slate-900 font-montserrat-bold leading-tight block">{formatCurrency(remaining)}</span>
-                    <span className="text-[11px] text-slate-500 font-bold font-montserrat-bold">Squad: {squadCount}/{maxSquad}</span>
+                  {/* Points & Squad Count — side by side strip below image */}
+                  <div className={`px-3 py-1.5 flex items-center justify-between gap-1.5 border-t border-slate-200 ${isLeading ? 'bg-slate-100' : 'bg-slate-50'}`}>
+                    <span className="text-base sm:text-lg xl:text-xl font-bold text-slate-900 font-montserrat-bold leading-none">
+                      {formatCurrency(remaining)}
+                    </span>
+                    <span className="text-[11px] xl:text-[12px] text-slate-600 font-bold font-montserrat-bold whitespace-nowrap bg-slate-200/80 px-2 py-0.5 rounded-full">
+                      Squad: {squadCount}/{maxSquad}
+                    </span>
                   </div>
                 </div>
 
                 {/* Group A & Group B Separation — Montserrat Bold */}
-                <div className="flex-1 flex flex-col justify-between mt-2.5 min-h-0 relative z-10">
-                  <div className="flex-1 overflow-y-auto pr-0.5 space-y-2">
-                    {/* GROUP A SECTION GREY BOX */}
-                    <div className="border-2 border-slate-400/80 rounded-lg p-2 bg-slate-200/50 shadow-2xs space-y-1.5">
+                <div className="flex-1 flex flex-col justify-between p-2.5 xl:p-3 min-h-0 relative z-10 overflow-hidden">
+                  <div className="flex-1 flex flex-col space-y-2 min-h-0 overflow-hidden">
+                    {/* GROUP A SECTION GREY BOX (Static / Non-scrolling) */}
+                    <div className="border-2 border-slate-400/80 rounded-lg p-2 bg-slate-200/50 shadow-2xs space-y-1.5 shrink-0">
                       <div className="flex items-center justify-between pb-1 border-b border-slate-300">
                         <div className="flex items-center gap-1.5">
                           <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shadow-2xs"></span>
@@ -733,9 +736,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                       </div>
                     </div>
 
-                    {/* GROUP B SECTION GREY BOX */}
-                    <div className="border-2 border-slate-400/80 rounded-lg p-2 bg-slate-200/50 shadow-2xs space-y-1.5">
-                      <div className="flex items-center justify-between pb-1 border-b border-slate-300">
+                    {/* GROUP B SECTION GREY BOX (Scrollable squad list) */}
+                    <div className="border-2 border-slate-400/80 rounded-lg p-2 bg-slate-200/50 shadow-2xs space-y-1.5 flex flex-col flex-1 min-h-0 overflow-hidden">
+                      <div className="flex items-center justify-between pb-1 border-b border-slate-300 shrink-0">
                         <div className="flex items-center gap-1.5">
                           <span className="w-2.5 h-2.5 rounded-full bg-amber-600 shadow-2xs"></span>
                           <span className="text-[12px] xl:text-[13px] font-black text-slate-900 tracking-wider font-montserrat-bold">GROUP B</span>
@@ -745,27 +748,35 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
                         </span>
                       </div>
 
-                      <div className="space-y-1 text-xs">
+                      {/* Exclusively Auto-Scrolling Group B Player List in Continuous Loop */}
+                      <div className="text-xs overflow-hidden max-h-[150px] sm:max-h-[180px] xl:max-h-[220px] 2xl:max-h-[260px] flex-1 min-h-0 relative">
                         {groupBPlayers.length > 0 ? (
-                          groupBPlayers.map((p, pIdx) => (
-                            <div
-                              key={p.id || `gb-${pIdx}`}
-                              className="flex items-center justify-between gap-2 py-1 px-1 transition-colors border-b border-slate-300/40 last:border-b-0"
-                            >
-                              {/* Player Name in Roster with Bullet Point */}
-                              <div className="font-extrabold text-slate-950 text-[13.5px] sm:text-[14px] xl:text-[14.5px] 2xl:text-[15px] leading-snug font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-slate-950 shrink-0 inline-block"></span>
-                                <span className="truncate block" title={p.name || p.player_name || ''}>
-                                  {p.name || p.player_name || ''}
-                                </span>
+                          <div
+                            className={groupBPlayers.length > 3 ? 'group-b-autoscroll space-y-1' : 'space-y-1'}
+                            style={{
+                              '--scroll-duration': `${Math.max(8, groupBPlayers.length * 3.5)}s`
+                            }}
+                          >
+                            {(groupBPlayers.length > 3 ? [...groupBPlayers, ...groupBPlayers] : groupBPlayers).map((p, pIdx) => (
+                              <div
+                                key={p.id ? `${p.id}-${pIdx}` : `gb-${pIdx}`}
+                                className="flex items-center justify-between gap-2 py-1 px-1 transition-colors border-b border-slate-300/40 last:border-b-0 shrink-0"
+                              >
+                                {/* Player Name in Roster with Bullet Point */}
+                                <div className="font-extrabold text-slate-950 text-[13.5px] sm:text-[14px] xl:text-[14.5px] 2xl:text-[15px] leading-snug font-montserrat-bold min-w-0 flex-1 flex items-center gap-1.5">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-950 shrink-0 inline-block"></span>
+                                  <span className="truncate block" title={p.name || p.player_name || ''}>
+                                    {p.name || p.player_name || ''}
+                                  </span>
+                                </div>
+                                <div className="text-right shrink-0">
+                                  <span className="font-bold text-slate-900 text-[11px] xl:text-[12px] whitespace-nowrap font-montserrat-bold">
+                                    {formatLakhsShort(p.purchase_price || p.base_price)}
+                                  </span>
+                                </div>
                               </div>
-                              <div className="text-right shrink-0">
-                                <span className="font-bold text-slate-900 text-[11px] xl:text-[12px] whitespace-nowrap font-montserrat-bold">
-                                  {formatLakhsShort(p.purchase_price || p.base_price)}
-                                </span>
-                              </div>
-                            </div>
-                          ))
+                            ))}
+                          </div>
                         ) : (
                           <div className="text-center py-1.5 text-slate-400 text-[11px] xl:text-[12px] italic bg-white/70 rounded border border-dashed border-slate-300 font-montserrat-bold">
                             No Group B acquired
@@ -844,8 +855,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       </main>
 
       {/* ===== BOTTOM SPONSORS BAR WITH LOGO LOOP ===== */}
-      <footer className="w-full bg-[#dbe2e6] border-t-2 border-slate-700/80 py-1 px-4 shadow-inner shrink-0 font-montserrat-bold">
-        <div className="max-w-[1920px] mx-auto flex items-center justify-between gap-3">
+      <footer className="w-full bg-[#dbe2e6] border-t-2 border-slate-700/80 py-0.5 px-3 shadow-inner shrink-0 font-montserrat-bold">
+        <div className="max-w-[1920px] mx-auto flex items-center justify-between gap-2.5">
           {/* Left: Sponsors Label */}
           <div className="flex items-center gap-1 shrink-0 bg-white/70 px-2 py-0.5 rounded border border-slate-400/60 shadow-xs">
             <span className="text-[10px] tracking-wider font-black uppercase text-slate-800 font-montserrat-bold">SPONSORS</span>
@@ -855,10 +866,10 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
           <div className="flex-1 overflow-hidden min-w-0">
             <LogoLoop
               logos={sponsorLogos}
-              speed={42}
+              speed={40}
               direction="left"
-              logoHeight={42}
-              gap={54}
+              logoHeight={32}
+              gap={48}
               hoverSpeed={0}
               scaleOnHover
               fadeOut
