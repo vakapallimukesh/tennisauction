@@ -150,10 +150,10 @@ const initialSeed = {
       max_group_a: 4,
       max_group_b: 8,
       logo_url: '/images/teams/golden-eagles-logo.png',
-      logo_bg_color: '#FF2800',
-      primary_color: '#dc2626',
+      logo_bg_color: '#eb0201',
+      primary_color: '#eb0201',
       accent_color: '#ef4444',
-      glow_color: 'rgba(220, 38, 38, 0.45)',
+      glow_color: 'rgba(235, 2, 1, 0.45)',
       bg_gradient: 'from-red-950/40 to-slate-950/80',
       captain: {
         id: 1,

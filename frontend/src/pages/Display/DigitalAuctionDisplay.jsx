@@ -230,7 +230,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
   };
 
   // Team logo box background colors:
-  // Royal Tigers: #002800, Golden Eagles: #FF2800, 7 Aces: #FFFFFF, Mighty Dragons: #123456
+  // Royal Tigers: #002800, Golden Eagles: #eb0201, 7 Aces: #FFFFFF, Mighty Dragons: #123456
   const getTeamLogoBgColor = (team) => {
     if (team?.logo_bg_color) return team.logo_bg_color;
     const id = team?.id || team?.team_number;
@@ -238,7 +238,7 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
     if (id === 1 || name.includes('7 aces') || name.includes('aces')) return '#FFFFFF';
     if (id === 2 || name.includes('royal') || name.includes('tiger')) return '#002800';
     if (id === 3 || name.includes('mighty') || name.includes('dragon')) return '#123456';
-    if (id === 4 || name.includes('golden') || name.includes('eagle')) return '#FF2800';
+    if (id === 4 || name.includes('golden') || name.includes('eagle')) return '#eb0201';
     return '#000000';
   };
 
