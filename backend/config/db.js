@@ -51,7 +51,8 @@ const initialSeed = {
       captain: {
         id: 5,
         name: 'Janaki Rama Raju Mantena',
-        player_number: 'CAPTAIN #01',
+        
+      _number: 'CAPTAIN #01',
         age: 35,
         country: 'India',
         country_flag: '🇮🇳',
@@ -200,13 +201,13 @@ const initialSeed = {
       status: 'upcoming', display_order: 3
     },
     {
-      id: 4, player_number: 'PLAYER #04', name: 'M V Siva Kumar Raju',
+      id: 6, player_number: 'PLAYER #06', name: 'M V Siva Kumar Raju',
       age: 53, country: 'India', country_flag: '🇮🇳',
       category: 'Group A', group: 'A', playing_hand: 'Right hand',
       backhand_style: 'One handed', jersey_name: 'Siva', jersey_number: '11',
       base_price: 10000.00,
       image_url: '/images/players2/M%20V%20Shiva%20Kumar%20raju.png',
-      status: 'upcoming', display_order: 4
+      status: 'upcoming', display_order: 6
     },
     {
       id: 5, player_number: 'PLAYER #05', name: 'M Vamsi krishna',
@@ -218,13 +219,13 @@ const initialSeed = {
       status: 'upcoming', display_order: 5
     },
     {
-      id: 6, player_number: 'PLAYER #06', name: 'Mantena Atchyuth varma',
+      id: 4, player_number: 'PLAYER #04', name: 'Mantena Atchyuth varma',
       age: 25, country: 'India', country_flag: '🇮🇳',
       category: 'Group A', group: 'A', playing_hand: 'Right hand',
       backhand_style: 'Double handed', jersey_name: 'Atchyuth', jersey_number: '63',
       base_price: 10000.00,
       image_url: '/images/players2/Mantena%20Atchyuth%20varma.png',
-      status: 'upcoming', display_order: 6
+      status: 'upcoming', display_order: 4
     },
     {
       id: 7, player_number: 'PLAYER #07', name: 'P Muralidhar',
@@ -381,40 +382,40 @@ const initialSeed = {
       status: 'upcoming', display_order: 23
     },
     {
-      id: 24, player_number: 'PLAYER #24', name: 'G Subhash',
+      id: 26, player_number: 'PLAYER #26', name: 'G Subhash',
       age: 40, country: 'India', country_flag: '🇮🇳',
       category: 'Group B', group: 'B', playing_hand: 'Right hand',
       backhand_style: 'Double handed', jersey_name: 'G Subhash', jersey_number: '86',
       base_price: 10000.00,
       image_url: '/images/players2/G%20Subhash.png',
-      status: 'upcoming', display_order: 24
+      status: 'upcoming', display_order: 26
     },
     {
-      id: 25, player_number: 'PLAYER #25', name: 'G V Kiran Kumar raju',
+      id: 27, player_number: 'PLAYER #27', name: 'G V Kiran Kumar raju',
       age: 30, country: 'India', country_flag: '🇮🇳',
       category: 'Group B', group: 'B', playing_hand: 'Right hand',
       backhand_style: 'Singh handed', jersey_name: '', jersey_number: '',
       base_price: 10000.00,
       image_url: '/images/players2/G%20V%20Kiran%20Kumar%20Raju.png',
-      status: 'upcoming', display_order: 25
+      status: 'upcoming', display_order: 27
     },
     {
-      id: 26, player_number: 'PLAYER #26', name: 'G.Gopala krishnam Raju',
+      id: 24, player_number: 'PLAYER #24', name: 'G.Gopala krishnam Raju',
       age: 48, country: 'India', country_flag: '🇮🇳',
       category: 'Group B', group: 'B', playing_hand: 'Right hand',
       backhand_style: 'Single handed', jersey_name: 'Gopi', jersey_number: '7',
       base_price: 10000.00,
       image_url: '/images/players2/G.Gopala%20krishnam%20Raju.png',
-      status: 'upcoming', display_order: 26
+      status: 'upcoming', display_order: 24
     },
     {
-      id: 27, player_number: 'PLAYER #27', name: 'Grandhi Suresh',
+      id: 25, player_number: 'PLAYER #25', name: 'Grandhi Suresh',
       age: 55, country: 'India', country_flag: '🇮🇳',
       category: 'Group B', group: 'B', playing_hand: 'Right hand',
       backhand_style: 'Single handed', jersey_name: 'Suresh Grandhi', jersey_number: '72',
       base_price: 10000.00,
       image_url: '/images/players2/Grandhi%20Suresh.png',
-      status: 'upcoming', display_order: 27
+      status: 'upcoming', display_order: 25
     },
     {
       id: 28, player_number: 'PLAYER #28', name: 'Jagapati',
@@ -426,31 +427,31 @@ const initialSeed = {
       status: 'upcoming', display_order: 28
     },
     {
-      id: 29, player_number: 'PLAYER #29', name: 'K Srinivasaraju',
+      id: 31, player_number: 'PLAYER #31', name: 'K Srinivasaraju',
       age: 61, country: 'India', country_flag: '🇮🇳',
       category: 'Group B', group: 'B', playing_hand: 'Right hand',
       backhand_style: 'Single handed', jersey_name: 'Srinu', jersey_number: '99',
       base_price: 10000.00,
       image_url: '/images/players2/K%20Srinavasraju.png',
-      status: 'upcoming', display_order: 29
+      status: 'upcoming', display_order: 31
     },
     {
-      id: 30, player_number: 'PLAYER #30', name: 'Kalidindi Srinivasavarma',
+      id: 29, player_number: 'PLAYER #29', name: 'Kalidindi Srinivasavarma',
       age: 56, country: 'India', country_flag: '🇮🇳',
       category: 'Group B', group: 'B', playing_hand: 'Right hand',
       backhand_style: 'Two handed', jersey_name: 'Blue', jersey_number: '457',
       base_price: 10000.00,
       image_url: '/images/players2/Kalidindi%20Srinivasavarma.png',
-      status: 'upcoming', display_order: 30
+      status: 'upcoming', display_order: 29
     },
     {
-      id: 31, player_number: 'PLAYER #31', name: 'Kopparthi ravi babu',
+      id: 30, player_number: 'PLAYER #30', name: 'Kopparthi ravi babu',
       age: 50, country: 'India', country_flag: '🇮🇳',
       category: 'Group B', group: 'B', playing_hand: 'Right hand',
       backhand_style: 'Two handed', jersey_name: 'Ravi', jersey_number: 'O9',
       base_price: 10000.00,
       image_url: '/images/players2/Kopparthi%20ravi%20babu.png',
-      status: 'upcoming', display_order: 31
+      status: 'upcoming', display_order: 30
     },
     {
       id: 32, player_number: 'PLAYER #32', name: 'M Rajbabu',

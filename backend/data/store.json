@@ -78,7 +78,7 @@
       "name": "7 Aces",
       "owner": "Kabir Malhotra",
       "total_purse": 500000,
-      "purse_remaining": 500000,
+      "purse_remaining": 390000,
       "max_players": 12,
       "max_group_a": 4,
       "max_group_b": 8,
@@ -104,7 +104,8 @@
         "jersey_number": "",
         "base_price": 10000,
         "image_url": "https://drive.google.com/thumbnail?id=1LoefRM0tqpo5V_vhrbfWYFCj8Mq3Eapg&sz=w400"
-      }
+      },
+      "players_bought": 11
     },
     {
       "id": 2,
@@ -261,8 +262,10 @@
       "jersey_number": "39",
       "base_price": 10000,
       "image_url": "/images/players2/K%20Satyanarayana%20raju.png",
-      "status": "upcoming",
-      "display_order": 3
+      "status": "sold",
+      "display_order": 3,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 4,
@@ -297,8 +300,10 @@
       "jersey_number": "7",
       "base_price": 10000,
       "image_url": "/images/players2/M%20Vamsi%20krishna.png",
-      "status": "upcoming",
-      "display_order": 5
+      "status": "sold",
+      "display_order": 5,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 6,
@@ -315,8 +320,10 @@
       "jersey_number": "63",
       "base_price": 10000,
       "image_url": "/images/players2/Mantena%20Atchyuth%20varma.png",
-      "status": "live",
-      "display_order": 6
+      "status": "sold",
+      "display_order": 6,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 7,
@@ -513,7 +520,7 @@
       "jersey_number": "12",
       "base_price": 10000,
       "image_url": "/images/players2/Karthikeya.png",
-      "status": "upcoming",
+      "status": "live",
       "display_order": 17
     },
     {
@@ -603,8 +610,10 @@
       "jersey_number": "3",
       "base_price": 10000,
       "image_url": "/images/players2/Dr%20Shravan.png",
-      "status": "upcoming",
-      "display_order": 22
+      "status": "sold",
+      "display_order": 22,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 23,
@@ -657,8 +666,10 @@
       "jersey_number": "",
       "base_price": 10000,
       "image_url": "/images/players2/G%20V%20Kiran%20Kumar%20Raju.png",
-      "status": "upcoming",
-      "display_order": 25
+      "status": "sold",
+      "display_order": 25,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 26,
@@ -747,8 +758,10 @@
       "jersey_number": "457",
       "base_price": 10000,
       "image_url": "/images/players2/Kalidindi%20Srinivasavarma.png",
-      "status": "upcoming",
-      "display_order": 30
+      "status": "sold",
+      "display_order": 30,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 31,
@@ -801,8 +814,10 @@
       "jersey_number": "62",
       "base_price": 10000,
       "image_url": "/images/players2/M%20Viswanadha%20Raju.png",
-      "status": "upcoming",
-      "display_order": 33
+      "status": "sold",
+      "display_order": 33,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 34,
@@ -819,8 +834,10 @@
       "jersey_number": "6",
       "base_price": 10000,
       "image_url": "/images/players2/Naga%20Firoz%20Babu.png",
-      "status": "upcoming",
-      "display_order": 34
+      "status": "sold",
+      "display_order": 34,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 35,
@@ -873,8 +890,10 @@
       "jersey_number": "444",
       "base_price": 10000,
       "image_url": "/images/players2/P%20Subbaraju.png",
-      "status": "upcoming",
-      "display_order": 37
+      "status": "sold",
+      "display_order": 37,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 38,
@@ -927,8 +946,10 @@
       "jersey_number": "7",
       "base_price": 10000,
       "image_url": "/images/players2/Ravi%20Varma.png",
-      "status": "upcoming",
-      "display_order": 40
+      "status": "sold",
+      "display_order": 40,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 41,
@@ -981,8 +1002,10 @@
       "jersey_number": "9",
       "base_price": 10000,
       "image_url": "/images/players2/TATAVARTY%20RAJU.png",
-      "status": "upcoming",
-      "display_order": 43
+      "status": "sold",
+      "display_order": 43,
+      "sold_price": 10000,
+      "sold_to_team_id": 1
     },
     {
       "id": 44,
@@ -1003,12 +1026,90 @@
       "display_order": 44
     }
   ],
-  "team_players": [],
+  "team_players": [
+    {
+      "id": 1,
+      "team_id": 1,
+      "player_id": 5,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:36:11.716Z"
+    },
+    {
+      "id": 2,
+      "team_id": 1,
+      "player_id": 6,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:44:04.394Z"
+    },
+    {
+      "id": 3,
+      "team_id": 1,
+      "player_id": 30,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:44:46.095Z"
+    },
+    {
+      "id": 4,
+      "team_id": 1,
+      "player_id": 3,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:55:10.256Z"
+    },
+    {
+      "id": 5,
+      "team_id": 1,
+      "player_id": 22,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:55:31.241Z"
+    },
+    {
+      "id": 6,
+      "team_id": 1,
+      "player_id": 25,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:55:37.792Z"
+    },
+    {
+      "id": 7,
+      "team_id": 1,
+      "player_id": 33,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:55:44.409Z"
+    },
+    {
+      "id": 8,
+      "team_id": 1,
+      "player_id": 40,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:55:50.826Z"
+    },
+    {
+      "id": 9,
+      "team_id": 1,
+      "player_id": 43,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:55:58.592Z"
+    },
+    {
+      "id": 10,
+      "team_id": 1,
+      "player_id": 37,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:56:04.941Z"
+    },
+    {
+      "id": 11,
+      "team_id": 1,
+      "player_id": 34,
+      "purchase_price": 10000,
+      "purchased_at": "2026-09-25T15:56:11.990Z"
+    }
+  ],
   "auction": {
     "id": 1,
     "title": "Grand Circuit Tennis Player Auction 2026",
     "status": "live",
-    "current_player_id": 6,
+    "current_player_id": 17,
     "current_bid": 0,
     "highest_bidder_team_id": null,
     "bid_increment": 2000,
@@ -1052,7 +1153,160 @@
       "amount": 15000,
       "bid_time": "2026-09-25T09:37:46.945Z",
       "status": "valid"
+    },
+    {
+      "id": 5,
+      "auction_id": 1,
+      "player_id": 8,
+      "team_id": 2,
+      "amount": 10000,
+      "bid_time": "2026-09-25T18:13:46.852Z",
+      "status": "valid"
     }
   ],
-  "auction_events": []
+  "auction_events": [
+    {
+      "id": 1,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 5,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "M Vamsi krishna",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:36:11.716Z"
+    },
+    {
+      "id": 2,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 6,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "Mantena Atchyuth varma",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:44:04.394Z"
+    },
+    {
+      "id": 3,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 30,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "Kalidindi Srinivasavarma",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:44:46.095Z"
+    },
+    {
+      "id": 4,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 3,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "K Satyanarayana Raju",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:55:10.256Z"
+    },
+    {
+      "id": 5,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 22,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "Dr Shravan",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:55:31.241Z"
+    },
+    {
+      "id": 6,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 25,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "G V Kiran Kumar raju",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:55:37.792Z"
+    },
+    {
+      "id": 7,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 33,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "M Viswanadha Raju",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:55:44.409Z"
+    },
+    {
+      "id": 8,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 40,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "Ravi Varma",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:55:50.826Z"
+    },
+    {
+      "id": 9,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 43,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "TATAVARTY RAJU",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:55:58.592Z"
+    },
+    {
+      "id": 10,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 37,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "P Subbaraju",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:56:04.941Z"
+    },
+    {
+      "id": 11,
+      "event_type": "player_sold",
+      "auction_id": 1,
+      "player_id": 34,
+      "team_id": 1,
+      "payload": {
+        "price": 10000,
+        "playerName": "Naga Firoz Babu",
+        "teamName": "7 Aces"
+      },
+      "created_at": "2026-09-25T15:56:11.990Z"
+    }
+  ]
 }
