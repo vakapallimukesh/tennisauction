@@ -236,8 +236,8 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
     const id = team?.id || team?.team_number;
     const name = (team?.name || team?.short_name || '').toLowerCase();
     if (id === 1 || name.includes('7 aces') || name.includes('aces')) return '#FFFFFF';
-    if (id === 2 || name.includes('royal') || name.includes('tiger')) return '#012202';
-    if (id === 3 || name.includes('mighty') || name.includes('dragon')) return '#072f58';
+    if (id === 2 || name.includes('royal') || name.includes('tiger')) return '#002800';
+    if (id === 3 || name.includes('mighty') || name.includes('dragon')) return '#123456';
     if (id === 4 || name.includes('golden') || name.includes('eagle')) return '#eb0201';
     return '#000000';
   };

@@ -51,7 +51,10 @@ app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 // Serve public images statically from backend as well
-app.use('/images', express.static(path.join(__dirname, '../frontend/public/images')));
+const publicImages = path.join(__dirname, '../frontend/public/images');
+if (fs.existsSync(publicImages)) {
+  app.use('/images', express.static(publicImages));
+}
 
 // Request logger
 app.use((req, res, next) => {
