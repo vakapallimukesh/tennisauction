@@ -818,9 +818,9 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
         </div>
 
         {/* ===== RIGHT PANEL: Player Detail + Bidding (3 cols / 25% width) ===== */}
-        <section className="lg:col-span-3 flex flex-col p-2.5 xl:p-3.5 2xl:p-4 bg-white space-y-1.5 xl:space-y-2 min-h-0 overflow-hidden font-montserrat-bold justify-between">
-          {/* 1. TOP: 3D Rotating Showcase Cube (Player Photo & Sponsors) */}
-          <div className="relative flex-1 min-h-[200px] sm:min-h-[230px] flex items-center justify-center overflow-visible py-0.5 sm:py-1">
+        <section className="lg:col-span-3 flex flex-col pt-1.5 pb-2 px-3 xl:px-4 bg-white space-y-1.5 xl:space-y-2 min-h-0 overflow-hidden font-montserrat-bold">
+          {/* 1. TOP: 3D Rotating Showcase Cube (Player Photo & Sponsors) — Moved Up */}
+          <div className="relative flex-1 min-h-[190px] sm:min-h-[220px] flex items-center justify-center overflow-visible pt-0 pb-1">
             <Player3DCube player={activePlayer} />
           </div>
 
