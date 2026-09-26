@@ -50,6 +50,9 @@ app.use(cors({
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
+// Serve public images statically from backend as well
+app.use('/images', express.static(path.join(__dirname, '../frontend/public/images')));
+
 // Request logger
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
