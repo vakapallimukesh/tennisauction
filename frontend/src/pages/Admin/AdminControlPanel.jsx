@@ -199,8 +199,27 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
     }
 
     const squadCount = targetTeam.players_bought !== undefined ? targetTeam.players_bought : (targetTeam.roster?.length || 0);
-    if (squadCount >= (targetTeam.max_players || 5)) {
-      showNotice(`${targetTeam.name} has already reached maximum squad limit (${targetTeam.max_players || 5}).`, 'error');
+    const maxTotal = targetTeam.max_players || 12;
+    const maxA = targetTeam.max_group_a || 4;
+    const maxB = targetTeam.max_group_b || 8;
+
+    if (squadCount >= maxTotal) {
+      showNotice(`${targetTeam.name} has already reached maximum squad limit (${maxTotal} players).`, 'error');
+      return;
+    }
+
+    const currentPlayerCat = (currentPlayer?.category || '').toLowerCase();
+    const isPlayerGroupB = currentPlayer?.group === 'B' || currentPlayerCat.includes('group b');
+    const groupACount = targetTeam.group_a_count !== undefined ? targetTeam.group_a_count : (targetTeam.roster ? targetTeam.roster.filter(p => !((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 1);
+    const groupBCount = targetTeam.group_b_count !== undefined ? targetTeam.group_b_count : (targetTeam.roster ? targetTeam.roster.filter(p => ((p.group === 'B') || (p.category || '').toLowerCase().includes('group b'))).length : 0);
+
+    if (!isPlayerGroupB && groupACount >= maxA) {
+      showNotice(`${targetTeam.name} has reached maximum Group A limit (${maxA} players including Captain).`, 'error');
+      return;
+    }
+
+    if (isPlayerGroupB && groupBCount >= maxB) {
+      showNotice(`${targetTeam.name} has reached maximum Group B limit (${maxB} players).`, 'error');
       return;
     }
 

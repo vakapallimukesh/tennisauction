@@ -302,7 +302,7 @@ export default function TeamSquadsManagement({ onNavigate }) {
           <div className="text-2xl font-bold font-headline-sm text-on-surface mt-2">
             {teams?.length || 4} Teams
           </div>
-          <p className="text-xs text-on-surface-variant mt-1">10 max slots per franchise (1 Captain + 9 Auction players)</p>
+          <p className="text-xs text-on-surface-variant mt-1">12 max slots per franchise (1 Captain + 11 Auction players)</p>
         </div>
 
         <div className="bg-surface-container rounded-xl p-5 border border-outline-variant/10">
@@ -313,12 +313,12 @@ export default function TeamSquadsManagement({ onNavigate }) {
             </span>
           </div>
           <div className="text-2xl font-bold font-headline-sm text-on-surface mt-2">
-            {totalPlayersAcquired} / 40 Slots Filled
+            {totalPlayersAcquired} / 48 Slots Filled
           </div>
           <div className="w-full bg-surface-container-highest h-2 rounded-full mt-2 overflow-hidden">
             <div
               className="bg-tertiary h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, (totalPlayersAcquired / 40) * 100)}%` }}
+              style={{ width: `${Math.min(100, (totalPlayersAcquired / 48) * 100)}%` }}
             />
           </div>
         </div>

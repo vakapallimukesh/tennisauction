@@ -81,7 +81,7 @@ function getFullAuctionSnapshot() {
     return {
       ...t,
       captain,
-      max_players: t.max_players || 10,
+      max_players: t.max_players || 12,
       max_group_a: t.max_group_a || 4,
       max_group_b: t.max_group_b || 8,
       players_bought: totalPlayersCount,
@@ -294,7 +294,7 @@ function getPlayerGroup(player) {
   return 'A';
 }
 
-// Helper to validate team squad limits (Max 10 total, Max 3 Group A, Max 7 Group B, with 1 fixed captain in Group A)
+// Helper to validate team squad limits (Max 12 total, Max 4 Group A including captain, Max 8 Group B)
 function validateTeamSquadLimits(teamId, targetPlayer, store) {
   const team = store.teams.find(t => t.id === parseInt(teamId, 10));
   if (!team) return { valid: false, message: 'Invalid team identification.' };
@@ -308,7 +308,7 @@ function validateTeamSquadLimits(teamId, targetPlayer, store) {
 
   const bought = (store.team_players || []).filter(tp => tp.team_id === team.id);
   const totalCount = 1 + bought.length; // 1 for the fixed captain
-  const maxTotal = team.max_players || 10;
+  const maxTotal = team.max_players || 12;
   const maxA = team.max_group_a || 4;
   const maxB = team.max_group_b || 8;
 
@@ -338,7 +338,7 @@ function validateTeamSquadLimits(teamId, targetPlayer, store) {
   if (targetGroup === 'A' && groupACount >= maxA) {
     return {
       valid: false,
-      message: `Group A limit reached: Maximum ${maxA} Group A players allowed.`
+      message: `Group A limit reached: Maximum ${maxA} Group A players allowed (including Captain).`
     };
   }
 

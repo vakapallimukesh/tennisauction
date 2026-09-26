@@ -20,7 +20,7 @@ function getPlayerGroup(player) {
   return 'A';
 }
 
-// Helper to validate team squad limits (10 total: max 3 Group A, max 7 Group B, with 1 fixed captain in Group A)
+// Helper to validate team squad limits (12 total: max 4 Group A including captain, max 8 Group B)
 function validateTeamSquadLimits(teamId, targetPlayer, store) {
   if (targetPlayer && (targetPlayer.is_captain || targetPlayer.status === 'captain')) {
     return {
@@ -29,25 +29,30 @@ function validateTeamSquadLimits(teamId, targetPlayer, store) {
     };
   }
 
-  const teamPlayerRecords = store.team_players.filter(tp => tp.team_id === teamId);
+  const team = (store.teams || []).find(t => t.id === parseInt(teamId, 10));
+  const maxTotal = team?.max_players || 12;
+  const maxA = team?.max_group_a || 4;
+  const maxB = team?.max_group_b || 8;
+
+  const teamPlayerRecords = (store.team_players || []).filter(tp => tp.team_id === parseInt(teamId, 10));
   const totalCount = 1 + teamPlayerRecords.length; // 1 for fixed captain
 
-  // 1. Check total squad limit (10)
-  if (totalCount >= 10) {
+  // 1. Check total squad limit (12)
+  if (totalCount >= maxTotal) {
     return {
       valid: false,
-      message: 'Team squad limit reached: Maximum 10 players allowed.'
+      message: `Team squad limit reached: Maximum ${maxTotal} players allowed.`
     };
   }
 
-  // 2. Check group limits (max 3 Group A, max 7 Group B)
+  // 2. Check group limits (max 4 Group A including captain, max 8 Group B)
   if (targetPlayer) {
     const playerGroup = getPlayerGroup(targetPlayer);
     let groupACount = 1; // 1 for fixed captain in Group A
     let groupBCount = 0;
 
     for (const tp of teamPlayerRecords) {
-      const p = store.players.find(pl => pl.id === tp.player_id);
+      const p = (store.players || []).find(pl => pl.id === tp.player_id);
       const grp = getPlayerGroup(p);
       if (grp === 'B') {
         groupBCount++;
@@ -56,17 +61,17 @@ function validateTeamSquadLimits(teamId, targetPlayer, store) {
       }
     }
 
-    if (playerGroup === 'A' && groupACount >= 3) {
+    if (playerGroup === 'A' && groupACount >= maxA) {
       return {
         valid: false,
-        message: 'Group A limit reached: Maximum 3 Group A players allowed.'
+        message: `Group A limit reached: Maximum ${maxA} Group A players allowed (including Captain).`
       };
     }
 
-    if (playerGroup === 'B' && groupBCount >= 7) {
+    if (playerGroup === 'B' && groupBCount >= maxB) {
       return {
         valid: false,
-        message: 'Group B limit reached: Maximum 7 Group B players allowed.'
+        message: `Group B limit reached: Maximum ${maxB} Group B players allowed.`
       };
     }
   }
