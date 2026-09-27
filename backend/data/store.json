@@ -215,8 +215,8 @@
   ],
   "players": [
     {
-      "id": 1,
-      "player_number": "PLAYER #01",
+      "id": 2,
+      "player_number": "PLAYER #02",
       "name": "Dr Kiran",
       "age": 39,
       "country": "India",
@@ -229,12 +229,12 @@
       "jersey_number": "6",
       "base_price": 10000,
       "image_url": "/images/players2/Dr%20kiran.png",
-      "status": "upcoming",
+      "status": "live",
       "display_order": 1
     },
     {
-      "id": 2,
-      "player_number": "PLAYER #02",
+      "id": 4,
+      "player_number": "PLAYER #04",
       "name": "I Prakash",
       "age": 42,
       "country": "India",
@@ -251,8 +251,8 @@
       "display_order": 2
     },
     {
-      "id": 3,
-      "player_number": "PLAYER #03",
+      "id": 7,
+      "player_number": "PLAYER #07",
       "name": "K Satyanarayana Raju",
       "age": 39,
       "country": "India",
@@ -269,8 +269,8 @@
       "display_order": 3
     },
     {
-      "id": 4,
-      "player_number": "PLAYER #04",
+      "id": 8,
+      "player_number": "PLAYER #08",
       "name": "Mantena Atchyuth varma",
       "age": 25,
       "country": "India",
@@ -287,8 +287,8 @@
       "display_order": 4
     },
     {
-      "id": 5,
-      "player_number": "PLAYER #05",
+      "id": 9,
+      "player_number": "PLAYER #09",
       "name": "M Vamsi krishna",
       "age": 44,
       "country": "India",
@@ -301,12 +301,12 @@
       "jersey_number": "7",
       "base_price": 10000,
       "image_url": "/images/players2/M%20Vamsi%20krishna.png",
-      "status": "live",
+      "status": "upcoming",
       "display_order": 5
     },
     {
-      "id": 6,
-      "player_number": "PLAYER #06",
+      "id": 10,
+      "player_number": "PLAYER #10",
       "name": "M V Siva Kumar Raju",
       "age": 53,
       "country": "India",
@@ -323,8 +323,8 @@
       "display_order": 6
     },
     {
-      "id": 7,
-      "player_number": "PLAYER #07",
+      "id": 11,
+      "player_number": "PLAYER #11",
       "name": "P Muralidhar",
       "age": 40,
       "country": "India",
@@ -341,8 +341,8 @@
       "display_order": 7
     },
     {
-      "id": 8,
-      "player_number": "PLAYER #08",
+      "id": 12,
+      "player_number": "PLAYER #12",
       "name": "P Subash",
       "age": 47,
       "country": "India",
@@ -359,8 +359,8 @@
       "display_order": 8
     },
     {
-      "id": 9,
-      "player_number": "PLAYER #09",
+      "id": 13,
+      "player_number": "PLAYER #13",
       "name": "Rama Krishna vadlamudi",
       "age": 46,
       "country": "India",
@@ -377,8 +377,8 @@
       "display_order": 9
     },
     {
-      "id": 10,
-      "player_number": "PLAYER #10",
+      "id": 14,
+      "player_number": "PLAYER #14",
       "name": "Royal K",
       "age": 28,
       "country": "India",
@@ -395,8 +395,8 @@
       "display_order": 10
     },
     {
-      "id": 11,
-      "player_number": "PLAYER #11",
+      "id": 15,
+      "player_number": "PLAYER #15",
       "name": "Sajeev sahay T",
       "age": 35,
       "country": "India",
@@ -413,8 +413,8 @@
       "display_order": 11
     },
     {
-      "id": 12,
-      "player_number": "PLAYER #12",
+      "id": 16,
+      "player_number": "PLAYER #16",
       "name": "Uday Varma",
       "age": 41,
       "country": "India",
@@ -431,8 +431,8 @@
       "display_order": 12
     },
     {
-      "id": 13,
-      "player_number": "PLAYER #13",
+      "id": 17,
+      "player_number": "PLAYER #17",
       "name": "Abhishek varma Kothapalli",
       "age": 30,
       "country": "India",
@@ -449,8 +449,8 @@
       "display_order": 13
     },
     {
-      "id": 14,
-      "player_number": "PLAYER #14",
+      "id": 18,
+      "player_number": "PLAYER #18",
       "name": "Appala raju",
       "age": 52,
       "country": "India",
@@ -467,8 +467,8 @@
       "display_order": 14
     },
     {
-      "id": 15,
-      "player_number": "PLAYER #15",
+      "id": 19,
+      "player_number": "PLAYER #19",
       "name": "CH Bangar raju",
       "age": 30,
       "country": "India",
@@ -485,8 +485,8 @@
       "display_order": 15
     },
     {
-      "id": 16,
-      "player_number": "PLAYER #16",
+      "id": 20,
+      "player_number": "PLAYER #20",
       "name": "BH Gajapathi Raju",
       "age": 50,
       "country": "India",
@@ -503,8 +503,8 @@
       "display_order": 16
     },
     {
-      "id": 17,
-      "player_number": "PLAYER #17",
+      "id": 21,
+      "player_number": "PLAYER #21",
       "name": "Bh. Karthikeya Varma",
       "age": 30,
       "country": "India",
@@ -521,8 +521,8 @@
       "display_order": 17
     },
     {
-      "id": 18,
-      "player_number": "PLAYER #18",
+      "id": 22,
+      "player_number": "PLAYER #22",
       "name": "Chandra Sekhar K",
       "age": 39,
       "country": "India",
@@ -539,8 +539,8 @@
       "display_order": 18
     },
     {
-      "id": 19,
-      "player_number": "PLAYER #19",
+      "id": 23,
+      "player_number": "PLAYER #23",
       "name": "V Bangar raju",
       "age": 54,
       "country": "India",
@@ -552,13 +552,13 @@
       "jersey_name": "V Bangar raju",
       "jersey_number": "11",
       "base_price": 10000,
-      "image_url": "/images/players2/Bangar%20raju.png",
+      "image_url": "/images/players2/V%20Bangar%20raju.png",
       "status": "upcoming",
       "display_order": 19
     },
     {
-      "id": 20,
-      "player_number": "PLAYER #20",
+      "id": 24,
+      "player_number": "PLAYER #24",
       "name": "Datta varma",
       "age": 23,
       "country": "India",
@@ -575,8 +575,8 @@
       "display_order": 20
     },
     {
-      "id": 21,
-      "player_number": "PLAYER #21",
+      "id": 25,
+      "player_number": "PLAYER #25",
       "name": "Dr G V PAVAN KUMAR",
       "age": 44,
       "country": "India",
@@ -593,8 +593,8 @@
       "display_order": 21
     },
     {
-      "id": 22,
-      "player_number": "PLAYER #22",
+      "id": 26,
+      "player_number": "PLAYER #26",
       "name": "Dr Shravan",
       "age": 31,
       "country": "India",
@@ -611,8 +611,8 @@
       "display_order": 22
     },
     {
-      "id": 23,
-      "player_number": "PLAYER #23",
+      "id": 27,
+      "player_number": "PLAYER #27",
       "name": "Dr Suresh Mudunuri",
       "age": 45,
       "country": "India",
@@ -629,8 +629,8 @@
       "display_order": 23
     },
     {
-      "id": 26,
-      "player_number": "PLAYER #26",
+      "id": 28,
+      "player_number": "PLAYER #28",
       "name": "G Subhash",
       "age": 40,
       "country": "India",
@@ -644,11 +644,11 @@
       "base_price": 10000,
       "image_url": "/images/players2/G%20Subhash.png",
       "status": "upcoming",
-      "display_order": 26
+      "display_order": 24
     },
     {
-      "id": 27,
-      "player_number": "PLAYER #27",
+      "id": 29,
+      "player_number": "PLAYER #29",
       "name": "G V Kiran Kumar raju",
       "age": 30,
       "country": "India",
@@ -662,11 +662,11 @@
       "base_price": 10000,
       "image_url": "/images/players2/G%20V%20Kiran%20Kumar%20Raju.png",
       "status": "upcoming",
-      "display_order": 27
+      "display_order": 25
     },
     {
-      "id": 24,
-      "player_number": "PLAYER #24",
+      "id": 30,
+      "player_number": "PLAYER #30",
       "name": "G.Gopala krishnam Raju",
       "age": 48,
       "country": "India",
@@ -680,11 +680,11 @@
       "base_price": 10000,
       "image_url": "/images/players2/G.Gopala%20krishnam%20Raju.png",
       "status": "upcoming",
-      "display_order": 24
+      "display_order": 26
     },
     {
-      "id": 25,
-      "player_number": "PLAYER #25",
+      "id": 31,
+      "player_number": "PLAYER #31",
       "name": "Grandhi Suresh",
       "age": 55,
       "country": "India",
@@ -698,11 +698,11 @@
       "base_price": 10000,
       "image_url": "/images/players2/Grandhi%20Suresh.png",
       "status": "upcoming",
-      "display_order": 25
+      "display_order": 27
     },
     {
-      "id": 28,
-      "player_number": "PLAYER #28",
+      "id": 32,
+      "player_number": "PLAYER #32",
       "name": "Jagapati",
       "age": 53,
       "country": "India",
@@ -719,8 +719,8 @@
       "display_order": 28
     },
     {
-      "id": 31,
-      "player_number": "PLAYER #31",
+      "id": 33,
+      "player_number": "PLAYER #33",
       "name": "K Srinivasaraju",
       "age": 61,
       "country": "India",
@@ -734,11 +734,11 @@
       "base_price": 10000,
       "image_url": "/images/players2/K%20Srinavasraju.png",
       "status": "upcoming",
-      "display_order": 31
+      "display_order": 29
     },
     {
-      "id": 29,
-      "player_number": "PLAYER #29",
+      "id": 34,
+      "player_number": "PLAYER #34",
       "name": "Kalidindi Srinivasavarma",
       "age": 56,
       "country": "India",
@@ -752,11 +752,11 @@
       "base_price": 10000,
       "image_url": "/images/players2/Kalidindi%20Srinivasavarma.png",
       "status": "upcoming",
-      "display_order": 29
+      "display_order": 30
     },
     {
-      "id": 30,
-      "player_number": "PLAYER #30",
+      "id": 35,
+      "player_number": "PLAYER #35",
       "name": "Kopparthi ravi babu",
       "age": 50,
       "country": "India",
@@ -770,11 +770,11 @@
       "base_price": 10000,
       "image_url": "/images/players2/Kopparthi%20ravi%20babu.png",
       "status": "upcoming",
-      "display_order": 30
+      "display_order": 31
     },
     {
-      "id": 32,
-      "player_number": "PLAYER #32",
+      "id": 36,
+      "player_number": "PLAYER #36",
       "name": "M Rajbabu",
       "age": 47,
       "country": "India",
@@ -791,8 +791,8 @@
       "display_order": 32
     },
     {
-      "id": 33,
-      "player_number": "PLAYER #33",
+      "id": 37,
+      "player_number": "PLAYER #37",
       "name": "M Viswanadha Raju",
       "age": 51,
       "country": "India",
@@ -809,8 +809,8 @@
       "display_order": 33
     },
     {
-      "id": 34,
-      "player_number": "PLAYER #34",
+      "id": 38,
+      "player_number": "PLAYER #38",
       "name": "Naga Firoz Babu",
       "age": 51,
       "country": "India",
@@ -827,8 +827,8 @@
       "display_order": 34
     },
     {
-      "id": 35,
-      "player_number": "PLAYER #35",
+      "id": 39,
+      "player_number": "PLAYER #39",
       "name": "Neerajh Varma",
       "age": 23,
       "country": "India",
@@ -845,8 +845,8 @@
       "display_order": 35
     },
     {
-      "id": 36,
-      "player_number": "PLAYER #36",
+      "id": 40,
+      "player_number": "PLAYER #40",
       "name": "Nehanth varma",
       "age": 23,
       "country": "India",
@@ -863,8 +863,8 @@
       "display_order": 36
     },
     {
-      "id": 37,
-      "player_number": "PLAYER #37",
+      "id": 41,
+      "player_number": "PLAYER #41",
       "name": "P Subbaraju",
       "age": 41,
       "country": "India",
@@ -881,8 +881,8 @@
       "display_order": 37
     },
     {
-      "id": 38,
-      "player_number": "PLAYER #38",
+      "id": 42,
+      "player_number": "PLAYER #42",
       "name": "Ramu",
       "age": 53,
       "country": "India",
@@ -899,8 +899,8 @@
       "display_order": 38
     },
     {
-      "id": 39,
-      "player_number": "PLAYER #39",
+      "id": 43,
+      "player_number": "PLAYER #43",
       "name": "Ranjith Varma",
       "age": 38,
       "country": "India",
@@ -917,8 +917,8 @@
       "display_order": 39
     },
     {
-      "id": 40,
-      "player_number": "PLAYER #40",
+      "id": 44,
+      "player_number": "PLAYER #44",
       "name": "Ravi Varma",
       "age": 28,
       "country": "India",
@@ -935,8 +935,8 @@
       "display_order": 40
     },
     {
-      "id": 41,
-      "player_number": "PLAYER #41",
+      "id": 45,
+      "player_number": "PLAYER #45",
       "name": "Rudraraju sahul varma",
       "age": 25,
       "country": "India",
@@ -953,8 +953,8 @@
       "display_order": 41
     },
     {
-      "id": 42,
-      "player_number": "PLAYER #42",
+      "id": 46,
+      "player_number": "PLAYER #46",
       "name": "Srikanth Penmetsa",
       "age": 44,
       "country": "India",
@@ -971,8 +971,8 @@
       "display_order": 42
     },
     {
-      "id": 43,
-      "player_number": "PLAYER #43",
+      "id": 47,
+      "player_number": "PLAYER #47",
       "name": "TATAVARTY RAJU",
       "age": 56,
       "country": "India",
@@ -989,8 +989,8 @@
       "display_order": 43
     },
     {
-      "id": 44,
-      "player_number": "PLAYER #44",
+      "id": 48,
+      "player_number": "PLAYER #48",
       "name": "Vijay kumar Raju",
       "age": 46,
       "country": "India",
@@ -1012,13 +1012,13 @@
     "id": 1,
     "title": "Grand Circuit Tennis Player Auction 2026",
     "status": "live",
-    "current_player_id": 5,
+    "current_player_id": 2,
     "current_bid": 0,
     "highest_bidder_team_id": null,
     "bid_increment": 2000,
     "timer_seconds": 15,
     "timer_remaining": 15,
-    "timer_running": true
+    "timer_running": false
   },
   "bids": [
     {

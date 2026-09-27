@@ -40,19 +40,20 @@ async function cleanReset() {
   await request({
     hostname: 'localhost',
     port: 5001,
-    path: '/api/players/1',
+    path: '/api/players/2',
     method: 'PUT',
     headers: authHeaders
   }, {
-    name: 'Arjun Mehta',
-    age: 24,
+    name: 'Dr Kiran',
+    player_number: 'PLAYER #02',
+    age: 39,
     country: 'India',
     country_flag: '🇮🇳',
     group: 'A',
     category: 'Group A',
     base_price: 10000,
-    playing_hand: 'Right Hand',
-    image_url: '/images/players/arjun-mehta.jpg'
+    playing_hand: 'Right hand',
+    image_url: '/images/players2/Dr%20kiran.png'
   });
 
   console.log('Clean reset complete & saved.');
