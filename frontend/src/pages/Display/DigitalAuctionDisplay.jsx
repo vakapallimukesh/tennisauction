@@ -308,6 +308,20 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       title: "Bhimavaram Digitals"
     };
 
+    const smartWashItem = {
+      node: (
+        <div className="h-10 flex items-center justify-center px-1">
+          <img
+            src="/images/sponsors/smart-wash.png"
+            alt="BO Smart Wash Bhimavaram"
+            className="h-10 w-auto max-h-10 object-contain select-none transition-transform hover:scale-110 drop-shadow-xs scale-110"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
+      ),
+      title: "BO Smart Wash Bhimavaram"
+    };
+
     const raymondShopItem = {
       node: (
         <div className="h-10 flex items-center justify-center px-2">
@@ -322,27 +336,13 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       title: "The Raymond Shop"
     };
 
-    const smartWashItem = {
-      node: (
-        <div className="h-10 flex items-center justify-center px-2">
-          <img
-            src="/images/sponsors/smart-wash.png"
-            alt="BO Smart Wash Bhimavaram"
-            className="h-9 w-auto max-h-9 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
-        </div>
-      ),
-      title: "BO Smart Wash Bhimavaram"
-    };
-
     const smartAutomationItem = {
       node: (
-        <div className="h-10 flex items-center justify-center px-2">
+        <div className="h-10 flex items-center justify-center px-1">
           <img
             src="/images/sponsors/smart-automation.png"
             alt="Smart Automation"
-            className="h-8.5 w-auto max-h-8.5 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+            className="h-10 w-auto max-h-10 object-contain select-none transition-transform hover:scale-110 drop-shadow-xs scale-110"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
         </div>
@@ -354,14 +354,14 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       deveeLogoItem,
       pvLogoItem,
       bhimavaramDigitalsItem,
-      raymondShopItem,
       smartWashItem,
+      raymondShopItem,
       smartAutomationItem,
       deveeLogoItem,
       pvLogoItem,
       bhimavaramDigitalsItem,
-      raymondShopItem,
       smartWashItem,
+      raymondShopItem,
       smartAutomationItem
     ];
   }, []);
