@@ -846,7 +846,10 @@ async function initDB() {
       const countRes = await client.query('SELECT count(*) FROM players');
       const playerCount = parseInt(countRes.rows[0].count, 10);
 
-      if (playerCount > 0) {
+      // Check if players in database need ID / player_number migration (e.g., if old ID 1 still exists in draft players)
+      const hasOldId1 = (await client.query('SELECT count(*) FROM players WHERE id = 1')).rows[0].count > 0;
+
+      if (playerCount > 0 && !hasOldId1) {
         // Load data from Postgres into memory
         const plRes = await client.query('SELECT * FROM players ORDER BY display_order ASC, id ASC');
         const tmRes = await client.query('SELECT * FROM teams ORDER BY team_number ASC, id ASC');
@@ -902,8 +905,10 @@ async function initDB() {
         saveStoreToDisk(memoryStore);
         console.log(`📥 Hydrated ${memoryStore.players.length} players and ${memoryStore.teams.length} teams from PostgreSQL database.`);
       } else {
-        // Seed PostgreSQL with current JSON store (Zero data loss!)
-        console.log('🌱 Empty PostgreSQL database detected. Seeding from current store.json...');
+        // Seed / Re-sync PostgreSQL with current JSON store
+        console.log('🌱 Syncing PostgreSQL database with updated store.json player IDs & details...');
+
+        await client.query('DELETE FROM players');
 
         for (const t of memoryStore.teams) {
           await client.query(`
@@ -925,7 +930,7 @@ async function initDB() {
             INSERT INTO players (id, player_number, name, age, country, country_flag, category, "group", playing_hand, backhand_style, jersey_name, jersey_number, world_ranking, wins, aces, matches, win_percentage, base_price, image_url, status, display_order, is_captain, designation)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
             ON CONFLICT (id) DO UPDATE SET
-              name=EXCLUDED.name, base_price=EXCLUDED.base_price, image_url=EXCLUDED.image_url, category=EXCLUDED.category, "group"=EXCLUDED."group";
+              name=EXCLUDED.name, player_number=EXCLUDED.player_number, base_price=EXCLUDED.base_price, image_url=EXCLUDED.image_url, category=EXCLUDED.category, "group"=EXCLUDED."group";
           `, [
             p.id, p.player_number, p.name, p.age || 22, p.country || 'India', p.country_flag || '🇮🇳',
             p.category || 'Group A', p.group || 'A', p.playing_hand || 'Right Hand', p.backhand_style || '',
@@ -951,7 +956,8 @@ async function initDB() {
             await client.query(`
               INSERT INTO sponsors (id, category, name, logo_icon, website)
               VALUES ($1, $2, $3, $4, $5)
-              ON CONFLICT (id) DO NOTHING;
+              ON CONFLICT (id) DO UPDATE SET
+                category=EXCLUDED.category, name=EXCLUDED.name, logo_icon=EXCLUDED.logo_icon, website=EXCLUDED.website;
             `, [s.id, s.category, s.name, s.logo_icon, s.website]);
           }
         }
