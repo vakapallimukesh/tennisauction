@@ -36,6 +36,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   // Audio effects refs
   const audioContextRef = useRef(null);
+  const bidInputRef = useRef(null);
 
   const playTone = useCallback((freq = 600, duration = 0.15, type = 'sine') => {
     if (isMuted) return;
@@ -89,9 +90,9 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
     : [0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000].map(step => playerBasePrice + step);
 
   const minRecommendedBid = isBiddingActive ? currentBid + 1000 : playerBasePrice;
-  const parsedBidInput = bidInput.trim() !== '' ? parseFloat(String(bidInput).replace(/,/g, '')) : NaN;
-  const confirmedNextBidAmount = (!isNaN(parsedBidInput) && parsedBidInput > 0)
-    ? parsedBidInput
+  const parsedThousands = bidInput.trim() !== '' ? parseInt(String(bidInput).replace(/\D/g, ''), 10) : NaN;
+  const confirmedNextBidAmount = (!isNaN(parsedThousands) && parsedThousands > 0)
+    ? parsedThousands * 1000
     : minRecommendedBid;
 
   const selectedTeam = activeTeams.find(t => t.id === selectedTeamId) || activeTeams[0];
@@ -160,7 +161,8 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
   // Synchronize default bid input whenever official currentBid or currentPlayer changes
   useEffect(() => {
     const nextBid = isBiddingActive ? currentBid + 1000 : playerBasePrice;
-    setBidInput(String(nextBid));
+    const nextThousands = Math.floor(nextBid / 1000);
+    setBidInput(String(nextThousands));
   }, [auction?.current_bid, auction?.highest_bidder_team_id, currentPlayer?.id, isBiddingActive, currentBid]);
 
   // Master Action Handlers
@@ -465,10 +467,10 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
 
   return (
     <div className="bg-[#0a0d14] text-slate-100 min-h-screen flex flex-col font-sans select-none antialiased">
-      {/* Action Notice Floating Alert */}
+      {/* Action Notice Floating Alert (Positioned on top-left to avoid covering console) */}
       {actionNotice && (
         <div
-          className={`fixed top-16 right-6 z-50 px-4 py-2.5 rounded-lg shadow-2xl flex items-center gap-2.5 border text-xs font-bold transition-all animate-bounce ${
+          className={`fixed top-16 left-6 z-50 px-4 py-2.5 rounded-lg shadow-2xl flex items-center gap-2.5 border text-xs font-bold transition-all animate-bounce backdrop-blur-md ${
             actionNotice.type === 'error'
               ? 'bg-red-950/90 text-red-300 border-red-500/50'
               : 'bg-emerald-950/90 text-brand-neon border-emerald-500/50'
@@ -1308,7 +1310,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                           type="button"
                           disabled={!isEnabled}
                           onClick={() => {
-                            setBidInput(amount.toString());
+                            setBidInput(Math.floor(amount / 1000).toString());
                             playTone(720, 0.08, 'triangle');
                           }}
                           className={`py-2 px-1 rounded font-mono font-black text-xs transition cursor-pointer text-center ${
@@ -1337,7 +1339,7 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                   </div>
                 </div>
 
-                {/* Fully Editable Confirmed Next Bid Amount Box */}
+                {/* Confirmed Next Bid Amount Box with locked last three digits (000) and editable left two digits */}
                 <div className="space-y-1 mb-3">
                   <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider text-slate-400">
                     <label htmlFor="confirmed-bid-input" className="cursor-pointer">
@@ -1347,21 +1349,34 @@ export default function AdminControlPanel({ onNavigate, onNavigateToPlayers, onO
                       PENDING BID
                     </span>
                   </div>
-                  <div className="relative">
+                  <div 
+                    onClick={() => bidInputRef.current?.focus()}
+                    className="w-full bg-[#0d121c] border-2 border-brand-border focus-within:border-brand-neon rounded-lg py-2.5 pl-3 pr-14 flex items-center font-mono font-black text-xl text-brand-neon tracking-wide transition relative cursor-text"
+                  >
                     <input
                       id="confirmed-bid-input"
-                      className="w-full bg-[#0d121c] border-2 border-brand-border focus:border-brand-neon rounded-lg py-2.5 pl-3 pr-14 text-xl font-mono font-black text-brand-neon tracking-wide focus:outline-none focus:ring-0 transition"
+                      ref={bidInputRef}
+                      className="bg-transparent border-none text-brand-neon font-mono font-black text-xl tracking-wide focus:outline-none focus:ring-0 p-0 m-0 text-left shrink-0 placeholder:text-brand-neon/40"
+                      style={{ width: `${Math.max(1, (bidInput || String(Math.floor(minRecommendedBid / 1000))).length)}ch` }}
                       type="text"
+                      inputMode="numeric"
+                      maxLength={2}
                       value={bidInput}
-                      onChange={(e) => setBidInput(e.target.value)}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '').slice(0, 2);
+                        setBidInput(val);
+                      }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
                           handleSubmitBid();
                         }
                       }}
-                      placeholder={minRecommendedBid.toLocaleString()}
+                      placeholder={String(Math.floor(minRecommendedBid / 1000))}
                     />
+                    <span className="text-brand-neon font-mono font-black text-xl tracking-wide select-none shrink-0 pointer-events-none">
+                      000
+                    </span>
                     <span className="absolute right-3 top-3 text-xs text-slate-400 font-semibold font-mono pointer-events-none">
                       PTS
                     </span>
