@@ -44,7 +44,7 @@ const initialSeed = {
       max_group_a: 4,
       max_group_b: 8,
       logo_url: '/images/teams/7aces-logo.png',
-      logo_bg_color: '#FFFFFF',
+      logo_bg_color: '#000000',
       primary_color: '#374151',
       accent_color: '#4b5563',
       glow_color: 'rgba(55, 65, 81, 0.45)',
@@ -79,11 +79,11 @@ const initialSeed = {
       max_players: 12,
       max_group_a: 4,
       max_group_b: 8,
-      logo_url: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBzlPpsatteW3k07dJDMBs5epKPAFny0ZiYdq-LtsL2H65BvfKsGLAdek30S4p63lTedtEc66sqQUNDY2zsf5g_FAG8Cne45q39e7eIvGaR5X90S1oUc2G8m88PioKEfwrq1q7198GKRElA8YFulNGf5Q9yiSRPOBF4yG4180hCy_Lam6VV9WPAlHdAQApiJu9E1-amSiUVdy3FkXBNRcJxVvNs-yMDshhNQA5RcwujLqsTrLUwBhs2-CMAz8HDPmLDcg',
-      logo_bg_color: '#002800',
-      primary_color: '#16a34a',
+      logo_url: '/images/teams/royal-tigers-logo.png',
+      logo_bg_color: '#012202',
+      primary_color: '#012202',
       accent_color: '#22c55e',
-      glow_color: 'rgba(22, 163, 74, 0.45)',
+      glow_color: 'rgba(1, 34, 2, 0.45)',
       bg_gradient: 'from-emerald-950/40 to-slate-950/80',
       captain: {
         id: 3,
@@ -115,10 +115,10 @@ const initialSeed = {
       max_group_a: 4,
       max_group_b: 8,
       logo_url: '/images/teams/mighty-dragons-logo.png',
-      logo_bg_color: '#02305b',
-      primary_color: '#02305b',
+      logo_bg_color: '#072f58',
+      primary_color: '#072f58',
       accent_color: '#3b82f6',
-      glow_color: 'rgba(2, 48, 91, 0.45)',
+      glow_color: 'rgba(7, 47, 88, 0.45)',
       bg_gradient: 'from-blue-950/40 to-slate-950/80',
       captain: {
         id: 6,
@@ -684,116 +684,316 @@ function saveStoreToDisk(storeToSave) {
 memoryStore = loadStoreFromDisk();
 
 let pool = null;
+let pgPool = null;
 let isUsingMySQL = false;
+let isUsingPostgres = false;
+
+// Asynchronously sync store to PostgreSQL in the background
+async function syncStoreToPostgres(storeData) {
+  if (!isUsingPostgres || !pgPool) return;
+  try {
+    const data = storeData || memoryStore;
+    if (!data) return;
+
+    // Sync auction state
+    if (data.auction) {
+      await pgPool.query(`
+        INSERT INTO auction_state (id, current_player_id, current_bid, highest_bidder_team_id, bid_increment, timer_seconds, timer_running, status, state_json, updated_at)
+        VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, NOW())
+        ON CONFLICT (id) DO UPDATE SET
+          current_player_id = EXCLUDED.current_player_id,
+          current_bid = EXCLUDED.current_bid,
+          highest_bidder_team_id = EXCLUDED.highest_bidder_team_id,
+          bid_increment = EXCLUDED.bid_increment,
+          timer_seconds = EXCLUDED.timer_seconds,
+          timer_running = EXCLUDED.timer_running,
+          status = EXCLUDED.status,
+          state_json = EXCLUDED.state_json,
+          updated_at = NOW();
+      `, [
+        data.auction.current_player_id || null,
+        data.auction.current_bid || 0,
+        data.auction.highest_bidder_team_id || null,
+        data.auction.bid_increment || 2000,
+        data.auction.timer_seconds || 15,
+        Boolean(data.auction.timer_running),
+        data.auction.status || 'paused',
+        JSON.stringify(data.auction)
+      ]);
+    }
+  } catch (err) {
+    console.error('❌ Error syncing store to PostgreSQL:', err.message);
+  }
+}
 
 async function initDB() {
-  const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT } = process.env;
-  if (DB_HOST && DB_NAME) {
+  const { DATABASE_URL, PGHOST, DB_HOST, DB_NAME } = process.env;
+
+  // 1. Check for PostgreSQL (Render.com native or external Postgres)
+  if (DATABASE_URL || PGHOST) {
     try {
-      pool = mysql.createPool({
-        host: DB_HOST,
-        user: DB_USER || 'root',
-        password: DB_PASSWORD || '',
-        database: DB_NAME,
-        port: DB_PORT ? parseInt(DB_PORT, 10) : 3306,
-        waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0
+      const { Pool: PgPool } = require('pg');
+      pgPool = new PgPool({
+        connectionString: DATABASE_URL,
+        ssl: DATABASE_URL && !DATABASE_URL.includes('localhost') && !DATABASE_URL.includes('127.0.0.1')
+          ? { rejectUnauthorized: false }
+          : false
       });
-      const conn = await pool.getConnection();
-      console.log('✅ Connected to MySQL Database:', DB_NAME);
 
-      // Auto-create/migrate tables if not existing
-      await conn.query(`
-        CREATE TABLE IF NOT EXISTS \`teams\` (
-          \`id\` INT AUTO_INCREMENT PRIMARY KEY,
-          \`team_number\` INT NOT NULL UNIQUE,
-          \`name\` VARCHAR(100) NOT NULL,
-          \`tagline\` VARCHAR(150) NULL,
-          \`owner\` VARCHAR(100) NOT NULL,
-          \`total_purse\` DECIMAL(12,2) NOT NULL DEFAULT 500000.00,
-          \`purse_remaining\` DECIMAL(12,2) NOT NULL DEFAULT 500000.00,
-          \`max_players\` INT NOT NULL DEFAULT 10,
-          \`logo_url\` VARCHAR(255) NOT NULL,
-          \`primary_color\` VARCHAR(30) NOT NULL,
-          \`accent_color\` VARCHAR(30) NOT NULL,
-          \`glow_color\` VARCHAR(50) NOT NULL,
-          \`bg_gradient\` VARCHAR(100) NOT NULL,
-          \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          \`updated_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+      const client = await pgPool.connect();
+      console.log('✅ Connected to PostgreSQL Database on Render/External!');
+
+      // Create PostgreSQL Tables
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS teams (
+          id INT PRIMARY KEY,
+          team_number INT UNIQUE NOT NULL,
+          name VARCHAR(100) NOT NULL,
+          tagline VARCHAR(150),
+          owner VARCHAR(100) NOT NULL,
+          total_purse NUMERIC(12,2) NOT NULL DEFAULT 500000.00,
+          purse_remaining NUMERIC(12,2) NOT NULL DEFAULT 500000.00,
+          max_players INT NOT NULL DEFAULT 12,
+          max_group_a INT NOT NULL DEFAULT 4,
+          max_group_b INT NOT NULL DEFAULT 8,
+          logo_url TEXT,
+          logo_bg_color VARCHAR(30) DEFAULT '#000000',
+          primary_color VARCHAR(30) NOT NULL DEFAULT '#22c55e',
+          accent_color VARCHAR(30) NOT NULL DEFAULT '#4ade80',
+          glow_color VARCHAR(50) NOT NULL DEFAULT 'rgba(34, 197, 94, 0.45)',
+          bg_gradient VARCHAR(100) NOT NULL DEFAULT 'from-emerald-950/40 to-slate-950/80',
+          captain JSONB,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS players (
+          id INT PRIMARY KEY,
+          player_number VARCHAR(40) UNIQUE NOT NULL,
+          name VARCHAR(120) NOT NULL,
+          age INT NOT NULL DEFAULT 22,
+          country VARCHAR(60) NOT NULL DEFAULT 'India',
+          country_flag VARCHAR(20) NOT NULL DEFAULT '🇮🇳',
+          category VARCHAR(40) NOT NULL DEFAULT 'Group A',
+          "group" VARCHAR(10) NOT NULL DEFAULT 'A',
+          playing_hand VARCHAR(40) NOT NULL DEFAULT 'Right Hand',
+          backhand_style VARCHAR(40),
+          jersey_name VARCHAR(60),
+          jersey_number VARCHAR(30),
+          world_ranking INT NOT NULL DEFAULT 150,
+          wins INT NOT NULL DEFAULT 0,
+          aces INT NOT NULL DEFAULT 0,
+          matches INT NOT NULL DEFAULT 0,
+          win_percentage INT NOT NULL DEFAULT 0,
+          base_price NUMERIC(12,2) NOT NULL DEFAULT 10000.00,
+          image_url TEXT,
+          status VARCHAR(30) NOT NULL DEFAULT 'upcoming',
+          display_order INT NOT NULL DEFAULT 0,
+          is_captain BOOLEAN DEFAULT FALSE,
+          designation VARCHAR(40),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY,
+          username VARCHAR(50) UNIQUE NOT NULL,
+          password_hash VARCHAR(255) NOT NULL,
+          full_name VARCHAR(100) NOT NULL,
+          role VARCHAR(30) NOT NULL,
+          team_id INT
+        );
+
+        CREATE TABLE IF NOT EXISTS sponsors (
+          id SERIAL PRIMARY KEY,
+          category VARCHAR(60) NOT NULL,
+          name VARCHAR(100) NOT NULL,
+          logo_icon VARCHAR(100),
+          website VARCHAR(255)
+        );
+
+        CREATE TABLE IF NOT EXISTS team_players (
+          id SERIAL PRIMARY KEY,
+          team_id INT NOT NULL,
+          player_id INT NOT NULL,
+          purchase_price NUMERIC(12,2) NOT NULL,
+          acquired_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS bids (
+          id SERIAL PRIMARY KEY,
+          auction_id INT,
+          player_id INT NOT NULL,
+          team_id INT NOT NULL,
+          amount NUMERIC(12,2) NOT NULL,
+          is_winning BOOLEAN DEFAULT FALSE,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS auction_state (
+          id INT PRIMARY KEY DEFAULT 1,
+          current_player_id INT,
+          current_bid NUMERIC(12,2) DEFAULT 0,
+          highest_bidder_team_id INT,
+          bid_increment NUMERIC(12,2) DEFAULT 2000,
+          timer_seconds INT DEFAULT 15,
+          timer_running BOOLEAN DEFAULT FALSE,
+          status VARCHAR(30) DEFAULT 'paused',
+          state_json JSONB,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
       `);
 
-      await conn.query(`
-        CREATE TABLE IF NOT EXISTS \`players\` (
-          \`id\` INT AUTO_INCREMENT PRIMARY KEY,
-          \`player_number\` VARCHAR(40) NOT NULL UNIQUE,
-          \`name\` VARCHAR(120) NOT NULL,
-          \`age\` INT NOT NULL DEFAULT 22,
-          \`country\` VARCHAR(60) NOT NULL DEFAULT 'India',
-          \`country_flag\` VARCHAR(20) NOT NULL DEFAULT '🇮🇳',
-          \`category\` VARCHAR(40) NOT NULL DEFAULT 'Group A',
-          \`group\` VARCHAR(10) NOT NULL DEFAULT 'A',
-          \`playing_hand\` VARCHAR(40) NOT NULL DEFAULT 'Right Hand',
-          \`world_ranking\` INT NOT NULL DEFAULT 150,
-          \`wins\` INT NOT NULL DEFAULT 0,
-          \`aces\` INT NOT NULL DEFAULT 0,
-          \`matches\` INT NOT NULL DEFAULT 0,
-          \`win_percentage\` INT NOT NULL DEFAULT 0,
-          \`base_price\` DECIMAL(12,2) NOT NULL DEFAULT 10000.00,
-          \`image_url\` LONGTEXT NOT NULL,
-          \`status\` VARCHAR(30) NOT NULL DEFAULT 'upcoming',
-          \`display_order\` INT NOT NULL DEFAULT 0,
-          \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          \`updated_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-      `);
+      // Check if players table in Postgres already has rows
+      const countRes = await client.query('SELECT count(*) FROM players');
+      const playerCount = parseInt(countRes.rows[0].count, 10);
 
-      // Ensure image_url and logo_url are LONGTEXT so large base64 or long image URLs never fail
-      try {
-        await conn.query(`ALTER TABLE \`players\` MODIFY COLUMN \`image_url\` LONGTEXT NOT NULL`);
-        await conn.query(`ALTER TABLE \`teams\` MODIFY COLUMN \`logo_url\` LONGTEXT NOT NULL`);
-      } catch {
-        // ignore if already longtext
-      }
+      if (playerCount > 0) {
+        // Load data from Postgres into memory
+        const plRes = await client.query('SELECT * FROM players ORDER BY display_order ASC, id ASC');
+        const tmRes = await client.query('SELECT * FROM teams ORDER BY team_number ASC, id ASC');
+        const tpRes = await client.query('SELECT * FROM team_players ORDER BY id ASC');
+        const bdRes = await client.query('SELECT * FROM bids ORDER BY id ASC');
+        const spRes = await client.query('SELECT * FROM sponsors ORDER BY id ASC');
+        const usRes = await client.query('SELECT * FROM users ORDER BY id ASC');
+        const auRes = await client.query('SELECT * FROM auction_state WHERE id = 1');
 
-      // Sync players from MySQL if populated
-      const [rows] = await conn.query('SELECT * FROM `players` ORDER BY id ASC');
-      if (rows && rows.length > 0) {
-        memoryStore.players = rows.map(r => ({
+        memoryStore.players = plRes.rows.map(r => ({
           ...r,
           id: Number(r.id),
           age: Number(r.age),
           base_price: Number(r.base_price),
           display_order: Number(r.display_order || r.id)
         }));
+
+        memoryStore.teams = tmRes.rows.map(r => ({
+          ...r,
+          id: Number(r.id),
+          team_number: Number(r.team_number),
+          total_purse: Number(r.total_purse),
+          purse_remaining: Number(r.purse_remaining),
+          max_players: Number(r.max_players || 12),
+          max_group_a: Number(r.max_group_a || 4),
+          max_group_b: Number(r.max_group_b || 8)
+        }));
+
+        if (tpRes.rows.length > 0) {
+          memoryStore.team_players = tpRes.rows.map(r => ({
+            ...r,
+            id: Number(r.id),
+            team_id: Number(r.team_id),
+            player_id: Number(r.player_id),
+            purchase_price: Number(r.purchase_price)
+          }));
+        }
+
+        if (bdRes.rows.length > 0) {
+          memoryStore.bids = bdRes.rows.map(r => ({
+            ...r,
+            id: Number(r.id),
+            player_id: Number(r.player_id),
+            team_id: Number(r.team_id),
+            amount: Number(r.amount)
+          }));
+        }
+
+        if (auRes.rows.length > 0 && auRes.rows[0].state_json) {
+          memoryStore.auction = auRes.rows[0].state_json;
+        }
+
         saveStoreToDisk(memoryStore);
-        console.log(`📥 Loaded ${rows.length} players from MySQL database.`);
+        console.log(`📥 Hydrated ${memoryStore.players.length} players and ${memoryStore.teams.length} teams from PostgreSQL database.`);
       } else {
-        // Seed MySQL with initial players
-        for (const p of memoryStore.players) {
-          await conn.query(`
-            INSERT INTO \`players\` (id, player_number, name, age, country, country_flag, category, \`group\`, playing_hand, world_ranking, wins, aces, matches, win_percentage, base_price, image_url, status, display_order)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE name=VALUES(name), base_price=VALUES(base_price), image_url=VALUES(image_url), category=VALUES(category), \`group\`=VALUES(\`group\`)
+        // Seed PostgreSQL with current JSON store (Zero data loss!)
+        console.log('🌱 Empty PostgreSQL database detected. Seeding from current store.json...');
+
+        for (const t of memoryStore.teams) {
+          await client.query(`
+            INSERT INTO teams (id, team_number, name, tagline, owner, total_purse, purse_remaining, max_players, max_group_a, max_group_b, logo_url, logo_bg_color, primary_color, accent_color, glow_color, bg_gradient, captain)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+            ON CONFLICT (id) DO UPDATE SET
+              name=EXCLUDED.name, total_purse=EXCLUDED.total_purse, purse_remaining=EXCLUDED.purse_remaining, logo_url=EXCLUDED.logo_url, logo_bg_color=EXCLUDED.logo_bg_color;
           `, [
-            p.id, p.player_number, p.name, p.age, p.country, p.country_flag, p.category, p.group || 'A',
-            p.playing_hand, p.world_ranking, p.wins, p.aces, p.matches, p.win_percentage,
-            p.base_price, p.image_url, p.status, p.display_order
+            t.id, t.team_number || t.id, t.name, t.tagline || '', t.owner || 'Owner',
+            t.total_purse || 500000, t.purse_remaining || 500000, t.max_players || 12,
+            t.max_group_a || 4, t.max_group_b || 8, t.logo_url || '', t.logo_bg_color || '#000000',
+            t.primary_color || '#22c55e', t.accent_color || '#4ade80', t.glow_color || 'rgba(34, 197, 94, 0.45)',
+            t.bg_gradient || 'from-emerald-950/40 to-slate-950/80', JSON.stringify(t.captain || {})
           ]);
         }
-        console.log(`🌱 Seeded ${memoryStore.players.length} players to MySQL.`);
+
+        for (const p of memoryStore.players) {
+          await client.query(`
+            INSERT INTO players (id, player_number, name, age, country, country_flag, category, "group", playing_hand, backhand_style, jersey_name, jersey_number, world_ranking, wins, aces, matches, win_percentage, base_price, image_url, status, display_order, is_captain, designation)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+            ON CONFLICT (id) DO UPDATE SET
+              name=EXCLUDED.name, base_price=EXCLUDED.base_price, image_url=EXCLUDED.image_url, category=EXCLUDED.category, "group"=EXCLUDED."group";
+          `, [
+            p.id, p.player_number, p.name, p.age || 22, p.country || 'India', p.country_flag || '🇮🇳',
+            p.category || 'Group A', p.group || 'A', p.playing_hand || 'Right Hand', p.backhand_style || '',
+            p.jersey_name || '', p.jersey_number || '', p.world_ranking || 150, p.wins || 0,
+            p.aces || 0, p.matches || 0, p.win_percentage || 0, p.base_price || 10000,
+            p.image_url || '', p.status || 'upcoming', p.display_order || p.id,
+            Boolean(p.is_captain), p.designation || ''
+          ]);
+        }
+
+        if (memoryStore.users) {
+          for (const u of memoryStore.users) {
+            await client.query(`
+              INSERT INTO users (id, username, password_hash, full_name, role, team_id)
+              VALUES ($1, $2, $3, $4, $5, $6)
+              ON CONFLICT (username) DO NOTHING;
+            `, [u.id, u.username, u.password_hash, u.full_name, u.role, u.team_id]);
+          }
+        }
+
+        if (memoryStore.sponsors) {
+          for (const s of memoryStore.sponsors) {
+            await client.query(`
+              INSERT INTO sponsors (id, category, name, logo_icon, website)
+              VALUES ($1, $2, $3, $4, $5)
+              ON CONFLICT (id) DO NOTHING;
+            `, [s.id, s.category, s.name, s.logo_icon, s.website]);
+          }
+        }
+
+        console.log(`✅ Successfully seeded PostgreSQL database with ${memoryStore.players.length} players & ${memoryStore.teams.length} teams from store.json!`);
       }
 
+      client.release();
+      isUsingPostgres = true;
+    } catch (err) {
+      console.warn('⚠️ Could not connect to PostgreSQL database (' + err.message + '). Falling back to persistent disk store.');
+      isUsingPostgres = false;
+    }
+  }
+
+  // 2. Optional MySQL fallback if configured
+  if (!isUsingPostgres && DB_HOST && DB_NAME) {
+    try {
+      pool = mysql.createPool({
+        host: DB_HOST,
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+        database: DB_NAME,
+        port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+      });
+      const conn = await pool.getConnection();
+      console.log('✅ Connected to MySQL Database:', DB_NAME);
       conn.release();
       isUsingMySQL = true;
     } catch (err) {
       console.warn('⚠️ Could not connect to MySQL server (' + err.message + '). Using persistent file-backed database store.');
       isUsingMySQL = false;
     }
-  } else {
-    console.log('ℹ️ MySQL not configured in environment. Using atomic persistent disk store (backend/data/store.json).');
-    isUsingMySQL = false;
+  }
+
+  if (!isUsingPostgres && !isUsingMySQL) {
+    console.log('ℹ️ Operating in High-Speed Persistent File-Backed Database Mode (backend/data/store.json).');
   }
 }
 
@@ -810,7 +1010,35 @@ async function dbSavePlayer(player) {
   // 2. Persist to disk
   saveStoreToDisk(memoryStore);
 
-  // 3. Persist to MySQL if active
+  // 3. Persist to PostgreSQL if active
+  if (isUsingPostgres && pgPool) {
+    try {
+      await pgPool.query(`
+        INSERT INTO players (id, player_number, name, age, country, country_flag, category, "group", playing_hand, backhand_style, jersey_name, jersey_number, world_ranking, wins, aces, matches, win_percentage, base_price, image_url, status, display_order, is_captain, designation)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
+        ON CONFLICT (id) DO UPDATE SET
+          name=EXCLUDED.name, player_number=EXCLUDED.player_number, age=EXCLUDED.age,
+          country=EXCLUDED.country, country_flag=EXCLUDED.country_flag, category=EXCLUDED.category,
+          "group"=EXCLUDED."group", playing_hand=EXCLUDED.playing_hand, backhand_style=EXCLUDED.backhand_style,
+          jersey_name=EXCLUDED.jersey_name, jersey_number=EXCLUDED.jersey_number, world_ranking=EXCLUDED.world_ranking,
+          wins=EXCLUDED.wins, aces=EXCLUDED.aces, matches=EXCLUDED.matches, win_percentage=EXCLUDED.win_percentage,
+          base_price=EXCLUDED.base_price, image_url=EXCLUDED.image_url, status=EXCLUDED.status,
+          display_order=EXCLUDED.display_order, is_captain=EXCLUDED.is_captain, designation=EXCLUDED.designation,
+          updated_at=NOW();
+      `, [
+        player.id, player.player_number, player.name, player.age || 22, player.country || 'India', player.country_flag || '🇮🇳',
+        player.category || (player.group === 'B' ? 'Group B' : 'Group A'), player.group === 'B' ? 'B' : 'A',
+        player.playing_hand || 'Right Hand', player.backhand_style || '', player.jersey_name || '', player.jersey_number || '',
+        player.world_ranking || 150, player.wins || 0, player.aces || 0, player.matches || 0, player.win_percentage || 0,
+        player.base_price || 10000, player.image_url !== undefined ? player.image_url : '', player.status || 'upcoming',
+        player.display_order || player.id, Boolean(player.is_captain), player.designation || ''
+      ]);
+    } catch (err) {
+      console.error('❌ Error updating player in PostgreSQL:', err.message);
+    }
+  }
+
+  // 4. Persist to MySQL if active
   if (isUsingMySQL && pool) {
     try {
       await pool.query(`
@@ -873,6 +1101,34 @@ async function dbSaveTeam(team) {
 
   saveStoreToDisk(memoryStore);
 
+  // Persist to PostgreSQL if active
+  if (isUsingPostgres && pgPool) {
+    try {
+      await pgPool.query(`
+        INSERT INTO teams (id, team_number, name, tagline, owner, total_purse, purse_remaining, max_players, max_group_a, max_group_b, logo_url, logo_bg_color, primary_color, accent_color, glow_color, bg_gradient, captain)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+        ON CONFLICT (id) DO UPDATE SET
+          name=EXCLUDED.name, tagline=EXCLUDED.tagline, owner=EXCLUDED.owner, total_purse=EXCLUDED.total_purse,
+          purse_remaining=EXCLUDED.purse_remaining, max_players=EXCLUDED.max_players,
+          max_group_a=EXCLUDED.max_group_a, max_group_b=EXCLUDED.max_group_b,
+          logo_url=EXCLUDED.logo_url, logo_bg_color=EXCLUDED.logo_bg_color,
+          primary_color=EXCLUDED.primary_color, accent_color=EXCLUDED.accent_color,
+          glow_color=EXCLUDED.glow_color, bg_gradient=EXCLUDED.bg_gradient, captain=EXCLUDED.captain,
+          updated_at=NOW();
+      `, [
+        idNum, team.team_number || idNum, team.name, team.tagline || '', team.owner || 'Owner',
+        team.total_purse || 500000.00, team.purse_remaining !== undefined ? team.purse_remaining : (team.total_purse || 500000.00),
+        team.max_players || 12, team.max_group_a || 4, team.max_group_b || 8, team.logo_url || '',
+        team.logo_bg_color || '#000000', team.primary_color || '#22c55e', team.accent_color || '#4ade80',
+        team.glow_color || 'rgba(34, 197, 94, 0.45)', team.bg_gradient || 'from-emerald-950/40 to-slate-950/80',
+        JSON.stringify(team.captain || {})
+      ]);
+    } catch (err) {
+      console.error('❌ Error updating team in PostgreSQL:', err.message);
+    }
+  }
+
+  // Persist to MySQL if active
   if (isUsingMySQL && pool) {
     try {
       await pool.query(`
@@ -934,6 +1190,18 @@ async function dbDeletePlayer(playerId) {
 
   saveStoreToDisk(memoryStore);
 
+  // PostgreSQL deletion
+  if (isUsingPostgres && pgPool) {
+    try {
+      await pgPool.query('DELETE FROM team_players WHERE player_id = $1', [idNum]);
+      await pgPool.query('DELETE FROM bids WHERE player_id = $1', [idNum]);
+      await pgPool.query('DELETE FROM players WHERE id = $1', [idNum]);
+    } catch (err) {
+      console.error('❌ Error deleting player from PostgreSQL:', err.message);
+    }
+  }
+
+  // MySQL deletion
   if (isUsingMySQL && pool) {
     try {
       await pool.query('DELETE FROM `team_players` WHERE player_id = ?', [idNum]);
@@ -951,15 +1219,32 @@ initDB();
 
 module.exports = {
   getPool: () => pool,
+  getPgPool: () => pgPool,
   isUsingMySQL: () => isUsingMySQL,
+  isUsingPostgres: () => isUsingPostgres,
   getMemoryStore: () => memoryStore,
-  saveStore: () => saveStoreToDisk(memoryStore),
+  saveStore: () => {
+    saveStoreToDisk(memoryStore);
+    syncStoreToPostgres(memoryStore);
+  },
   dbSavePlayer,
   dbSaveTeam,
   dbDeletePlayer,
-  resetMemoryStore: () => {
+  resetMemoryStore: async () => {
     memoryStore = JSON.parse(JSON.stringify(initialSeed));
     saveStoreToDisk(memoryStore);
+
+    if (isUsingPostgres && pgPool) {
+      try {
+        await pgPool.query('DELETE FROM team_players');
+        await pgPool.query('DELETE FROM bids');
+        await pgPool.query('UPDATE players SET status = \'upcoming\'');
+        syncStoreToPostgres(memoryStore);
+      } catch (err) {
+        console.error('❌ Error resetting PostgreSQL store:', err.message);
+      }
+    }
+
     return memoryStore;
   }
 };
