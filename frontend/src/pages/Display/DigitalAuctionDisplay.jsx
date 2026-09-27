@@ -322,15 +322,47 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       title: "The Raymond Shop"
     };
 
+    const smartWashItem = {
+      node: (
+        <div className="h-10 flex items-center justify-center px-2">
+          <img
+            src="/images/sponsors/smart-wash.png"
+            alt="BO Smart Wash Bhimavaram"
+            className="h-9 w-auto max-h-9 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
+      ),
+      title: "BO Smart Wash Bhimavaram"
+    };
+
+    const smartAutomationItem = {
+      node: (
+        <div className="h-10 flex items-center justify-center px-2">
+          <img
+            src="/images/sponsors/smart-automation.png"
+            alt="Smart Automation"
+            className="h-8.5 w-auto max-h-8.5 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
+      ),
+      title: "Smart Automation"
+    };
+
     return [
       deveeLogoItem,
       pvLogoItem,
       bhimavaramDigitalsItem,
       raymondShopItem,
+      smartWashItem,
+      smartAutomationItem,
       deveeLogoItem,
       pvLogoItem,
       bhimavaramDigitalsItem,
-      raymondShopItem
+      raymondShopItem,
+      smartWashItem,
+      smartAutomationItem
     ];
   }, []);
 

@@ -76,6 +76,20 @@
       "name": "The Raymond Shop",
       "logo_icon": "raymond-shop",
       "website": "https://www.raymond.in"
+    },
+    {
+      "id": 6,
+      "category": "OFFICIAL SPONSOR",
+      "name": "BO Smart Wash",
+      "logo_icon": "smart-wash",
+      "website": "https://smartwash.example.com"
+    },
+    {
+      "id": 7,
+      "category": "OFFICIAL SPONSOR",
+      "name": "Smart Automation",
+      "logo_icon": "smart-automation",
+      "website": "https://smartautomation.example.com"
     }
   ],
   "teams": [
