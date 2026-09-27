@@ -11,7 +11,11 @@ INSERT INTO `sponsors` (`id`, `category`, `name`, `logo_icon`, `website`) VALUES
 (1, 'POWERED BY', 'SportWave', 'sportwave', 'https://sportwave.example.com'),
 (2, 'CO-SPONSOR', 'ApexHealth', 'apexhealth', 'https://apexhealth.example.com'),
 (3, 'ASSOCIATE SPONSOR', 'NovaTech', 'novatech', 'https://novatech.example.com'),
-(4, 'OFFICIAL PARTNER', 'GrandVista', 'grandvista', 'https://grandvista.example.com');
+(4, 'OFFICIAL PARTNER', 'GrandVista', 'grandvista', 'https://grandvista.example.com'),
+(5, 'OFFICIAL SPONSOR', 'The Raymond Shop', 'raymond-shop', 'https://www.raymond.in'),
+(6, 'OFFICIAL SPONSOR', 'BO Smart Wash', 'smart-wash', 'https://smartwash.example.com'),
+(7, 'OFFICIAL SPONSOR', 'Smart Automation', 'smart-automation', 'https://smartautomation.example.com'),
+(8, 'OFFICIAL SPONSOR', 'NutriDelight', 'nutridelight', 'https://nutridelight.example.com');
 
 -- ----------------------------------------------------------
 -- 2. Seed 4 Teams
@@ -26,11 +30,11 @@ INSERT INTO `teams` (`id`, `team_number`, `name`, `owner`, `total_purse`, `purse
 -- 3. Seed Players (44 Players: IDs 2..48 skipping 1, 3, 5, 6)
 -- ----------------------------------------------------------
 INSERT INTO `players` (`id`, `player_number`, `name`, `age`, `country`, `country_flag`, `category`, `group`, `playing_hand`, `backhand_style`, `jersey_name`, `jersey_number`, `base_price`, `image_url`, `status`, `display_order`) VALUES
-(2, 'PLAYER #02', 'Dr Kiran', 39, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'Single handed', 'Kiran', '6', 10000, '/images/players2/Dr%20kiran.png', 'upcoming', 1),
+(2, 'PLAYER #02', 'Dr Kiran', 39, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'Single handed', 'Kiran', '6', 10000, '/images/players2/Dr%20kiran.png', 'live', 1),
 (4, 'PLAYER #04', 'I Prakash', 42, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'Double handed', 'Prakash', '77', 10000, '/images/players2/I%20Prakash.png', 'upcoming', 2),
 (7, 'PLAYER #07', 'K Satyanarayana Raju', 39, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'One handed', 'K S N Raju', '39', 10000, '/images/players2/K%20Satyanarayana%20raju.png', 'upcoming', 3),
 (8, 'PLAYER #08', 'Mantena Atchyuth varma', 25, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'Double handed', 'Atchyuth', '63', 10000, '/images/players2/Mantena%20Atchyuth%20varma.png', 'upcoming', 4),
-(9, 'PLAYER #09', 'M Vamsi krishna', 44, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'Double handed', 'Vamsi krishna', '7', 10000, '/images/players2/M%20Vamsi%20krishna.png', 'live', 5),
+(9, 'PLAYER #09', 'M Vamsi krishna', 44, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'Double handed', 'Vamsi krishna', '7', 10000, '/images/players2/M%20Vamsi%20krishna.png', 'upcoming', 5),
 (10, 'PLAYER #10', 'M V Siva Kumar Raju', 53, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'One handed', 'Siva', '11', 10000, '/images/players2/M%20V%20Shiva%20Kumar%20raju.png', 'upcoming', 6),
 (11, 'PLAYER #11', 'P Muralidhar', 40, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'Two handed', 'Murali', '7', 10000, '/images/players2/P%20Murali.png', 'upcoming', 7),
 (12, 'PLAYER #12', 'P Subash', 47, 'India', '🇮🇳', 'Group A', 'A', 'Right hand', 'One handed', 'Subash', '9', 10000, '/images/players2/P%20Subash.png', 'upcoming', 8),
@@ -44,7 +48,7 @@ INSERT INTO `players` (`id`, `player_number`, `name`, `age`, `country`, `country
 (20, 'PLAYER #20', 'BH Gajapathi Raju', 50, 'India', '🇮🇳', 'Group B', 'B', 'Right hand', 'Single handed', 'GP', '63', 10000, '/images/players2/Gajapathi.png', 'upcoming', 16),
 (21, 'PLAYER #21', 'Bh. Karthikeya Varma', 30, 'India', '🇮🇳', 'Group B', 'B', 'Right hand', 'Double handed', 'Karthik', '12', 10000, '/images/players2/Karthikeya.png', 'upcoming', 17),
 (22, 'PLAYER #22', 'Chandra Sekhar K', 39, 'India', '🇮🇳', 'Group B', 'B', 'Right hand', 'One handed', 'CHANDU', '6', 10000, '/images/players2/Chandra%20sekhar.png', 'upcoming', 18),
-(23, 'PLAYER #23', 'V Bangar raju', 54, 'India', '🇮🇳', 'Group B', 'B', 'Right hand', 'Single handed', 'V Bangar raju', '11', 10000, '/images/players2/Bangar%20raju.png', 'upcoming', 19),
+(23, 'PLAYER #23', 'V Bangar raju', 54, 'India', '🇮🇳', 'Group B', 'B', 'Right hand', 'Single handed', 'V Bangar raju', '11', 10000, '/images/players2/V%20Bangar%20raju.png', 'upcoming', 19),
 (24, 'PLAYER #24', 'Datta varma', 23, 'India', '🇮🇳', 'Group B', 'B', 'Right hand', 'Two handed', 'Datta', '12', 10000, '/images/players2/Datta%20varma.png', 'upcoming', 20),
 (25, 'PLAYER #25', 'Dr G V PAVAN KUMAR', 44, 'India', '🇮🇳', 'Group B', 'B', 'Right hand', 'Not specified', '', '99', 10000, '/images/players2/Pavan.png', 'upcoming', 21),
 (26, 'PLAYER #26', 'Dr Shravan', 31, 'India', '🇮🇳', 'Group B', 'B', 'Right hand', 'Double handed', 'Shravan', '3', 10000, '/images/players2/Dr%20Shravan.png', 'upcoming', 22),
