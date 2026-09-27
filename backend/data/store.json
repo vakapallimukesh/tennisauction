@@ -90,6 +90,13 @@
       "name": "Smart Automation",
       "logo_icon": "smart-automation",
       "website": "https://smartautomation.example.com"
+    },
+    {
+      "id": 8,
+      "category": "OFFICIAL SPONSOR",
+      "name": "NutriDelight",
+      "logo_icon": "nutridelight",
+      "website": "https://nutridelight.example.com"
     }
   ],
   "teams": [

@@ -322,6 +322,20 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       title: "BO Smart Wash Bhimavaram"
     };
 
+    const nutriDelightItem = {
+      node: (
+        <div className="h-10 flex items-center justify-center px-2">
+          <img
+            src="/images/sponsors/nutridelight.png"
+            alt="NutriDelight - Making Bhimavaram Healthy"
+            className="h-10 w-auto max-h-10 object-contain select-none transition-transform hover:scale-110 drop-shadow-xs scale-110"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
+      ),
+      title: "NutriDelight"
+    };
+
     const raymondShopItem = {
       node: (
         <div className="h-10 flex items-center justify-center px-2">
@@ -355,12 +369,14 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       pvLogoItem,
       bhimavaramDigitalsItem,
       smartWashItem,
+      nutriDelightItem,
       raymondShopItem,
       smartAutomationItem,
       deveeLogoItem,
       pvLogoItem,
       bhimavaramDigitalsItem,
       smartWashItem,
+      nutriDelightItem,
       raymondShopItem,
       smartAutomationItem
     ];
