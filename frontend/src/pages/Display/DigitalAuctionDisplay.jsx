@@ -308,7 +308,30 @@ export default function DigitalAuctionDisplay({ onNavigate }) {
       title: "Bhimavaram Digitals"
     };
 
-    return [deveeLogoItem, pvLogoItem, bhimavaramDigitalsItem, deveeLogoItem, pvLogoItem, bhimavaramDigitalsItem];
+    const raymondShopItem = {
+      node: (
+        <div className="h-10 flex items-center justify-center px-2">
+          <img
+            src="/images/sponsors/raymond-shop.png"
+            alt="The Raymond Shop"
+            className="h-8.5 w-auto max-h-8.5 object-contain select-none transition-transform hover:scale-105 drop-shadow-xs rounded-sm"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
+      ),
+      title: "The Raymond Shop"
+    };
+
+    return [
+      deveeLogoItem,
+      pvLogoItem,
+      bhimavaramDigitalsItem,
+      raymondShopItem,
+      deveeLogoItem,
+      pvLogoItem,
+      bhimavaramDigitalsItem,
+      raymondShopItem
+    ];
   }, []);
 
   return (
